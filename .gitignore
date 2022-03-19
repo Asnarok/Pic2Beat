@@ -1,3 +1,7 @@
 .idea/
 out/
 Pic2Beat.iml
+/bin/
+/lib/
+.classpath
+.project
