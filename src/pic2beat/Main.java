@@ -1,5 +1,7 @@
 package pic2beat;
 
+import pic2beat.melodia.MelodIA;
+
 public class Main {
 
     private static AppProperties properties = AppProperties.get();
@@ -10,6 +12,9 @@ public class Main {
         System.out.println(properties.getProperty(AppProperties.Property.APP_NAME) + " " + properties.getProperty(AppProperties.Property.VERSION));
         System.out.println(config.getParam(AppConfig.Param.TEMPO) + " " + config.getParam(AppConfig.Param.TIME_SIGNATURE));
         config.setParam(AppConfig.Param.TEMPO, "90").save();
+        
+        // Melodia tests
+        MelodIA.get().phrase();
     }
 
 }

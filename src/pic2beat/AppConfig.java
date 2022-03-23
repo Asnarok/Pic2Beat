@@ -24,6 +24,7 @@ public class AppConfig {
         final Properties defaults = new java.util.Properties();
         defaults.put(Param.TIME_SIGNATURE.getName(), "4/4");
         defaults.put(Param.TEMPO.getName(), "120");
+        defaults.put(Param.TONALITY.getName(), "MODAL");
         // TODO
 
         config = new Properties(defaults);
@@ -53,7 +54,8 @@ public class AppConfig {
 
     public enum Param {
         TEMPO("TEMPO"),
-        TIME_SIGNATURE("TIME_SIGNATURE");
+        TIME_SIGNATURE("TIME_SIGNATURE"),
+        TONALITY("TONALITY");
 
         private final String name;
 
