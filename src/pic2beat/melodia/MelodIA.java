@@ -1,6 +1,7 @@
 package pic2beat.melodia;
 
 import java.lang.reflect.Field;
+import java.util.Random;
 
 import jm.JMC;
 import jm.constants.Pitches;
@@ -11,9 +12,7 @@ import pic2beat.AppConfig.Param;
 
 public class MelodIA implements JMC {
 	
-	private static final MelodIA AI = new MelodIA(); 
-	
-	private final int[] IONIAN_INTERVALS = {0, 2, 2, 1, 2, 2, 2};
+	private static final MelodIA AI = new MelodIA();
 	
 	private MelodIA() {
 		
@@ -45,8 +44,9 @@ public class MelodIA implements JMC {
 	}
 	
 	
-	public Phrase phrase(/*Chord current, Chord next*/) {
-		
+	public Phrase phrase(final int[] currentChord/*, Chord next*/) {
+		final int[] nextChord = {G3, B3, D4, F4};
+
 		Phrase p = new Phrase();
 		
 		//décision gamme ( avec config )
@@ -58,20 +58,47 @@ public class MelodIA implements JMC {
 			
 			int tonality = getNote(tona+"0");
 			
-			System.out.println(AF1+ " "+ GS1);
-			
-			for(int i : MAJOR_SCALE) {
-				int newNote = i+tonality;
-				System.out.println(getNoteName(newNote));
+			System.out.println(tonality);
+
+			Random rand = new Random();
+
+			for(int i = 0; i < 8; i++) {
+				p.addNote(computeNextNote(p, currentChord));
 			}
-			
-			
-			
+			return p;
+
 		}else {
 			
 		}
 		
 		
 		return p;
+	}
+
+	// TODO
+	private Note computeNextNote(Phrase phr, final int[] currentChord) {
+		final int[] nextChord = {G3, B3, D4, F4};
+
+		final Random rand = new Random();
+
+		if(phr.getNoteList().isEmpty()) {
+			int prob = rand.nextInt(100);
+			if(prob < 60) {
+				return new Note(currentChord[0] + 12 * 2, Q);
+			} else if (prob < 80) {
+				return new Note(currentChord[1] + 12 * 2, Q);
+			} else {
+				return new Note(currentChord[2] + 12 * 2, Q);
+			}
+		} else {
+			int temp = (int)(Math.random()*25 + 60);
+			for (int k : MAJOR_SCALE) {
+				if (temp % 12 == k) {
+					return new Note(temp, Q);
+				}
+			}
+			// si la note fait pas partie de la gamme, on recommence
+			return computeNextNote(phr, currentChord);
+		}
 	}
 }
