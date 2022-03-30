@@ -10,6 +10,8 @@ import jm.music.data.Note;
 import jm.music.data.Phrase;
 import pic2beat.AppConfig;
 import pic2beat.AppConfig.Param;
+import pic2beat.utils.FileUtils;
+import pic2beat.utils.MathUtils;
 
 public class MelodIA implements JMC {
 
@@ -59,8 +61,6 @@ public class MelodIA implements JMC {
 
 			System.out.println(tonality);
 
-			Random rand = new Random();
-
 			for (int i = 0; i < 8; i++) {
 				p.addNote(computeNextNote(p, currentChord));
 			}
@@ -77,60 +77,51 @@ public class MelodIA implements JMC {
 	private Note computeNextNote(Phrase phr, final int[] currentChord) {
 		final int[] nextChord = { G3, B3, D4, F4 };
 
-		final Random rand = new Random();
-
-		if (phr.getNoteList().isEmpty()) {
-			int prob = rand.nextInt(100);
-			double currentRepartition = 0;
-			for (int note : MAJOR_SCALE) {
-				// ajouter l'integral à la somme
-				// sachant que l'intégrale se fait à partir d'une fonction composée de n lois
-				// normales centrées sur chaque note de l'accord, et que sigma augmente au cours
-				// du remplissement de phr
-				// if prob < currentRepartition return note
+		final double prob = Math.random();
+		final double[] probas = new double[7];
+		for (int i = 0; i < MAJOR_SCALE.length; i++) {
+			// ajouter l'integral à la somme
+			// sachant que l'intégrale se fait à partir d'une fonction composée de n lois
+			// normales centrées sur chaque note de l'accord, et que sigma augmente au cours
+			// du remplissement de phr
+			// if prob < currentRepartition return note
+			probas[i] = computeProba(phr, currentChord, MAJOR_SCALE[i], 0d);
+			
+			if(prob < probas[i]) {
+				return new Note(MAJOR_SCALE[i] + C4, Q);
 			}
-
-		} else {
-			int temp = (int) (Math.random() * 25 + 60);
-			for (int k : MAJOR_SCALE) {
-				if (temp % 12 == k) {
-					return new Note(temp, Q);
-				}
-			}
-			// si la note fait pas partie de la gamme, on recommence
-			return computeNextNote(phr, currentChord);
 		}
+
+//		if (phr.getNoteList().isEmpty()) {
+//
+//
+//
+//		} else {
+//			int temp = (int) (Math.random() * 25 + 60);
+//			for (int k : MAJOR_SCALE) {
+//				if (temp % 12 == k) {
+//					return new Note(temp, Q);
+//				}
+//			}
+//			// si la note fait pas partie de la gamme, on recommence
+//			return computeNextNote(phr, currentChord);
+//		}
+		return new Note(C8, Q);
 	}
+
+	private static final int INTEGRAL_RESOLUTION = 1000;
 
 	public double computeProba(Phrase p, int[] chord, int note, double width) {
 		double proba = 0;
 
-		for (int i = 0; i < chord.length; i++) {
-			double sigma = 0.1 + p.length();
-			double exp = (note - (chord[i])) / sigma;
-
-			proba += 1 / (sigma * 2 * Math.PI) * Math.exp(-0.5 * exp * exp);
+		for (int j : chord) {
+			final double sigma = 1;
+			final Function<Double, Double> gaussian = (x) -> 1 / (sigma * Math.sqrt(2 * Math.PI)) * Math.exp(-0.5 * Math.pow((x + 1 - j % 12) / sigma, 2));
+			proba += MathUtils.integrate(gaussian, -24d, note, INTEGRAL_RESOLUTION);
 		}
 
 		proba /= chord.length;
 
 		return proba;
 	}
-
-	private static final int INTEGRAL_RECTS = 10;
-
-	public double integral(Function<Double, Double> f, double from, double to) {
-
-		double step = (to - from) / INTEGRAL_RECTS;
-
-		double integral = 0;
-
-		for (int i = 0; i < INTEGRAL_RECTS; i++) {
-			integral += f.apply(from + step * i) * step;
-		}
-
-		return integral;
-
-	}
-
 }
