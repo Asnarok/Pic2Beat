@@ -89,9 +89,9 @@ public class MelodIA implements JMC {
 					if (phr.getNote(phr.getNoteArray().length - 1).samePitch(toAdd)
 							&& phr.getNote(phr.getNoteArray().length - 2).samePitch(toAdd)) {
 						return computeNextNote(phr, currentChord);
-					} else
-						return toAdd;
+					}
 				}
+				return toAdd;
 			}
 		}
 
