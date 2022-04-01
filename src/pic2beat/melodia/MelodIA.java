@@ -1,7 +1,6 @@
 package pic2beat.melodia;
 
 import java.lang.reflect.Field;
-import java.util.Random;
 import java.util.function.Function;
 
 import jm.JMC;
@@ -10,7 +9,6 @@ import jm.music.data.Note;
 import jm.music.data.Phrase;
 import pic2beat.AppConfig;
 import pic2beat.AppConfig.Param;
-import pic2beat.utils.FileUtils;
 import pic2beat.utils.MathUtils;
 
 public class MelodIA implements JMC {
@@ -45,8 +43,7 @@ public class MelodIA implements JMC {
 		return Note.getName(n);
 	}
 
-	public Phrase phrase(final int[] currentChord/* , Chord next */) {
-		final int[] nextChord = { G3, B3, D4, F4 };
+	public Phrase phrase(final int[] currentChord) {
 
 		Phrase p = new Phrase();
 
@@ -75,7 +72,6 @@ public class MelodIA implements JMC {
 
 	// TODO
 	private Note computeNextNote(Phrase phr, final int[] currentChord) {
-		final int[] nextChord = { G3, B3, D4, F4 };
 
 		final double prob = Math.random();
 		final double[] probas = new double[7];
@@ -86,9 +82,16 @@ public class MelodIA implements JMC {
 			// du remplissement de phr
 			// if prob < currentRepartition return note
 			probas[i] = computeProba(phr, currentChord, MAJOR_SCALE[i], 0d);
-			
-			if(prob < probas[i]) {
-				return new Note(MAJOR_SCALE[i] + C4, Q);
+
+			if (prob < probas[i]) {
+				Note toAdd = new Note(MAJOR_SCALE[i] + C4, Q);
+				if (phr.getNoteArray().length > 0) {
+					if (phr.getNote(phr.getNoteArray().length - 1).samePitch(toAdd)
+							&& phr.getNote(phr.getNoteArray().length - 2).samePitch(toAdd)) {
+						return computeNextNote(phr, currentChord);
+					} else
+						return toAdd;
+				}
 			}
 		}
 
@@ -116,7 +119,8 @@ public class MelodIA implements JMC {
 
 		for (int j : chord) {
 			final double sigma = 1;
-			final Function<Double, Double> gaussian = (x) -> 1 / (sigma * Math.sqrt(2 * Math.PI)) * Math.exp(-0.5 * Math.pow((x + 1 - j % 12) / sigma, 2));
+			final Function<Double, Double> gaussian = (x) -> 1 / (sigma * Math.sqrt(2 * Math.PI))
+					* Math.exp(-0.5 * Math.pow((x + 1 - j % 12) / sigma, 2));
 			proba += MathUtils.integrate(gaussian, -24d, note, INTEGRAL_RESOLUTION);
 		}
 

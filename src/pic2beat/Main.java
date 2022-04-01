@@ -1,16 +1,12 @@
 package pic2beat;
 
 import jm.JMC;
-import jm.constants.ProgramChanges;
-import jm.music.data.*;
+import jm.music.data.CPhrase;
+import jm.music.data.Part;
+import jm.music.data.Phrase;
+import jm.music.data.Score;
 import jm.util.View;
-import jm.util.Write;
 import pic2beat.melodia.MelodIA;
-import pic2beat.utils.FileUtils;
-import pic2beat.utils.MathUtils;
-
-import java.util.Arrays;
-import java.util.function.Function;
 
 public class Main implements JMC {
 
