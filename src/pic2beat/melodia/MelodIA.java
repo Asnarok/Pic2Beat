@@ -85,7 +85,7 @@ public class MelodIA implements JMC {
 
 			if (prob < probas[i]) {
 				Note toAdd = new Note(MAJOR_SCALE[i] + C4, Q);
-				if (phr.getNoteArray().length > 0) {
+				if (phr.getNoteArray().length > 1) {
 					if (phr.getNote(phr.getNoteArray().length - 1).samePitch(toAdd)
 							&& phr.getNote(phr.getNoteArray().length - 2).samePitch(toAdd)) {
 						return computeNextNote(phr, currentChord);
