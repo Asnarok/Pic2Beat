@@ -58,7 +58,7 @@ public class MelodIA implements JMC {
 
 			// System.out.println(tonality);
 
-			for (int i = 0; i < 8; i++) {
+			while (p.getBeatLength() < 4) {
 				p.addNote(computeNextNote(p, currentChord, tonality));
 			}
 			return p;
@@ -75,6 +75,8 @@ public class MelodIA implements JMC {
 
 		final double prob = Math.random();
 		final double[] probas = new double[7];
+		double proba = 0;
+		int lastNoteDuration = 0;
 		for (int i = 0; i < MAJOR_SCALE.length; i++) {
 			// ajouter l'integral à la somme
 			// sachant que l'intégrale se fait à partir d'une fonction composée de n lois
@@ -82,16 +84,23 @@ public class MelodIA implements JMC {
 			// du remplissement de phr
 			// if prob < currentRepartition return note
 			probas[i] = computeProba(phr, currentChord, MAJOR_SCALE[i], 0d);
-
-			if (prob < probas[i]) {
-				Note toAdd = new Note(MAJOR_SCALE[i] + C4 + tonality, Q);
+			proba += probas[i];
+			
+			if (prob < proba) {
+				Note toAdd = new Note(MAJOR_SCALE[i] + C4 + tonality, 0.25);
 				if (phr.getNoteArray().length > 1) { // on va checker 2x en arrière donc il faut que le tableau soit
 														// déja assez grand
-					if (phr.getNote(phr.getNoteArray().length - 1).samePitch(toAdd)
-							&& phr.getNote(phr.getNoteArray().length - 2).samePitch(toAdd)) {
-						return computeNextNote(phr, currentChord, tonality); // les deux dernières notes sont identiques
-																				// à celle choisie, c'est
-																				// insatisfaisant, donc on recommence
+					if (phr.getNote(phr.getNoteArray().length - 1).samePitch(toAdd)) {
+						if (phr.getNote(phr.getNoteArray().length - 2).samePitch(toAdd)
+								|| phr.getNote(phr.getNoteArray().length - 1).getDuration() > 0.25) {
+							return computeNextNote(phr, currentChord, tonality); // les deux dernières notes sont
+																					// identiques
+																					// à celle choisie, c'est
+																					// insatisfaisant, donc on
+						} else {
+							phr.removeLastNote();
+							return new Note(toAdd.getPitch(), 0.5);
+						}
 					}
 				}
 				return toAdd;
@@ -112,16 +121,16 @@ public class MelodIA implements JMC {
 //			// si la note fait pas partie de la gamme, on recommence
 //			return computeNextNote(phr, currentChord);
 //		}
-		return new Note(C8, Q);
+		return new Note(Note.REST, 0.25);
 	}
 
-	private static final int INTEGRAL_RESOLUTION = 1000;
+	private static final int INTEGRAL_RESOLUTION = 10000;
 
 	public double computeProba(Phrase p, int[] chord, int note, double width) {
 		double proba = 0;
 
 		for (int j : chord) {
-			final double sigma = 1;
+			double sigma = 0.1+p.getBeatLength() * 20;
 			final Function<Double, Double> gaussian = (x) -> 1 / (sigma * Math.sqrt(2 * Math.PI))
 					* Math.exp(-0.5 * Math.pow((x + 1 - j % 12) / sigma, 2));
 			proba += MathUtils.integrate(gaussian, -24d, note, INTEGRAL_RESOLUTION);
