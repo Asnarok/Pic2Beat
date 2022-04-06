@@ -34,10 +34,12 @@ public class Main implements JMC {
         merged.addNoteList(phr4.getNoteArray());
         p.addPhrase(merged);
         CPhrase cp = new CPhrase();
-        cp.addChord(new int[]{C3, E3, G3}, 4 * C);
-        cp.addChord(new int[]{G3, B3, D4}, 4 * C);
-        cp.addChord(new int[]{A3, C3, E3}, 4 * C);
-        cp.addChord(new int[]{F3, A3, C4}, 4 * C);
+        cp.addChord(MelodIA.getTriad(A3, false), 4 * C);
+        cp.addChord(MelodIA.getTriad(F3, true), 2 * C);
+        cp.addChord(MelodIA.getTriad(D3, false), 2 * C);
+        cp.addChord(MelodIA.getTriad(A3, false), 4 * C);
+        cp.addChord(MelodIA.getTriad(F3, true), 2 * C);
+        cp.addChord(MelodIA.getTriad(D3, false), 2 * C);
         p2.addCPhrase(cp);
         s.addPart(p);
         s.addPart(p2);

@@ -14,6 +14,8 @@ import pic2beat.utils.MathUtils;
 public class MelodIA implements JMC {
 
 	private static final MelodIA AI = new MelodIA();
+	
+	private static final int[] PHRYGIAN_SCALE = {CN1, DFN1, EFN1, FN1, GN1, AFN1, BFN1};
 
 	private MelodIA() {
 
@@ -75,24 +77,21 @@ public class MelodIA implements JMC {
 
 		final double prob = Math.random();
 		final double[] probas = new double[7];
-		double proba = 0;
-		int lastNoteDuration = 0;
 		for (int i = 0; i < MAJOR_SCALE.length; i++) {
 			// ajouter l'integral à la somme
 			// sachant que l'intégrale se fait à partir d'une fonction composée de n lois
 			// normales centrées sur chaque note de l'accord, et que sigma augmente au cours
 			// du remplissement de phr
 			// if prob < currentRepartition return note
-			probas[i] = computeProba(phr, currentChord, MAJOR_SCALE[i], 0d);
-			proba += probas[i];
+			probas[i] = computeProba(phr, currentChord, PHRYGIAN_SCALE[i], 0d);
 			
-			if (prob < proba) {
-				Note toAdd = new Note(MAJOR_SCALE[i] + C4 + tonality, 0.25);
+			if (prob < probas[i]) {
+				Note toAdd = new Note(PHRYGIAN_SCALE[i] + A4 + tonality, 0.25);
 				if (phr.getNoteArray().length > 1) { // on va checker 2x en arrière donc il faut que le tableau soit
 														// déja assez grand
 					if (phr.getNote(phr.getNoteArray().length - 1).samePitch(toAdd)) {
 						if (phr.getNote(phr.getNoteArray().length - 2).samePitch(toAdd)
-								|| phr.getNote(phr.getNoteArray().length - 1).getDuration() > 0.25) {
+								|| phr.getNote(phr.getNoteArray().length - 1).getDuration() > 0.5) {
 							return computeNextNote(phr, currentChord, tonality); // les deux dernières notes sont
 																					// identiques
 																					// à celle choisie, c'est
@@ -130,7 +129,7 @@ public class MelodIA implements JMC {
 		double proba = 0;
 
 		for (int j : chord) {
-			double sigma = 0.1+p.getBeatLength() * 20;
+			double sigma = 0.1+p.getBeatLength();
 			final Function<Double, Double> gaussian = (x) -> 1 / (sigma * Math.sqrt(2 * Math.PI))
 					* Math.exp(-0.5 * Math.pow((x + 1 - j % 12) / sigma, 2));
 			proba += MathUtils.integrate(gaussian, -24d, note, INTEGRAL_RESOLUTION);
@@ -139,5 +138,10 @@ public class MelodIA implements JMC {
 		proba /= chord.length;
 
 		return proba;
+	}
+	
+	public static int[] getTriad(int root, boolean isMajor) {
+		int third = isMajor ? 4 : 3;
+		return new int[] {root, root + third, root + 7};
 	}
 }
