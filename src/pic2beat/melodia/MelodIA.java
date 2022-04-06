@@ -73,7 +73,11 @@ public class MelodIA implements JMC {
 	}
 
 	// TODO
+<<<<<<< HEAD
 	private Note computeNextNote(Phrase phr, final int[] currentChord, int tonality) {
+=======
+	private Note computeNextNote(Phrase phr, final int[] currentChord) {
+>>>>>>> refs/remotes/origin/melodia
 
 		final double prob = Math.random();
 		final double[] probas = new double[7];
@@ -83,6 +87,7 @@ public class MelodIA implements JMC {
 			// normales centrées sur chaque note de l'accord, et que sigma augmente au cours
 			// du remplissement de phr
 			// if prob < currentRepartition return note
+<<<<<<< HEAD
 			probas[i] = computeProba(phr, currentChord, PHRYGIAN_SCALE[i], 0d);
 			
 			if (prob < probas[i]) {
@@ -100,6 +105,16 @@ public class MelodIA implements JMC {
 							phr.removeLastNote();
 							return new Note(toAdd.getPitch(), 0.5);
 						}
+=======
+			probas[i] = computeProba(phr, currentChord, MAJOR_SCALE[i], 0d);
+
+			if (prob < probas[i]) {
+				Note toAdd = new Note(MAJOR_SCALE[i] + C4, Q);
+				if (phr.getNoteArray().length > 1) {
+					if (phr.getNote(phr.getNoteArray().length - 1).samePitch(toAdd)
+							&& phr.getNote(phr.getNoteArray().length - 2).samePitch(toAdd)) {
+						return computeNextNote(phr, currentChord);
+>>>>>>> refs/remotes/origin/melodia
 					}
 				}
 				return toAdd;
@@ -129,7 +144,11 @@ public class MelodIA implements JMC {
 		double proba = 0;
 
 		for (int j : chord) {
+<<<<<<< HEAD
 			double sigma = 0.1+p.getBeatLength();
+=======
+			final double sigma = 1;
+>>>>>>> refs/remotes/origin/melodia
 			final Function<Double, Double> gaussian = (x) -> 1 / (sigma * Math.sqrt(2 * Math.PI))
 					* Math.exp(-0.5 * Math.pow((x + 1 - j % 12) / sigma, 2));
 			proba += MathUtils.integrate(gaussian, -24d, note, INTEGRAL_RESOLUTION);
