@@ -1,7 +1,5 @@
-#Wed Apr 06 14:42:42 CEST 2022
-=\=\=\=\=\=\=
-TONALITY=C
+#Wed Apr 06 15:48:23 CEST 2022
+TONALITY=A
 TIME_SIGNATURE=2/4
->>>>>>>=refs/remotes/origin/melodia
+SCALE=PHRYGIAN_SCALE
 TEMPO=90
-<<<<<<<=HEAD

@@ -1,17 +1,19 @@
 package pic2beat.melodia;
 
+import java.io.FileDescriptor;
 import java.lang.reflect.Field;
 import java.util.function.Function;
 
 import jm.JMC;
 import jm.constants.Pitches;
+import jm.constants.Scales;
 import jm.music.data.Note;
 import jm.music.data.Phrase;
 import pic2beat.AppConfig;
 import pic2beat.AppConfig.Param;
 import pic2beat.utils.MathUtils;
 
-public class MelodIA implements JMC {
+public class MelodIA implements JMC, pic2beat.utils.Scales {
 
 	private static final MelodIA AI = new MelodIA();
 	
@@ -31,21 +33,29 @@ public class MelodIA implements JMC {
 			System.out.println(f.getName());
 			return f.getInt(null);
 
-		} catch (NoSuchFieldException | SecurityException e) {
-			e.printStackTrace();
-		} catch (IllegalArgumentException e) {
-			e.printStackTrace();
-		} catch (IllegalAccessException e) {
+		} catch (NoSuchFieldException | SecurityException | IllegalAccessException | IllegalArgumentException e) {
 			e.printStackTrace();
 		}
 		return -1;
+	}
+
+	public int[] getScale(String s) {
+		try {
+			Field f = pic2beat.utils.Scales.class.getDeclaredField(s);
+			System.out.println(f.getName());
+			return (int[])f.get(null);
+		} catch (IllegalAccessException | NoSuchFieldException e) {
+			e.printStackTrace();
+		}
+
+		return new int[7];
 	}
 
 	public String getNoteName(int n) {
 		return Note.getName(n);
 	}
 
-	public Phrase phrase(final int[] currentChord) {
+	public Phrase phrase(final int[] currentChord, double chordLength) {
 
 		Phrase p = new Phrase();
 
@@ -55,13 +65,15 @@ public class MelodIA implements JMC {
 
 		if (!AppConfig.get().getParam(Param.TONALITY).equals("MODAL")) {
 			String tona = AppConfig.get().getParam(Param.TONALITY);
+			String scaleS = AppConfig.get().getParam(Param.SCALE);
 
 			int tonality = getNote(tona + "0");
+			int[] scale = getScale(scaleS);
 
 			// System.out.println(tonality);
 
-			while (p.getBeatLength() < 4) {
-				p.addNote(computeNextNote(p, currentChord, tonality));
+			while (p.getBeatLength() < chordLength) {
+				p.addNote(computeNextNote(p, currentChord, chordLength, tonality, scale));
 			}
 			return p;
 
@@ -73,26 +85,25 @@ public class MelodIA implements JMC {
 	}
 
 	// TODO
-	private Note computeNextNote(Phrase phr, final int[] currentChord, int tonality) {
-
+	private Note computeNextNote(Phrase phr, final int[] currentChord, double chordLength, int tonality, int[] scale) {
 		final double prob = Math.random();
 		final double[] probas = new double[7];
-		for (int i = 0; i < MAJOR_SCALE.length; i++) {
+		for (int i = 0; i < scale.length; i++) {
 			// ajouter l'integral à la somme
 			// sachant que l'intégrale se fait à partir d'une fonction composée de n lois
 			// normales centrées sur chaque note de l'accord, et que sigma augmente au cours
 			// du remplissement de phr
 			// if prob < currentRepartition return note
-			probas[i] = computeProba(phr, currentChord, PHRYGIAN_SCALE[i], 0d);
+			probas[i] = computeProba(phr, currentChord, scale[i], 0d);
 			
 			if (prob < probas[i]) {
-				Note toAdd = new Note(PHRYGIAN_SCALE[i] + A4 + tonality, 0.25);
+				Note toAdd = new Note(scale[i] + tonality + C3, 0.25);
 				if (phr.getNoteArray().length > 1) { // on va checker 2x en arrière donc il faut que le tableau soit
 														// déja assez grand
 					if (phr.getNote(phr.getNoteArray().length - 1).samePitch(toAdd)) {
 						if (phr.getNote(phr.getNoteArray().length - 2).samePitch(toAdd)
 								|| phr.getNote(phr.getNoteArray().length - 1).getDuration() > 0.5) {
-							return computeNextNote(phr, currentChord, tonality); // les deux dernières notes sont
+							return computeNextNote(phr, currentChord, chordLength, tonality, scale); // les deux dernières notes sont
 																					// identiques
 																					// à celle choisie, c'est
 																					// insatisfaisant, donc on
@@ -129,7 +140,8 @@ public class MelodIA implements JMC {
 		double proba = 0;
 
 		for (int j : chord) {
-			double sigma = 0.1+p.getBeatLength();
+			double sigma = 0.1+p.getBeatLength(); // TODO diviser par longueur accord
+			System.out.println("sigma : " + sigma);
 			final Function<Double, Double> gaussian = (x) -> 1 / (sigma * Math.sqrt(2 * Math.PI))
 					* Math.exp(-0.5 * Math.pow((x + 1 - j % 12) / sigma, 2));
 			proba += MathUtils.integrate(gaussian, -24d, note, INTEGRAL_RESOLUTION);
