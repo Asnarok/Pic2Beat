@@ -1,9 +1,17 @@
 package pic2beat;
 
+import java.util.LinkedList;
+
 import jm.JMC;
 import jm.constants.ProgramChanges;
-import jm.music.data.*;
+import jm.music.data.CPhrase;
+import jm.music.data.Note;
+import jm.music.data.Part;
+import jm.music.data.Phrase;
+import jm.music.data.Score;
 import jm.util.View;
+import pic2beat.Harmonie.Chord;
+import pic2beat.Harmonie.MainTest;
 import pic2beat.melodia.MelodIA;
 
 public class Main implements JMC {
@@ -18,32 +26,25 @@ public class Main implements JMC {
         config.setParam(AppConfig.Param.TEMPO, "90").save();
         
         // Melodia tests
-        Phrase phr = MelodIA.get().phrase(new int[]{A3, C3, E3}, 4);
-        Phrase phr2 = MelodIA.get().phrase(new int[]{F3, A3, C4, E4}, 2);
-        Phrase phr3 = MelodIA.get().phrase(new int[]{D3, F3, A4, C4}, 2);
-        Phrase phr4 = MelodIA.get().phrase(new int[]{A3, C3, E4, G4}, 4);
+        
+
+        CPhrase cp = new CPhrase();
+        LinkedList<Chord> progression = MainTest.generateProgression("HAPPY", 10);
+        System.out.println(progression.size());
+        Phrase timpani = new Phrase();
+        for(Chord c : progression) {
+        	cp.addChord(c.getNotes(), 4*C);
+        	timpani.addNoteList(MelodIA.get().phrase(c.getNotes(), 4).getNoteArray());
+        }
+        
+        
+        
         Score s = new Score("ff");
-        Part p = new Part("Piano", JMC.TIMPANI, 0);
+        Part p = new Part("Piano", JMC.STRING_ENSEMBLE_1, 0);
         Part p2 = new Part("Piano2", PIANO, 1);
         Part p3 = new Part("808", ProgramChanges.TRUMPET, 2);
-        Phrase merged = new Phrase();
-        merged.addNoteList(phr.getNoteArray());
-        merged.addNoteList(phr2.getNoteArray());
-        merged.addNoteList(phr3.getNoteArray());
-        merged.addNoteList(phr4.getNoteArray());
-        p.addPhrase(merged);
-        CPhrase cp = new CPhrase();
-        cp.addChord(MelodIA.getTriad(A3, false), 4 * C);
-        cp.addChord(MelodIA.getTriad(F3, true), 2 * C);
-        cp.addChord(MelodIA.getTriad(D3, false), 2 * C);
-        cp.addChord(MelodIA.getTriad(A3, false), 4 * C);
+        p.addPhrase(timpani);
         p2.addCPhrase(cp);
-        Phrase bassPhr = new Phrase();
-        bassPhr.addNote(new Note(A1, 4));
-        bassPhr.addNote(new Note(F1, 2));
-        bassPhr.addNote(new Note(D1, 2));
-        bassPhr.addNote(new Note(A1, 4));
-        p3.addPhrase(bassPhr);
         s.addPart(p);
         s.addPart(p2);
         s.addPart(p3);

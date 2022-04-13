@@ -1,12 +1,10 @@
 package pic2beat.melodia;
 
-import java.io.FileDescriptor;
 import java.lang.reflect.Field;
 import java.util.function.Function;
 
 import jm.JMC;
 import jm.constants.Pitches;
-import jm.constants.Scales;
 import jm.music.data.Note;
 import jm.music.data.Phrase;
 import pic2beat.AppConfig;
@@ -17,7 +15,6 @@ public class MelodIA implements JMC, pic2beat.utils.Scales {
 
 	private static final MelodIA AI = new MelodIA();
 	
-	private static final int[] PHRYGIAN_SCALE = {CN1, DFN1, EFN1, FN1, GN1, AFN1, BFN1};
 
 	private MelodIA() {
 
@@ -30,7 +27,7 @@ public class MelodIA implements JMC, pic2beat.utils.Scales {
 	public int getNote(String s) {
 		try {
 			Field f = Pitches.class.getDeclaredField(s);
-			System.out.println(f.getName());
+			//System.out.println(f.getName());
 			return f.getInt(null);
 
 		} catch (NoSuchFieldException | SecurityException | IllegalAccessException | IllegalArgumentException e) {

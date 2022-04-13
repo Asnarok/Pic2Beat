@@ -1,14 +1,13 @@
 package pic2beat.Harmonie;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import jm.JMC;
-import jm.music.data.*;
+import pic2beat.melodia.MelodIA;
 
 
-public class Chord {
+public class Chord implements JMC {
 
 	public String Nom;
 	public String Type;
@@ -133,6 +132,18 @@ public class Chord {
 	@Override
 	public int hashCode() {		
 		return this.Nom.hashCode();
+	}
+	
+	public int[] getNotes() {
+		int[] notes = new int[4];
+		for(int i = 0; i < this.Notes.length; i++) {
+			if(this.Notes[i] != null) {
+				String formatted = this.Notes[i].replace("#", "S").trim() + "3";
+				notes[i] = MelodIA.get().getNote(formatted);
+			}
+		}
+		
+		return notes;
 	}
 	
 }
