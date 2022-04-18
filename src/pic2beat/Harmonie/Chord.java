@@ -14,7 +14,7 @@ public class Chord implements JMC {
 	public Chord Previous;
 	public String[] Notes = new String[4]; 
 	public double[] Proba;	
-	//public int Duree;
+	public int duree ; //en nombre de temps de 1 à 4
 	private static ArrayList<String> NotesToInt = new ArrayList<>(List.of("A ", "A#", "B ", "C ", "C#", "D ", "D#", "E ", "F ", "F#", "G ", "G#")); 
 	private static ArrayList<String> TypeToInt = new ArrayList<>(List.of("Maj", "min", "Maj7", "min7", "7"));
 
@@ -51,8 +51,6 @@ public class Chord implements JMC {
 			Notes[3] = this.toNote(this.interval(Notes[2], 3));//NotesToInt.get(modulo(NotesToInt.indexOf(Notes[2])+4, 12));
 			break;
 		}
-
-		System.out.println(this.Nom);
 	}
 	public Chord (int note, int type) {
 		this("" + NotesToInt.get(note) + TypeToInt.get(type));
