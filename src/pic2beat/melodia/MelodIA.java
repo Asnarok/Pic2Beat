@@ -11,6 +11,9 @@ import pic2beat.AppConfig;
 import pic2beat.AppConfig.Param;
 import pic2beat.utils.MathUtils;
 
+/**
+ * Singleton for melody generation over a specified chord
+ */
 public class MelodIA implements JMC, pic2beat.utils.Scales {
 
 	private static final MelodIA AI = new MelodIA();
@@ -24,6 +27,10 @@ public class MelodIA implements JMC, pic2beat.utils.Scales {
 		return AI;
 	}
 
+	/**
+	 * @param s name of the note
+	 * @return index of the corresponding note
+	 */
 	public int getNote(String s) {
 		try {
 			Field f = Pitches.class.getDeclaredField(s);
@@ -36,10 +43,14 @@ public class MelodIA implements JMC, pic2beat.utils.Scales {
 		return -1;
 	}
 
+	/**
+	 * @param s name of the scale
+	 * @return list of intervals corresponding to the scale
+	 */
 	public int[] getScale(String s) {
 		try {
 			Field f = pic2beat.utils.Scales.class.getDeclaredField(s);
-			System.out.println(f.getName());
+			//System.out.println(f.getName());
 			return (int[])f.get(null);
 		} catch (IllegalAccessException | NoSuchFieldException e) {
 			e.printStackTrace();
@@ -52,6 +63,11 @@ public class MelodIA implements JMC, pic2beat.utils.Scales {
 		return Note.getName(n);
 	}
 
+	/**
+	 * @param currentChord chord on which to generate the melody
+	 * @param chordLength <code>currentChord</code> length
+	 * @return <code>Phrase</code> object containing the generated melody
+	 */
 	public Phrase phrase(final int[] currentChord, double chordLength) {
 
 		Phrase p = new Phrase();
@@ -91,7 +107,7 @@ public class MelodIA implements JMC, pic2beat.utils.Scales {
 			// normales centrées sur chaque note de l'accord, et que sigma augmente au cours
 			// du remplissement de phr
 			// if prob < currentRepartition return note
-			probas[i] = computeProba(phr, currentChord, scale[i], 0d);
+			probas[i] = computeProba(phr, currentChord, scale[i], 0d, chordLength);
 			
 			if (prob < probas[i]) {
 				Note toAdd = new Note(scale[i] + tonality + C3, 0.25);
@@ -131,13 +147,14 @@ public class MelodIA implements JMC, pic2beat.utils.Scales {
 		return new Note(Note.REST, 0.25);
 	}
 
-	private static final int INTEGRAL_RESOLUTION = 10000;
+	private final int INTEGRAL_RESOLUTION = 10000;
 
-	public double computeProba(Phrase p, int[] chord, int note, double width) {
+	public double computeProba(Phrase p, int[] chord, int note, double width, double chordLength) {
 		double proba = 0;
 
 		for (int j : chord) {
-			double sigma = 0.1+p.getBeatLength(); // TODO diviser par longueur accord
+			System.out.println("-> "+p.getBeatLength()+"/"+chordLength);
+			double sigma = 0.01+(p.getBeatLength())/(chordLength)*4; // from 0.01 to ~3.5 TODO diviser par longueur accord
 			System.out.println("sigma : " + sigma);
 			final Function<Double, Double> gaussian = (x) -> 1 / (sigma * Math.sqrt(2 * Math.PI))
 					* Math.exp(-0.5 * Math.pow((x + 1 - j % 12) / sigma, 2));

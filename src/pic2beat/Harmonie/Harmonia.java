@@ -27,27 +27,27 @@ public class Harmonia {
 		switch (Mood) {
 		//initialisation de la tonalité
 		case "HAPPY" :
-			int fon = (int)(Math.random()*12); //entre 0 et 4
+			int fon = 0; //entre 0 et 4 // TODO prendre en compte la tona passee dans la config
 			int typ = 0; // entre 0 et 4, 0 = Maj
 
 			Tonalite = new Chord(fon, typ);
 			Progression.add(Tonalite);
 			Progression.getLast().duree = Carrure;
-			System.out.println(Progression);
+			//System.out.println(Progression);
 			Matrix = InitMatProba();
 
 
 			for (int mes =1; mes< Length; mes++) {
 				
 				Progression.add(ComputeNext());
-				System.out.println(Progression);
+				//System.out.println(Progression);
 				
 
 			}
-			System.out.println("Progression générée : ");
-			for(Chord c : Progression) {
-				System.out.print(c.Nom+" " + c.duree +", ");
-			}
+			//System.out.println("Progression générée : ");
+//			for(Chord c : Progression) {
+//				System.out.print(c.Nom+" " + c.duree +", ");
+//			}
 			return Progression;
 
 			
@@ -171,9 +171,9 @@ public class Harmonia {
 		}
 		int reste = nbTemps % Carrure;
 		reste = (reste == 0 ? 0 : 4-reste);
-		System.out.println("Proccessing chord : "+chord.Nom + " DUREE : "+chord.duree);
-		System.out.println(Progression.getLast().Nom+ " duree : "+ Progression.getLast().duree);
-		System.out.println("duree totale : " + nbTemps + " reste : "+ reste);
+//		System.out.println("Proccessing chord : "+chord.Nom + " DUREE : "+chord.duree);
+//		System.out.println(Progression.getLast().Nom+ " duree : "+ Progression.getLast().duree);
+//		System.out.println("duree totale : " + nbTemps + " reste : "+ reste);
 		
 		switch (reste) {
 		

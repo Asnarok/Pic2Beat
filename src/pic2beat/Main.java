@@ -16,34 +16,30 @@ import pic2beat.melodia.MelodIA;
 
 public class Main implements JMC {
 
-    private static AppProperties properties = AppProperties.get();
-    private static AppConfig config = AppConfig.get();
+    private static final AppProperties properties = AppProperties.get();
+    private static final AppConfig config = AppConfig.get();
 
     public static void main(String[] args) {
         System.out.println("Hello world! (suce pute)");
         System.out.println(properties.getProperty(AppProperties.Property.APP_NAME) + " " + properties.getProperty(AppProperties.Property.VERSION));
         System.out.println(config.getParam(AppConfig.Param.TEMPO) + " " + config.getParam(AppConfig.Param.TIME_SIGNATURE));
-        config.setParam(AppConfig.Param.TEMPO, "90").save();
+        //config.setParam(AppConfig.Param.TEMPO, "90").save();
         
         // Melodia tests
-        
-
         CPhrase cp = new CPhrase();
-        LinkedList<Chord> progression = Harmonia.generateProgression("HAPPY", 40, 4);
-        System.out.println(progression.size());
+        LinkedList<Chord> progression = Harmonia.generateProgression("HAPPY", 4, 4);
+        //System.out.println(progression.size());
         Phrase timpani = new Phrase();
         for(Chord c : progression) {
-        	cp.addChord(c.getNotes(), 4*C);
-        	timpani.addNoteList(MelodIA.get().phrase(c.getNotes(), 4).getNoteArray());
+        	cp.addChord(c.getNotes(), c.duree);
+        	timpani.addNoteList(MelodIA.get().phrase(c.getNotes(), c.duree).getNoteArray());
         }
         
-        
-        
-        Score s = new Score("ff");
-        Part p = new Part("Piano", JMC.STRING_ENSEMBLE_1, 0);
+        Score s = new Score("press F to pay respect");
+        Part p = new Part("Piano", JMC.ACOUSTIC_SNARE, 0);
         Part p2 = new Part("Piano2", PIANO, 1);
         Part p3 = new Part("808", ProgramChanges.TRUMPET, 2);
-       // p.addPhrase(timpani);
+        p.addPhrase(timpani);
         p2.addCPhrase(cp);
         s.addPart(p);
         s.addPart(p2);
