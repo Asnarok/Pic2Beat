@@ -17,9 +17,8 @@ import pic2beat.utils.MathUtils;
 public class MelodIA implements JMC, pic2beat.utils.Scales {
 
 	private static final MelodIA AI = new MelodIA();
-	
+
 	private static final boolean VERBOSE = false;
-	
 
 	private MelodIA() {
 
@@ -36,7 +35,7 @@ public class MelodIA implements JMC, pic2beat.utils.Scales {
 	public int getNote(String s) {
 		try {
 			Field f = Pitches.class.getDeclaredField(s);
-			//System.out.println(f.getName());
+			// System.out.println(f.getName());
 			return f.getInt(null);
 
 		} catch (NoSuchFieldException | SecurityException | IllegalAccessException | IllegalArgumentException e) {
@@ -52,8 +51,8 @@ public class MelodIA implements JMC, pic2beat.utils.Scales {
 	public int[] getScale(String s) {
 		try {
 			Field f = pic2beat.utils.Scales.class.getDeclaredField(s);
-			//System.out.println(f.getName());
-			return (int[])f.get(null);
+			// System.out.println(f.getName());
+			return (int[]) f.get(null);
 		} catch (IllegalAccessException | NoSuchFieldException e) {
 			e.printStackTrace();
 		}
@@ -67,7 +66,7 @@ public class MelodIA implements JMC, pic2beat.utils.Scales {
 
 	/**
 	 * @param currentChord chord on which to generate the melody
-	 * @param chordLength <code>currentChord</code> length
+	 * @param chordLength  <code>currentChord</code> length
 	 * @return <code>Phrase</code> object containing the generated melody
 	 */
 	public Phrase phrase(final int[] currentChord, double chordLength) {
@@ -110,7 +109,7 @@ public class MelodIA implements JMC, pic2beat.utils.Scales {
 			// du remplissement de phr
 			// if prob < currentRepartition return note
 			probas[i] = computeProba(phr, currentChord, scale[i], 0d, chordLength);
-			
+
 			if (prob < probas[i]) {
 				Note toAdd = new Note(scale[i] + tonality + C3, 0.25);
 				if (phr.getNoteArray().length > 1) { // on va checker 2x en arrière donc il faut que le tableau soit
@@ -118,10 +117,12 @@ public class MelodIA implements JMC, pic2beat.utils.Scales {
 					if (phr.getNote(phr.getNoteArray().length - 1).samePitch(toAdd)) {
 						if (phr.getNote(phr.getNoteArray().length - 2).samePitch(toAdd)
 								|| phr.getNote(phr.getNoteArray().length - 1).getDuration() > 0.5) {
-							return computeNextNote(phr, currentChord, chordLength, tonality, scale); // les deux dernières notes sont
-																					// identiques
-																					// à celle choisie, c'est
-																					// insatisfaisant, donc on
+							return computeNextNote(phr, currentChord, chordLength, tonality, scale); // les deux
+																										// dernières
+																										// notes sont
+							// identiques
+							// à celle choisie, c'est
+							// insatisfaisant, donc on
 						} else {
 							phr.removeLastNote();
 							return new Note(toAdd.getPitch(), 0.5);
@@ -153,27 +154,31 @@ public class MelodIA implements JMC, pic2beat.utils.Scales {
 
 	public double computeProba(Phrase p, int[] chord, int note, double width, double chordLength) {
 		double proba = 0;
-		if(VERBOSE) {
+		if (VERBOSE) {
 			System.out.println("--Melody probability computing--");
 		}
 		for (int j : chord) {
-			
-			if(VERBOSE)System.out.println("-length : "+p.getBeatLength()+"/"+chordLength);
-			double sigma = 0.01+(p.getBeatLength())/(chordLength)*4; // from 0.01 to ~3.5 TODO diviser par longueur accord
-			if(VERBOSE)System.out.println("-sigma : " + sigma);
+
+			if (VERBOSE)
+				System.out.println("-length : " + p.getBeatLength() + "/" + chordLength);
+			double sigma = 0.01 + (p.getBeatLength()) / (chordLength) * 4; // from 0.01 to ~3.5 TODO diviser par
+																			// longueur accord
+			if (VERBOSE)
+				System.out.println("-sigma : " + sigma);
 			final Function<Double, Double> gaussian = (x) -> 1 / (sigma * Math.sqrt(2 * Math.PI))
 					* Math.exp(-0.5 * Math.pow((x + 1 - j % 12) / sigma, 2));
 			proba += MathUtils.integrate(gaussian, -24d, note, INTEGRAL_RESOLUTION);
-			
+
 		}
-		if(VERBOSE)System.out.println("-reached proba : "+proba);
+		if (VERBOSE)
+			System.out.println("-reached proba : " + proba);
 		proba /= chord.length;
 
 		return proba;
 	}
-	
+
 	public static int[] getTriad(int root, boolean isMajor) {
 		int third = isMajor ? 4 : 3;
-		return new int[] {root, root + third, root + 7};
+		return new int[] { root, root + third, root + 7 };
 	}
 }
