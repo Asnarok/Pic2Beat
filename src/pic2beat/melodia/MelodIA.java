@@ -18,6 +18,8 @@ public class MelodIA implements JMC, pic2beat.utils.Scales {
 
 	private static final MelodIA AI = new MelodIA();
 	
+	private static final boolean VERBOSE = false;
+	
 
 	private MelodIA() {
 
@@ -151,16 +153,20 @@ public class MelodIA implements JMC, pic2beat.utils.Scales {
 
 	public double computeProba(Phrase p, int[] chord, int note, double width, double chordLength) {
 		double proba = 0;
-
+		if(VERBOSE) {
+			System.out.println("--Melody probability computing--");
+		}
 		for (int j : chord) {
-			System.out.println("-> "+p.getBeatLength()+"/"+chordLength);
+			
+			if(VERBOSE)System.out.println("-length : "+p.getBeatLength()+"/"+chordLength);
 			double sigma = 0.01+(p.getBeatLength())/(chordLength)*4; // from 0.01 to ~3.5 TODO diviser par longueur accord
-			System.out.println("sigma : " + sigma);
+			if(VERBOSE)System.out.println("-sigma : " + sigma);
 			final Function<Double, Double> gaussian = (x) -> 1 / (sigma * Math.sqrt(2 * Math.PI))
 					* Math.exp(-0.5 * Math.pow((x + 1 - j % 12) / sigma, 2));
 			proba += MathUtils.integrate(gaussian, -24d, note, INTEGRAL_RESOLUTION);
+			
 		}
-
+		if(VERBOSE)System.out.println("-reached proba : "+proba);
 		proba /= chord.length;
 
 		return proba;

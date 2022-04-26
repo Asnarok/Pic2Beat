@@ -11,7 +11,7 @@ import jm.music.data.Phrase;
 import jm.music.data.Score;
 import jm.util.View;
 import pic2beat.Harmonie.Chord;
-import pic2beat.Harmonie.Harmonia;
+import pic2beat.Harmonie.HarmonIA;
 import pic2beat.melodia.MelodIA;
 
 public class Main implements JMC {
@@ -27,7 +27,7 @@ public class Main implements JMC {
         
         // Melodia tests
         CPhrase cp = new CPhrase();
-        LinkedList<Chord> progression = Harmonia.generateProgression("HAPPY", 4, 4);
+        LinkedList<Chord> progression = HarmonIA.generateProgression("HAPPY", 4, 4);
         //System.out.println(progression.size());
         Phrase timpani = new Phrase();
         for(Chord c : progression) {

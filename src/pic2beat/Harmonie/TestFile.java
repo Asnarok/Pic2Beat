@@ -6,13 +6,13 @@ public class TestFile {
 	
 	public static void main (String[] args) {
 		
-		LinkedList<Chord> progression = Harmonia.generateProgression("HAPPY", 20, 4);
+		LinkedList<Chord> progression = HarmonIA.generateProgression("HAPPY", 20, 4);
 		Chord Base = new Chord (0, 0);
-		Harmonia.Progression.clear();
-		Harmonia.Progression.add(new Chord ("E Maj"));
-		Harmonia.Tonalite=Base;
-		Harmonia.Matrix = Harmonia.InitMatProba();
-		System.out.println(Harmonia.Progression.getLast().Nom);
+		HarmonIA.progression.clear();
+		HarmonIA.progression.add(new Chord ("E Maj"));
+		HarmonIA.tonality=Base;
+		HarmonIA.matrix = HarmonIA.initProbaMatrix();
+		System.out.println(HarmonIA.progression.getLast().name);
 		double I =0;
 		double iii=0;
 		double ii =0;
@@ -21,9 +21,9 @@ public class TestFile {
 		double V7=0;
 		double vi=0;
 		for (int i =0 ; i<100000; i++) {
-			Chord c = Harmonia.ComputeNext();
-			System.out.println(c.Nom);
-			switch (c.Nom ) {
+			Chord c = HarmonIA.computeNext();
+			System.out.println(c.name);
+			switch (c.name ) {
 			case "A Maj": I++;
 			break;
 			case "B min": ii ++;

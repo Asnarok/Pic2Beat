@@ -9,7 +9,7 @@ import pic2beat.melodia.MelodIA;
 
 public class Chord implements JMC {
 
-	public String Nom;
+	public String name;
 	public String Type;
 	public Chord Previous;
 	public String[] Notes = new String[4]; 
@@ -22,9 +22,9 @@ public class Chord implements JMC {
 
 
 	public Chord (String nom) {
-		Nom = nom;
-		Notes[0]= Nom.substring(0, 2); //fondamentale
-		Type=Nom.substring(2); // Maj, min, Maj7, min7
+		name = nom;
+		Notes[0]= name.substring(0, 2); //fondamentale
+		Type=name.substring(2); // Maj, min, Maj7, min7
 		switch (Type) {
 
 		case "Maj" :
@@ -58,31 +58,31 @@ public class Chord implements JMC {
 	public Chord (int note0, int note1, int note2, int note3) {
 		Chord Maj = new Chord(toNote(note0)+"Maj");
 		if (toNum(Maj.Notes[0])== note0 && toNum(Maj.Notes[1])== note1 && toNum(Maj.Notes[2])== note2 && toNum(Maj.Notes[3])== note3) {
-			this.Nom=Maj.Nom;
+			this.name=Maj.name;
 			this.Notes=Maj.Notes;
 			this.Type=Maj.Type;
 		} else {
 			Chord min = new Chord(toNote(note0)+"min");
 			if (toNum(min.Notes[0])== note0 && toNum(min.Notes[1])== note1 && toNum(min.Notes[2])== note2 && toNum(min.Notes[3])== note3) {
-				this.Nom=min.Nom;
+				this.name=min.name;
 				this.Notes=min.Notes;
 				this.Type=min.Type;
 			} else {
 				Chord Maj7 = new Chord(toNote(note0)+"Maj7");
 				if (toNum(Maj7.Notes[0])== note0 && toNum(Maj7.Notes[1])== note1 && toNum(Maj7.Notes[2])== note2 && toNum(Maj7.Notes[3])== note3) {
-					this.Nom=Maj7.Nom;
+					this.name=Maj7.name;
 					this.Notes=Maj7.Notes;
 					this.Type=Maj7.Type;
 				} else {
 					Chord min7 = new Chord(toNote(note0)+"min7");
 					if (toNum(min7.Notes[0])== note0 && toNum(min7.Notes[1])== note1 && toNum(min7.Notes[2])== note2 && toNum(min7.Notes[3])== note3) {
-						this.Nom=min7.Nom;
+						this.name=min7.name;
 						this.Notes=min7.Notes;
 						this.Type=min7.Type;
 					} else {
 						Chord d7 = new Chord(toNote(note0)+"7");
 						if (toNum(d7.Notes[0])== note0 && toNum(d7.Notes[1])== note1 && toNum(d7.Notes[2])== note2 && toNum(d7.Notes[3])== note3) {
-							this.Nom=d7.Nom;
+							this.name=d7.name;
 							this.Notes=d7.Notes;
 							this.Type=d7.Type;
 						} 
@@ -124,12 +124,12 @@ public class Chord implements JMC {
 	public boolean equals(Object obj) {
 		if (!(obj instanceof Chord ))
 			return false;
-		return (this.Nom.equals(((Chord)obj).Nom) );
+		return (this.name.equals(((Chord)obj).name) );
 		
 	}
 	@Override
 	public int hashCode() {		
-		return this.Nom.hashCode();
+		return this.name.hashCode();
 	}
 	
 	public int[] getNotes() {
