@@ -1,9 +1,9 @@
 package pic2beat;
 
+import java.util.Arrays;
 import java.util.LinkedList;
 
 import jm.JMC;
-import jm.constants.ProgramChanges;
 import jm.music.data.CPhrase;
 import jm.music.data.Note;
 import jm.music.data.Part;
@@ -11,7 +11,6 @@ import jm.music.data.Phrase;
 import jm.music.data.Score;
 import jm.util.View;
 import pic2beat.Harmonie.Chord;
-import pic2beat.Harmonie.HarmonIA;
 import pic2beat.melodia.MelodIA;
 
 public class Main implements JMC {
@@ -27,23 +26,46 @@ public class Main implements JMC {
         
         // Melodia tests
         CPhrase cp = new CPhrase();
-        LinkedList<Chord> progression = HarmonIA.generateProgression("HAPPY", 4, 4);
+        //LinkedList<Chord> progression = HarmonIA.generateProgression("HAPPY", 4, 4);
         //System.out.println(progression.size());
+
+        Chord c1 = new Chord("D#Maj");
+        c1.duree = 4;
+        Chord c2 = new Chord("D min");
+        c2.Notes[2] = "G#";
+        c2.duree = 4;
+        Chord c3 = new Chord("G 7");
+        c3.duree = 4;
+        Chord c4 = new Chord("C min");
+        c4.duree = 4;
+
+        LinkedList<Chord> progression = new LinkedList<>(Arrays.asList(c1, c2, c3, c4));
+
         Phrase timpani = new Phrase();
+        Phrase drumsPhr = new Phrase();
         for(Chord c : progression) {
         	cp.addChord(c.getNotes(), c.duree);
+        	drumsPhr.add(new Note(36, 0.5));
+        	drumsPhr.add(new Note(42, 0.5));
+        	drumsPhr.add(new Note(42, 0.5));
+        	drumsPhr.add(new Note(42, 0.5)); // LAZY DRUMS 
+        	drumsPhr.add(new Note(38, 0.5));
+            drumsPhr.add(new Note(42, 0.5));
+            drumsPhr.add(new Note(42, 0.5));
+            drumsPhr.add(new Note(42, 0.5));
         	timpani.addNoteList(MelodIA.get().phrase(c.getNotes(), c.duree).getNoteArray());
         }
-        
+
         Score s = new Score("press F to pay respect");
-        Part p = new Part("Piano", JMC.ACOUSTIC_SNARE, 0);
-        Part p2 = new Part("Piano2", PIANO, 1);
-        Part p3 = new Part("808", ProgramChanges.TRUMPET, 2);
+        Part p = new Part("Lead", JMC.ACOUSTIC_SNARE, 0);
+        Part p2 = new Part("Piano", PIANO, 1);
+        Part drums = new Part("Kick", 0, 9);
         p.addPhrase(timpani);
         p2.addCPhrase(cp);
+        drums.addPhrase(drumsPhr);
         s.addPart(p);
         s.addPart(p2);
-        s.addPart(p3);
+        s.addPart(drums);
         View.show(s);
 
         /*

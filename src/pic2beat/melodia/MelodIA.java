@@ -1,6 +1,9 @@
 package pic2beat.melodia;
 
+import java.lang.invoke.CallSite;
 import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Function;
 
 import jm.JMC;
@@ -87,7 +90,7 @@ public class MelodIA implements JMC, pic2beat.utils.Scales {
 			// System.out.println(tonality);
 
 			while (p.getBeatLength() < chordLength) {
-				p.addNote(computeNextNote(p, currentChord, chordLength, tonality, scale));
+				p.addNoteList(computeNextRhythmic(p, currentChord, chordLength, tonality, scale).toArray(new Note[0]));
 			}
 			return p;
 
@@ -96,6 +99,20 @@ public class MelodIA implements JMC, pic2beat.utils.Scales {
 		}
 
 		return p;
+	}
+
+	private List<Note> computeNextRhythmic(Phrase phr, final int[] currentChord, double chordLength, int tonality, int[] scale) {
+		Rhythm r = Rhythm.randomRhythm();
+
+		final List<Note> notes = new ArrayList<>();
+
+		for(int i = 0; i < r.getNbrOfNotes(); i++) {
+			notes.add(computeNextNote(phr, currentChord, chordLength, tonality, scale));
+		}
+
+		r.apply(notes);
+
+		return r.asNotes();
 	}
 
 	// TODO
@@ -108,27 +125,27 @@ public class MelodIA implements JMC, pic2beat.utils.Scales {
 			// normales centrées sur chaque note de l'accord, et que sigma augmente au cours
 			// du remplissement de phr
 			// if prob < currentRepartition return note
-			probas[i] = computeProba(phr, currentChord, scale[i], 0d, chordLength);
+			probas[i] = calculateProba(phr, currentChord, scale[i], 0d, chordLength);
 
 			if (prob < probas[i]) {
 				Note toAdd = new Note(scale[i] + tonality + C3, 0.25);
-				if (phr.getNoteArray().length > 1) { // on va checker 2x en arrière donc il faut que le tableau soit
-														// déja assez grand
-					if (phr.getNote(phr.getNoteArray().length - 1).samePitch(toAdd)) {
-						if (phr.getNote(phr.getNoteArray().length - 2).samePitch(toAdd)
-								|| phr.getNote(phr.getNoteArray().length - 1).getDuration() > 0.5) {
-							return computeNextNote(phr, currentChord, chordLength, tonality, scale); // les deux
-																										// dernières
-																										// notes sont
-							// identiques
-							// à celle choisie, c'est
-							// insatisfaisant, donc on
-						} else {
-							phr.removeLastNote();
-							return new Note(toAdd.getPitch(), 0.5);
-						}
-					}
-				}
+//				if (phr.getNoteArray().length > 1) { // on va checker 2x en arrière donc il faut que le tableau soit
+//														// déja assez grand
+//					if (phr.getNote(phr.getNoteArray().length - 1).samePitch(toAdd)) {
+//						if (phr.getNote(phr.getNoteArray().length - 2).samePitch(toAdd)
+//								|| phr.getNote(phr.getNoteArray().length - 1).getDuration() > 0.5) {
+//							return computeNextNote(phr, currentChord, chordLength, tonality, scale); // les deux
+//																										// dernières
+//																										// notes sont
+//							// identiques
+//							// à celle choisie, c'est
+//							// insatisfaisant, donc on
+//						} else {
+//							phr.removeLastNote();
+//							return new Note(toAdd.getPitch(), 0.5);
+//						}
+//					}
+//				}
 				return toAdd;
 			}
 		}
@@ -152,7 +169,7 @@ public class MelodIA implements JMC, pic2beat.utils.Scales {
 
 	private final int INTEGRAL_RESOLUTION = 10000;
 
-	public double computeProba(Phrase p, int[] chord, int note, double width, double chordLength) {
+	private double calculateProba(Phrase p, int[] chord, int note, double width, double chordLength) {
 		double proba = 0;
 		if (VERBOSE) {
 			System.out.println("--Melody probability computing--");
