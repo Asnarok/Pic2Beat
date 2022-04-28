@@ -12,6 +12,8 @@ import jm.music.data.Score;
 import jm.util.View;
 import pic2beat.Harmonie.Chord;
 import pic2beat.melodia.MelodIA;
+import pic2beat.song.Song;
+import pic2beat.song.generators.DummyGenerator;
 
 public class Main implements JMC {
 
@@ -25,48 +27,57 @@ public class Main implements JMC {
         //config.setParam(AppConfig.Param.TEMPO, "90").save();
         
         // Melodia tests
-        CPhrase cp = new CPhrase();
+        //CPhrase cp = new CPhrase();
         //LinkedList<Chord> progression = HarmonIA.generateProgression("HAPPY", 4, 4);
         //System.out.println(progression.size());
 
-        Chord c1 = new Chord("D#Maj");
-        c1.duree = 4;
-        Chord c2 = new Chord("D min");
-        c2.Notes[2] = "G#";
-        c2.duree = 4;
-        Chord c3 = new Chord("G 7");
-        c3.duree = 4;
-        Chord c4 = new Chord("C min");
-        c4.duree = 4;
+        Song song = new Song("press F to pay respect")
+                        .setLead(VIBRAPHONE)
+                        .setChords(PIANO)
+                        .setDrums(PIANO) // TODO DrumKit
+                        .setBass(BASS);
+        song.generate(DummyGenerator.class);
+        Score score = song.toScore();
+        View.show(score);
 
-        LinkedList<Chord> progression = new LinkedList<>(Arrays.asList(c1, c2, c3, c4));
-
-        Phrase timpani = new Phrase();
-        Phrase drumsPhr = new Phrase();
-        for(Chord c : progression) {
-        	cp.addChord(c.getNotes(), c.duree);
-        	drumsPhr.add(new Note(36, 0.5));
-        	drumsPhr.add(new Note(42, 0.5));
-        	drumsPhr.add(new Note(42, 0.5));
-        	drumsPhr.add(new Note(42, 0.5)); // LAZY DRUMS 
-        	drumsPhr.add(new Note(38, 0.5));
-            drumsPhr.add(new Note(42, 0.5));
-            drumsPhr.add(new Note(42, 0.5));
-            drumsPhr.add(new Note(42, 0.5));
-        	timpani.addNoteList(MelodIA.get().phrase(c.getNotes(), c.duree).getNoteArray());
-        }
-
-        Score s = new Score("press F to pay respect");
-        Part p = new Part("Lead", JMC.ACOUSTIC_SNARE, 0);
-        Part p2 = new Part("Piano", PIANO, 1);
-        Part drums = new Part("Kick", 0, 9);
-        p.addPhrase(timpani);
-        p2.addCPhrase(cp);
-        drums.addPhrase(drumsPhr);
-        s.addPart(p);
-        s.addPart(p2);
-        s.addPart(drums);
-        View.show(s);
+//        Chord c1 = new Chord("D#Maj7");
+//        c1.duree = 4;
+//        Chord c2 = new Chord("D min7");
+//        c2.Notes[2] = "G#";
+//        c2.duree = 4;
+//        Chord c3 = new Chord("G 7");
+//        c3.duree = 4;
+//        Chord c4 = new Chord("C min");
+//        c4.duree = 4;
+//
+//        LinkedList<Chord> progression = new LinkedList<>(Arrays.asList(c1, c2, c3, c4));
+//
+//        Phrase timpani = new Phrase();
+//        Phrase drumsPhr = new Phrase();
+//        for(Chord c : progression) {
+//        	cp.addChord(c.getNotes(), c.duree);
+//        	drumsPhr.add(new Note(36, 0.5));
+//        	drumsPhr.add(new Note(42, 0.5));
+//        	drumsPhr.add(new Note(42, 0.5));
+//        	drumsPhr.add(new Note(42, 0.5)); // LAZY DRUMS
+//        	drumsPhr.add(new Note(38, 0.5));
+//            drumsPhr.add(new Note(42, 0.5));
+//            drumsPhr.add(new Note(42, 0.5));
+//            drumsPhr.add(new Note(42, 0.5));
+//        	timpani.addNoteList(MelodIA.get().phrase(c.getNotes(), c.duree).getNoteArray());
+//        }
+//
+//        Score s = new Score("press F to pay respect");
+//        Part p = new Part("Lead", JMC.ACOUSTIC_SNARE, 0);
+//        Part p2 = new Part("Piano", PIANO, 1);
+//        Part drums = new Part("Drums", 0, 9);
+//        p.addPhrase(timpani);
+//        p2.addCPhrase(cp);
+//        drums.addPhrase(drumsPhr);
+//        s.addPart(p);
+//        s.addPart(p2);
+//        s.addPart(drums);
+//        View.show(s);
 
         /*
         final double sigma = .1;
