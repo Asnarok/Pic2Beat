@@ -5,3 +5,6 @@ Pic2Beat.iml
 /lib/
 .classpath
 .project
+.settings/
+config.app
+properties.app
