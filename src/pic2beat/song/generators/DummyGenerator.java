@@ -4,6 +4,7 @@ import jm.JMC;
 import jm.music.data.Note;
 import jm.music.data.Phrase;
 import pic2beat.Harmonie.Chord;
+import pic2beat.song.InstrumentRole;
 import pic2beat.song.SongGenerator;
 
 import java.util.ArrayList;
@@ -59,6 +60,25 @@ public class DummyGenerator implements SongGenerator {
         p.addNote(new Note(JMC.D1, 4));
         p.addNote(new Note(JMC.G1, 4));
         p.addNote(new Note(JMC.C1, 4));
+
+        return p;
+    }
+
+    @Override
+    public Phrase generateInstrument(InstrumentRole role) {
+        final Phrase p = new Phrase();
+
+        if(role == InstrumentRole.THIRDS) {
+            p.addNote(new Note(JMC.G4, 4, JMC.P));
+            p.addNote(new Note(JMC.F4, 4, JMC.P));
+            p.addNote(new Note(JMC.B4, 4, JMC.P));
+            p.addNote(new Note(JMC.DS4, 4, JMC.P));
+        } else if(role == InstrumentRole.FIFTHS) {
+            p.addNote(new Note(JMC.AS4, 4, JMC.P));
+            p.addNote(new Note(JMC.GS4, 4, JMC.P));
+            p.addNote(new Note(JMC.D5, 4, JMC.P));
+            p.addNote(new Note(JMC.G4, 4, JMC.P));
+        }
 
         return p;
     }

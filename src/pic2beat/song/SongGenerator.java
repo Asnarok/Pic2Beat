@@ -12,4 +12,6 @@ public interface SongGenerator {
     List<Chord> generateChords();
 
     Phrase generateBass();
+
+    Phrase generateInstrument(InstrumentRole role);
 }

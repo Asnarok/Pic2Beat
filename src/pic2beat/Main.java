@@ -12,6 +12,7 @@ import jm.music.data.Score;
 import jm.util.View;
 import pic2beat.Harmonie.Chord;
 import pic2beat.melodia.MelodIA;
+import pic2beat.song.InstrumentRole;
 import pic2beat.song.Song;
 import pic2beat.song.generators.DummyGenerator;
 
@@ -35,7 +36,9 @@ public class Main implements JMC {
                         .setLead(VIBRAPHONE)
                         .setChords(PIANO)
                         .setDrums(PIANO) // TODO DrumKit
-                        .setBass(BASS);
+                        .setBass(BASS)
+                        .addInstrument("Alto", InstrumentRole.THIRDS, VIOLA)
+                        .addInstrument("Violin", InstrumentRole.FIFTHS, VIOLIN);
         song.generate(DummyGenerator.class);
         Score score = song.toScore();
         View.show(score);
