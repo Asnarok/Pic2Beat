@@ -17,8 +17,10 @@ import java.util.Map;
 
 public class Main implements JMC {
 
-    private static final AppProperties properties = AppProperties.get();
-    private static final AppConfig config = AppConfig.get();
+	public static Frame frame1;
+
+	private static final AppProperties properties = AppProperties.get();
+	private static final AppConfig config = AppConfig.get();
 
     public static void main(String[] args) {
         System.out.println("Hello world! (suce pute)");
@@ -47,6 +49,7 @@ public class Main implements JMC {
 //        song.generate(BasicGenerator.class);
 //        Score score = song.toScore();
 //        View.show(score);
+
 
 //        Chord c1 = new Chord("D#Maj7");
 //        c1.duree = 4;
@@ -87,29 +90,28 @@ public class Main implements JMC {
 //        s.addPart(drums);
         View.show(s);
 
-        /*
-        final double sigma = .1;
-
-        final Function<Double, Double> gaussian = (x) -> 1 / (sigma * Math.sqrt(2 * Math.PI)) * Math.exp(-0.5 * Math.pow((x) / sigma, 2));
-        final Function<Double, Double> gaussian2 = (x) -> 1 / (sigma * Math.sqrt(2 * Math.PI)) * Math.exp(-0.5 * Math.pow((x - 4) / sigma, 2));
-        final Function<Double, Double> gaussian3 = (x) -> 1 / (sigma * Math.sqrt(2 * Math.PI)) * Math.exp(-0.5 * Math.pow((x - 7) / sigma, 2));
-
-        double[] y = new double[12];
-        for(int i = 0; i < 12; i++) {
-            y[i] = MathUtils.integrate(gaussian, -24d, i, 1000);
-            y[i] += MathUtils.integrate(gaussian2, -24d, i, 1000);
-            y[i] += MathUtils.integrate(gaussian3, -24d, i, 1000);
-            y[i] /= 3;
-            for(int j = i - 1; j >= 0; j--) {
-                y[i] -= y[j];
-            }
-        }
-
-        System.out.println(MathUtils.integrate(Math::cos, -1, 1, 100));
-
-        FileUtils.writeXYToFile("excel.csv", new double[]{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11}, y);
-
-         */
-    }
+		/*
+		 * final double sigma = .1;
+		 * 
+		 * final Function<Double, Double> gaussian = (x) -> 1 / (sigma * Math.sqrt(2 *
+		 * Math.PI)) * Math.exp(-0.5 * Math.pow((x) / sigma, 2)); final Function<Double,
+		 * Double> gaussian2 = (x) -> 1 / (sigma * Math.sqrt(2 * Math.PI)) *
+		 * Math.exp(-0.5 * Math.pow((x - 4) / sigma, 2)); final Function<Double, Double>
+		 * gaussian3 = (x) -> 1 / (sigma * Math.sqrt(2 * Math.PI)) * Math.exp(-0.5 *
+		 * Math.pow((x - 7) / sigma, 2));
+		 * 
+		 * double[] y = new double[12]; for(int i = 0; i < 12; i++) { y[i] =
+		 * MathUtils.integrate(gaussian, -24d, i, 1000); y[i] +=
+		 * MathUtils.integrate(gaussian2, -24d, i, 1000); y[i] +=
+		 * MathUtils.integrate(gaussian3, -24d, i, 1000); y[i] /= 3; for(int j = i - 1;
+		 * j >= 0; j--) { y[i] -= y[j]; } }
+		 * 
+		 * System.out.println(MathUtils.integrate(Math::cos, -1, 1, 100));
+		 * 
+		 * FileUtils.writeXYToFile("excel.csv", new double[]{0, 1, 2, 3, 4, 5, 6, 7, 8,
+		 * 9, 10, 11}, y);
+		 * 
+		 */
+	}
 
 }
