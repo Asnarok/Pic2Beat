@@ -32,7 +32,7 @@ public class SongPart {
             this.chords.addAll(chords);
             final CPhrase cp = new CPhrase();
             for(Chord c : chords) {
-                cp.addChord(c.getNotes(), c.duree);
+                cp.addChord(c.getNotes(), c.length);
             }
             phrases.put(p, cp);
 
@@ -40,7 +40,7 @@ public class SongPart {
             if(p != null) {
                 final Phrase lead = new Phrase();
                 for(Chord c : chords) {
-                    lead.addNoteList(MelodIA.get().phrase(c.getNotes(), c.duree).getNoteArray());
+                    lead.addNoteList(MelodIA.get().phrase(c.getNotes(), c.length).getNoteArray());
                 }
                 phrases.put(p, lead);
             }
@@ -48,14 +48,14 @@ public class SongPart {
 
         p = song.getBass();
         if(p != null)
-            phrases.put(p, generator.generateBass());
+            phrases.put(p, generator.generateBass(this.chords));
 
         p = song.getDrums();
         if(p != null)
             phrases.put(p, generator.generateDrums());
 
         for(Map.Entry<Part, InstrumentRole> entry : song.getInstrumentsWithRole().entrySet()) {
-            phrases.put(entry.getKey(), generator.generateInstrument(entry.getValue()));
+            phrases.put(entry.getKey(), generator.generateInstrument(entry.getValue(), this.chords));
         }
     }
 

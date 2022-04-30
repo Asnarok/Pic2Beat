@@ -4,6 +4,7 @@ import jm.music.data.Phrase;
 import pic2beat.Harmonie.Chord;
 
 import java.util.List;
+import java.util.ListResourceBundle;
 
 public interface SongGenerator {
 
@@ -11,7 +12,7 @@ public interface SongGenerator {
 
     List<Chord> generateChords();
 
-    Phrase generateBass();
+    Phrase generateBass(List<Chord> chords);
 
-    Phrase generateInstrument(InstrumentRole role);
+    Phrase generateInstrument(InstrumentRole role, List<Chord> chords);
 }

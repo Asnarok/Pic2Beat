@@ -1,0 +1,176 @@
+{
+  "MAJOR": {
+    "I": [
+      {
+        "degree": "V",
+        "proba": 35
+      },
+      {
+        "degree": "vi",
+        "proba": 20
+      },
+      {
+        "degree": "IV",
+        "proba": 19
+      },
+      {
+        "degree": "ii",
+        "proba": 8
+      },
+      {
+        "degree": "V7",
+        "proba": 3
+      },
+      {
+        "degree": "IVMaj7",
+        "proba": 3
+      },
+      {
+        "degree": "I",
+        "proba": 7
+      },
+      {
+        "degree": "IMaj7",
+        "proba": 5
+      }
+    ],
+    "ii": [
+      {
+        "degree": "I",
+        "proba": 13
+      },
+      {
+        "degree": "V",
+        "proba": 23
+      },
+      {
+        "degree": "IV",
+        "proba": 23
+      },
+      {
+        "degree": "iii7",
+        "proba": 9
+      },
+      {
+        "degree": "vi",
+        "proba": 30
+      },
+      {
+        "degree": "V7",
+        "proba": 2
+      }
+    ],
+    "iii": [
+      {
+        "degree": "I",
+        "proba": 8
+      },
+      {
+        "degree": "V",
+        "proba": 11
+      },
+      {
+        "degree": "IV",
+        "proba": 37
+      },
+      {
+        "degree": "ii",
+        "proba": 8
+      },
+      {
+        "degree": "vi",
+        "proba": 29
+      },
+      {
+        "degree": "V7",
+        "proba": 7
+      }
+    ],
+    "IV": [
+      {
+        "degree": "I",
+        "proba": 34
+      },
+      {
+        "degree": "V",
+        "proba": 34
+      },
+      {
+        "degree": "iii",
+        "proba": 4
+      },
+      {
+        "degree": "ii",
+        "proba": 5
+      },
+      {
+        "degree": "vi",
+        "proba": 10
+      },
+      {
+        "degree": "vi7",
+        "proba": 5
+      },
+      {
+        "degree": "V7",
+        "proba": 8
+      }
+    ],
+    "V": [
+      {
+        "degree": "I",
+        "proba": 31
+      },
+      {
+        "degree": "IV",
+        "proba": 29
+      },
+      {
+        "degree": "iii",
+        "proba": 4
+      },
+      {
+        "degree": "ii",
+        "proba": 6
+      },
+      {
+        "degree": "ii7",
+        "proba": 2
+      },
+      {
+        "degree": "vi",
+        "proba": 26
+      },
+      {
+        "degree": "viidim7",
+        "proba": 2
+      }
+    ],
+    "vi": [
+      {
+        "degree": "I",
+        "proba": 11
+      },
+      {
+        "degree": "IV",
+        "proba": 34
+      },
+      {
+        "degree": "IVMaj7",
+        "proba": 7
+      },
+      {
+        "degree": "V",
+        "proba": 30
+      },
+      {
+        "degree": "iii",
+        "proba": 11
+      },
+      {
+        "degree": "ii",
+        "proba": 7
+      }
+    ]
+  }
+}
