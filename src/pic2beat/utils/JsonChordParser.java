@@ -1,7 +1,6 @@
 package pic2beat.utils;
 
 import com.google.gson.*;
-import pic2beat.Harmonie.Chord;
 
 import java.io.IOException;
 import java.nio.file.Files;

@@ -3,7 +3,7 @@ package pic2beat.song;
 import jm.music.data.CPhrase;
 import jm.music.data.Part;
 import jm.music.data.Phrase;
-import pic2beat.Harmonie.Chord;
+import pic2beat.harmonia.Chord;
 import pic2beat.melodia.MelodIA;
 
 import java.util.ArrayList;

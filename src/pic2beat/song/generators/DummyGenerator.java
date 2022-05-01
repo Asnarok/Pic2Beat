@@ -3,7 +3,7 @@ package pic2beat.song.generators;
 import jm.JMC;
 import jm.music.data.Note;
 import jm.music.data.Phrase;
-import pic2beat.Harmonie.Chord;
+import pic2beat.harmonia.Chord;
 import pic2beat.song.InstrumentRole;
 import pic2beat.song.SongGenerator;
 

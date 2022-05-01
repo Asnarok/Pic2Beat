@@ -1,19 +1,13 @@
 package pic2beat;
 
 import jm.JMC;
-import jm.music.data.CPhrase;
-import jm.music.data.Part;
 import jm.music.data.Score;
 import jm.util.View;
-import pic2beat.Harmonie.Chord;
-import pic2beat.Harmonie.HarmonIA;
+import pic2beat.harmonia.Chord;
 import pic2beat.song.InstrumentRole;
 import pic2beat.song.Song;
 import pic2beat.song.generators.BasicGenerator;
-import pic2beat.song.generators.DummyGenerator;
 import pic2beat.utils.Scales;
-
-import java.util.Map;
 
 public class Main implements JMC {
 
@@ -30,25 +24,27 @@ public class Main implements JMC {
 
         System.out.println(Chord.fromRoman("viidim7", 0, Scales.MAJOR_SCALE));
 
-        CPhrase cp = new CPhrase();
-        for(Chord c : HarmonIA.generateProgression(0, MAJOR_SCALE, 12, 4)) {
-            cp.addChord(c.getNotes(), c.length);
-        }
+//        CPhrase cp = new CPhrase();
+//        for(Chord c : HarmonIA.generateProgression(0, MAJOR_SCALE, 12, 4)) {
+//            cp.addChord(c.getNotes(), c.length);
+//        }
 
         // Melodia tests
         //LinkedList<Chord> progression = HarmonIA.generateProgression("HAPPY", 4, 4);
         //System.out.println(progression.size());
 
-//        Song song = new Song("press F to pay respect")
-//                        .setLead(VIBRAPHONE)
-//                        .setChords(PIANO)
-//                        .setDrums(PIANO) // TODO DrumKit
-//                        .setBass(BASS)
-//                        .addInstrument("Alto", InstrumentRole.THIRDS, VIOLA)
-//                        .addInstrument("Violin", InstrumentRole.FIFTHS, VIOLIN);
-//        song.generate(BasicGenerator.class);
-//        Score score = song.toScore();
-//        View.show(score);
+		// TODO decalage entre toutes les phrases -> les combiner
+
+        Song song = new Song("press F to pay respect")
+                        .setLead(VIBRAPHONE)
+                        .setChords(PIANO)
+                        .setDrums(PIANO) // TODO DrumKit
+                        .setBass(BASS)
+                        .addInstrument("Alto", InstrumentRole.THIRDS, VIOLA)
+                        .addInstrument("Violin", InstrumentRole.FIFTHS, VIOLIN);
+        song.generate(BasicGenerator.class);
+        Score score = song.toScore();
+        View.show(score);
 
 
 //        Chord c1 = new Chord("D#Maj7");
@@ -78,17 +74,17 @@ public class Main implements JMC {
 //        	timpani.addNoteList(MelodIA.get().phrase(c.getNotes(), c.duree).getNoteArray());
 //        }
 //
-        Score s = new Score("press F to pay respect");
+//        Score s = new Score("press F to pay respect");
 //        Part p = new Part("Lead", JMC.ACOUSTIC_SNARE, 0);
-        Part p2 = new Part("Piano", PIANO, 1);
+//        Part p2 = new Part("Piano", PIANO, 1);
 //        Part drums = new Part("Drums", 0, 9);
 //        p.addPhrase(timpani);
-        p2.addCPhrase(cp);
+//        p2.addCPhrase(cp);
 //        drums.addPhrase(drumsPhr);
 //        s.addPart(p);
-        s.addPart(p2);
+//        s.addPart(p2);
 //        s.addPart(drums);
-        View.show(s);
+//        View.show(s);
 
 		/*
 		 * final double sigma = .1;
