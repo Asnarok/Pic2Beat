@@ -8,3 +8,7 @@ Pic2Beat.iml
 .settings/
 config.app
 properties.app
+/target/
+.gradle/
+pom.xml
+
