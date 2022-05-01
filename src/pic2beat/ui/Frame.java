@@ -233,7 +233,7 @@ public class Frame extends JFrame {
 				TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
 		panel_7.add(panel_1, BorderLayout.SOUTH);
 		panel_1.setMaximumSize(new Dimension(32767, 214));
-		panel_1.setPreferredSize(new Dimension(588, 214));
+		panel_1.setPreferredSize(new Dimension(588, 180));
 		panel_1.setMinimumSize(new Dimension(588, 214));
 		panel_1.setLayout(new BorderLayout(0, 0));
 		
