@@ -9,6 +9,7 @@ import pic2beat.harmonia.Chord;
 import pic2beat.harmonia.Chord.ChordType;
 import pic2beat.melodia.KeyException;
 import pic2beat.melodia.Keys;
+import pic2beat.melodia.Rhythm;
 import pic2beat.song.InstrumentRole;
 import pic2beat.song.Song;
 import pic2beat.song.generators.BasicGenerator;
@@ -29,6 +30,7 @@ public class Main implements JMC {
         //config.setParam(AppConfig.Param.TEMPO, "90").save();
 
         System.out.println(Chord.fromRoman("viidim7", 0, Scales.NATURAL_MAJOR_INTERVALS));
+        Rhythm.init();
 
 //        CPhrase cp = new CPhrase();
 //        for(Chord c : HarmonIA.generateProgression(0, MAJOR_SCALE, 12, 4)) {
@@ -52,6 +54,7 @@ public class Main implements JMC {
         Score score = song.toScore();
         View.show(score);
 
+        
 
 //        Chord c1 = new Chord("D#Maj7");
 //        c1.duree = 4;
@@ -115,11 +118,6 @@ public class Main implements JMC {
 		 * 
 		 */
         
-        try {
-			List<Scale> compatible = Keys.getCompatibleScales(new Chord(JMC.A0, ChordType.MAJ), new Scale(A0, 0));
-		} catch (KeyException e) {
-			e.printStackTrace();
-		}
 	}
 
 }

@@ -28,7 +28,8 @@ public class HarmonIA {
 
 	private static final boolean VERBOSE = true;
 
-	public static LinkedList<HarmonicPart> generateProgression(int tona, int[] scale, int length, int carrure) {
+	public static LinkedList<HarmonicPart> generateProgression(int tona, int[] scale, int length, int carrure,
+			boolean allowChordBorrowing) {
 
 		if (VERBOSE) {
 			System.out.println("--Generating chord progression--");
@@ -54,32 +55,36 @@ public class HarmonIA {
 		for (int mes = 1; mes < length; mes++) {
 
 			Chord c = computeNext();
-			
-			Scale toPlayOn = null;
-			
-			//--------------- BORROWED CHORDS -------------------------
-			double x = Math.random();
-			if(x < 1/8.0) { //Approx. one borrowed chord every 2 bars
-				int i = (int)(Math.random()*7);
-				Chord[] neighbors = null;
-				try {
-					 neighbors = Keys.getNeighborChords(c, mainScale);
-				} catch (KeyException e) {
-					e.printStackTrace();
+
+			Scale toPlayOn = mainScale;
+
+			// --------------- BORROWED CHORDS -------------------------
+			if (allowChordBorrowing) {
+				double x = Math.random();
+				if (x < 1 / 4.0) { // Approx. one borrowed chord every 2 bars
+					if (VERBOSE)
+						System.out.println("----Borrowing chord----");
+					int i = (int) (Math.random() * 7);
+					Chord[] neighbors = null;
+					try {
+						neighbors = Keys.getNeighborChords(c, mainScale);
+					} catch (KeyException e) {
+						e.printStackTrace();
+					}
+					c = neighbors[i];
+					toPlayOn = new Scale(tona, i);
 				}
-				c = neighbors[i];
-				toPlayOn = new Scale(tona, i);
-			}else toPlayOn = mainScale;
-			
+			}
+
 			progression.add(new HarmonicPart(c, toPlayOn));
-			
+
 			// System.out.println(Progression);
 
 		}
 		// System.out.println("Progression générée : ");
 		if (VERBOSE) {
 			for (HarmonicPart c : progression) {
-				System.out.println(c.getChord().name + " " + c.getChord().length+ "b, played on "+c.getScale());
+				System.out.println(c.getChord().name + " " + c.getChord().length + "b, played on " + c.getScale());
 			}
 		}
 		return progression;
@@ -88,25 +93,27 @@ public class HarmonIA {
 	public static Chord computeNext() {
 		LinkedHashMap<Chord, Integer> potentialChords = null;
 
-		for(Entry<Chord, Map<Chord, Integer>> entry : matrix.entrySet()) {
-			if(entry.getKey().notes[0].equals(progression.getLast().getChord().notes[0])) { // TODO at least check if they are major/minor
+		for (Entry<Chord, Map<Chord, Integer>> entry : matrix.entrySet()) {
+			if (entry.getKey().notes[0].equals(progression.getLast().getChord().notes[0])) { // TODO at least check if
+																								// they are major/minor
 				potentialChords = new LinkedHashMap<>(entry.getValue());
 			}
 		}
 
-		if(potentialChords == null) {
+		if (potentialChords == null) {
 			return null;
 		}
 
 		final int random = (int) (Math.random() * 100);
 
-		final Iterator<Entry<Chord, Integer>> it = potentialChords.entrySet().stream().sorted(Map.Entry.comparingByValue()).iterator();
+		final Iterator<Entry<Chord, Integer>> it = potentialChords.entrySet().stream()
+				.sorted(Map.Entry.comparingByValue()).iterator();
 
 		int sum = 0;
-		while(it.hasNext()) {
+		while (it.hasNext()) {
 			final Entry<Chord, Integer> entry = it.next();
 			sum += entry.getValue();
-			if(random < sum) {
+			if (random < sum) {
 				entry.getKey().length = 4; // TODO
 				return entry.getKey();
 			}
@@ -150,9 +157,9 @@ public class HarmonIA {
 
 		final Map<Chord, Map<Chord, Integer>> toReturn = new HashMap<>();
 
-		for(Entry<String, Map<String, Integer>> entry1 : jsonMap.entrySet()) {
+		for (Entry<String, Map<String, Integer>> entry1 : jsonMap.entrySet()) {
 			final Map<Chord, Integer> inner = new HashMap<>();
-			for(Entry<String, Integer> entry2 : entry1.getValue().entrySet()) {
+			for (Entry<String, Integer> entry2 : entry1.getValue().entrySet()) {
 				inner.put(Chord.fromRoman(entry2.getKey(), tona, scale), entry2.getValue());
 			}
 			toReturn.put(Chord.fromRoman(entry1.getKey(), tona, scale), inner);
