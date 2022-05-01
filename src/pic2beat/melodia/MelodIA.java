@@ -1,6 +1,5 @@
 package pic2beat.melodia;
 
-import java.lang.invoke.CallSite;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,7 +11,9 @@ import jm.music.data.Note;
 import jm.music.data.Phrase;
 import pic2beat.AppConfig;
 import pic2beat.AppConfig.Param;
+import pic2beat.harmonia.HarmonicPart;
 import pic2beat.utils.MathUtils;
+import pic2beat.utils.Scales;
 
 /**
  * Singleton for melody generation over a specified chord
@@ -72,7 +73,7 @@ public class MelodIA implements JMC, pic2beat.utils.Scales {
 	 * @param chordLength  <code>currentChord</code> length
 	 * @return <code>Phrase</code> object containing the generated melody
 	 */
-	public Phrase phrase(final int[] currentChord, double chordLength) {
+	public Phrase phrase(HarmonicPart c) {
 
 		Phrase p = new Phrase();
 
@@ -83,14 +84,14 @@ public class MelodIA implements JMC, pic2beat.utils.Scales {
 		if (!AppConfig.get().getParam(Param.TONALITY).equals("MODAL")) {
 			String tona = AppConfig.get().getParam(Param.TONALITY);
 			String scaleS = AppConfig.get().getParam(Param.SCALE);
-
-			int tonality = getNote(tona + "0");
-			int[] scale = getScale(scaleS);
+			
+			
+			int[] scale = c.getScale().getNotes();
 
 			// System.out.println(tonality);
 
-			while (p.getBeatLength() < chordLength) {
-				p.addNoteList(computeNextRhythmic(p, currentChord, chordLength, tonality, scale).toArray(new Note[0]));
+			while (p.getBeatLength() < c.getChord().length) {
+				p.addNoteList(computeNextRhythmic(p, c.getChord().getNotes(), c.getChord().length, c.getScale().getNote(), Scales.GREGORIAN_INTERVALS[c.getScale().getMode()]).toArray(new Note[0]));
 			}
 			return p;
 
@@ -101,13 +102,13 @@ public class MelodIA implements JMC, pic2beat.utils.Scales {
 		return p;
 	}
 
-	private List<Note> computeNextRhythmic(Phrase phr, final int[] currentChord, double chordLength, int tonality, int[] scale) {
+	private List<Note> computeNextRhythmic(Phrase phr, final int[] currentChord, double chordLength, int tonality, int[] scaleIntervals) {
 		Rhythm r = Rhythm.randomRhythm();
 
 		final List<Note> notes = new ArrayList<>();
 
 		for(int i = 0; i < r.getNbrOfNotes(); i++) {
-			notes.add(computeNextNote(phr, currentChord, chordLength, tonality, scale));
+			notes.add(computeNextNote(phr, currentChord, chordLength, tonality, scaleIntervals));
 		}
 
 		r.apply(notes);
@@ -116,19 +117,19 @@ public class MelodIA implements JMC, pic2beat.utils.Scales {
 	}
 
 	// TODO
-	private Note computeNextNote(Phrase phr, final int[] currentChord, double chordLength, int tonality, int[] scale) {
+	private Note computeNextNote(Phrase phr, final int[] currentChord, double chordLength, int tonality, int[] scaleIntervals) {
 		final double prob = Math.random();
 		final double[] probas = new double[7];
-		for (int i = 0; i < scale.length; i++) {
+		for (int i = 0; i < scaleIntervals.length; i++) {
 			// ajouter l'integral à la somme
 			// sachant que l'intégrale se fait à partir d'une fonction composée de n lois
 			// normales centrées sur chaque note de l'accord, et que sigma augmente au cours
 			// du remplissement de phr
 			// if prob < currentRepartition return note
-			probas[i] = calculateProba(phr, currentChord, scale[i], 0d, chordLength);
+			probas[i] = calculateProba(phr, currentChord, scaleIntervals[i], 0d, chordLength);
 
 			if (prob < probas[i]) {
-				Note toAdd = new Note(scale[i] + tonality + C3, 0.25);
+				Note toAdd = new Note(scaleIntervals[i] + tonality + C3, 0.25);
 //				if (phr.getNoteArray().length > 1) { // on va checker 2x en arrière donc il faut que le tableau soit
 //														// déja assez grand
 //					if (phr.getNote(phr.getNoteArray().length - 1).samePitch(toAdd)) {

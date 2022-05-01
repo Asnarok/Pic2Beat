@@ -224,6 +224,13 @@ public class Chord implements JMC {
 		throw new IllegalArgumentException("'" + roman + "' is not a valid roman number (I-VII)");
 	}
 
+	public Chord simplifyToTriad() {
+		if(type == ChordType.MAJ7 || type == ChordType.DOM7)return new Chord(this.getNotes()[0], ChordType.MAJ);
+		else if(type == ChordType.MIN7)return new Chord(this.getNotes()[0], ChordType.MIN);
+		else if(type == ChordType.DIM7)return new Chord(this.getNotes()[0], ChordType.DIM);
+		else return null;
+	}
+	
 	// TODO add V/V and others for randomness
 	public enum ChordType {
 

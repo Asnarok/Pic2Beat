@@ -1,22 +1,23 @@
 package pic2beat.song;
 
-import jm.music.data.CPhrase;
-import jm.music.data.Part;
-import jm.music.data.Phrase;
-import pic2beat.harmonia.Chord;
-import pic2beat.melodia.MelodIA;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import jm.music.data.CPhrase;
+import jm.music.data.Part;
+import jm.music.data.Phrase;
+import pic2beat.harmonia.Chord;
+import pic2beat.harmonia.HarmonicPart;
+import pic2beat.melodia.MelodIA;
 
 public class SongPart {
 
     private final Song song;
     private final HashMap<Part, Object> phrases;
 
-    private final List<Chord> chords;
+    private final List<HarmonicPart> chords;
 
     public SongPart(final Song song) {
         this.song = song;
@@ -27,20 +28,20 @@ public class SongPart {
     public void generate(SongGenerator generator) {
         Part p = song.getChords();
         if(p != null) {
-            final List<Chord> chords = generator.generateChords();
+            final List<HarmonicPart> chords = generator.generateChords();
             this.chords.clear();
             this.chords.addAll(chords);
             final CPhrase cp = new CPhrase();
-            for(Chord c : chords) {
-                cp.addChord(c.getNotes(), c.length);
+            for(HarmonicPart c : chords) {
+                cp.addChord(c.getChord().getNotes(), c.getChord().length);
             }
             phrases.put(p, cp);
 
             p = song.getLead();
             if(p != null) {
                 final Phrase lead = new Phrase();
-                for(Chord c : chords) {
-                    lead.addNoteList(MelodIA.get().phrase(c.getNotes(), c.length).getNoteArray());
+                for(HarmonicPart c : chords) {
+                    lead.addNoteList(MelodIA.get().phrase(c).getNoteArray());
                 }
                 phrases.put(p, lead);
             }

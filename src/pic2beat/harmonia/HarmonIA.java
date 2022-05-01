@@ -1,13 +1,21 @@
 package pic2beat.harmonia;
 
-import pic2beat.utils.JsonChordParser;
-
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.Map;
 import java.util.Map.Entry;
 
+import pic2beat.melodia.KeyException;
+import pic2beat.melodia.Keys;
+import pic2beat.utils.JsonChordParser;
+import pic2beat.utils.Scale;
+
 public class HarmonIA {
-	public static LinkedList<Chord> progression = new LinkedList<>();
-	public static Chord tonality;
+	public static LinkedList<HarmonicPart> progression = new LinkedList<>();
+	public static HarmonicPart tonality;
 	public ArrayList<Chord> Degres = new ArrayList<>();
 	public Map<Chord, Map<Chord, Map<Chord, Integer>>> probaMatrix_0 = new HashMap<>(); // abscisse = accord passé,
 	// ordonnée = présent, Zaxis = choix & pondé
@@ -20,7 +28,7 @@ public class HarmonIA {
 
 	private static final boolean VERBOSE = true;
 
-	public static LinkedList<Chord> generateProgression(int tona, int[] scale, int length, int carrure) {
+	public static LinkedList<HarmonicPart> generateProgression(int tona, int[] scale, int length, int carrure) {
 
 		if (VERBOSE) {
 			System.out.println("--Generating chord progression--");
@@ -36,22 +44,42 @@ public class HarmonIA {
 		Chord.ChordType typ = Chord.ChordType.typeFromIntervals(scale[2], scale[4]);
 
 		// initialisation de la tonalité
-		tonality = new Chord(tona, typ);
+		Scale mainScale = new Scale(tona, 0);
+		tonality = new HarmonicPart(new Chord(tona, typ), mainScale);
 		progression.add(tonality);
-		progression.getLast().length = carrure;
+		progression.getLast().getChord().length = carrure;
 		// System.out.println(Progression);
 		matrix = initProbaMatrix();
 
 		for (int mes = 1; mes < length; mes++) {
 
-			progression.add(computeNext());
+			Chord c = computeNext();
+			
+			Scale toPlayOn = null;
+			
+			//--------------- BORROWED CHORDS -------------------------
+			double x = Math.random();
+			if(x < 1/8.0) { //Approx. one borrowed chord every 2 bars
+				int i = (int)(Math.random()*7);
+				Chord[] neighbors = null;
+				try {
+					 neighbors = Keys.getNeighborChords(c, mainScale);
+				} catch (KeyException e) {
+					e.printStackTrace();
+				}
+				c = neighbors[i];
+				toPlayOn = new Scale(tona, i);
+			}else toPlayOn = mainScale;
+			
+			progression.add(new HarmonicPart(c, toPlayOn));
+			
 			// System.out.println(Progression);
 
 		}
 		// System.out.println("Progression générée : ");
 		if (VERBOSE) {
-			for (Chord c : progression) {
-				System.out.print(c.name + " " + c.length + ", ");
+			for (HarmonicPart c : progression) {
+				System.out.println(c.getChord().name + " " + c.getChord().length+ "b, played on "+c.getScale());
 			}
 		}
 		return progression;
@@ -61,7 +89,7 @@ public class HarmonIA {
 		LinkedHashMap<Chord, Integer> potentialChords = null;
 
 		for(Entry<Chord, Map<Chord, Integer>> entry : matrix.entrySet()) {
-			if(entry.getKey().notes[0].equals(progression.getLast().notes[0])) { // TODO at least check if they are major/minor
+			if(entry.getKey().notes[0].equals(progression.getLast().getChord().notes[0])) { // TODO at least check if they are major/minor
 				potentialChords = new LinkedHashMap<>(entry.getValue());
 			}
 		}
@@ -205,8 +233,8 @@ public class HarmonIA {
 	// TODO generate random rhythms over 1-4 beats
 	public static void setChordLength(Chord chord) {
 		int nbTemps = 0;
-		for (Chord c : progression) {
-			nbTemps += c.length;
+		for (HarmonicPart c : progression) {
+			nbTemps += c.getChord().length;
 		}
 		int reste = nbTemps % carrure;
 		reste = (reste == 0 ? 0 : 4 - reste);
