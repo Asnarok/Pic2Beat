@@ -1,12 +1,18 @@
 package pic2beat;
 
+import java.util.List;
+
 import jm.JMC;
 import jm.music.data.Score;
 import jm.util.View;
 import pic2beat.harmonia.Chord;
+import pic2beat.harmonia.Chord.ChordType;
+import pic2beat.melodia.KeyException;
+import pic2beat.melodia.Keys;
 import pic2beat.song.InstrumentRole;
 import pic2beat.song.Song;
 import pic2beat.song.generators.BasicGenerator;
+import pic2beat.utils.Scale;
 import pic2beat.utils.Scales;
 
 public class Main implements JMC {
@@ -22,7 +28,7 @@ public class Main implements JMC {
         System.out.println(config.getParam(AppConfig.Param.TEMPO) + " " + config.getParam(AppConfig.Param.TIME_SIGNATURE));
         //config.setParam(AppConfig.Param.TEMPO, "90").save();
 
-        System.out.println(Chord.fromRoman("viidim7", 0, Scales.MAJOR_SCALE));
+        System.out.println(Chord.fromRoman("viidim7", 0, Scales.NATURAL_MAJOR_INTERVALS));
 
 //        CPhrase cp = new CPhrase();
 //        for(Chord c : HarmonIA.generateProgression(0, MAJOR_SCALE, 12, 4)) {
@@ -108,6 +114,12 @@ public class Main implements JMC {
 		 * 9, 10, 11}, y);
 		 * 
 		 */
+        
+        try {
+			List<Scale> compatible = Keys.getCompatibleScales(new Chord(JMC.A0, ChordType.MAJ), new Scale(A0, 0));
+		} catch (KeyException e) {
+			e.printStackTrace();
+		}
 	}
 
 }

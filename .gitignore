@@ -8,3 +8,6 @@ Pic2Beat.iml
 .settings/
 config.app
 properties.app
+/target/
+pom.xml
+

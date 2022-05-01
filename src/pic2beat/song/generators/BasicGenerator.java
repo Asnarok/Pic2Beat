@@ -32,7 +32,7 @@ public class BasicGenerator implements SongGenerator {
 
     @Override
     public List<Chord> generateChords() {
-        return HarmonIA.generateProgression(0, Scales.MAJOR_SCALE, 4,  4);
+        return HarmonIA.generateProgression(0, Scales.NATURAL_MAJOR_INTERVALS, 4,  4);
     }
 
     @Override
