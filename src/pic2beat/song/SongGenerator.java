@@ -1,17 +1,17 @@
 package pic2beat.song;
 
-import java.util.List;
-
 import jm.music.data.Phrase;
-import pic2beat.harmonia.HarmonicPart;
+import pic2beat.harmonia.Chord;
+
+import java.util.List;
 
 public interface SongGenerator {
 
     Phrase generateDrums();
 
-    List<HarmonicPart> generateChords();
+    List<Chord> generateChords();
 
-    Phrase generateBass(List<HarmonicPart> chords);
+    Phrase generateBass(List<Chord> chords);
 
-    Phrase generateInstrument(InstrumentRole role, List<HarmonicPart> chords);
+    Phrase generateInstrument(InstrumentRole role, List<Chord> chords);
 }

@@ -1,16 +1,14 @@
 package pic2beat.song.generators;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import jm.JMC;
 import jm.music.data.Note;
 import jm.music.data.Phrase;
 import pic2beat.harmonia.Chord;
-import pic2beat.harmonia.HarmonicPart;
 import pic2beat.song.InstrumentRole;
 import pic2beat.song.SongGenerator;
-import pic2beat.utils.Scale;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class DummyGenerator implements SongGenerator {
 
@@ -33,10 +31,9 @@ public class DummyGenerator implements SongGenerator {
     }
 
     @Override
-    public List<HarmonicPart> generateChords() {
-        final List<HarmonicPart> l = new ArrayList<>();
+    public List<Chord> generateChords() {
+        final List<Chord> l = new ArrayList<>();
 
-        Scale s = new Scale(JMC.DS0, 0);
         Chord c1 = new Chord("D#", Chord.ChordType.MAJ7);
         c1.length = 4;
         Chord c2 = new Chord("D", Chord.ChordType.DIM7);
@@ -47,16 +44,16 @@ public class DummyGenerator implements SongGenerator {
         Chord c4 = new Chord("C", Chord.ChordType.MIN);
         c4.length = 4;
 
-        l.add(new HarmonicPart(c1, s));
-        l.add(new HarmonicPart(c2, s));
-        l.add(new HarmonicPart(c3, s));
-        l.add(new HarmonicPart(c4, s));
+        l.add(c1);
+        l.add(c2);
+        l.add(c3);
+        l.add(c4);
 
         return l;
     }
 
     @Override
-    public Phrase generateBass(List<HarmonicPart> chords) {
+    public Phrase generateBass(List<Chord> chords) {
         final Phrase p = new Phrase();
 
         p.addNote(new Note(JMC.DS1, 4));
@@ -68,7 +65,7 @@ public class DummyGenerator implements SongGenerator {
     }
 
     @Override
-    public Phrase generateInstrument(InstrumentRole role, List<HarmonicPart> chords) {
+    public Phrase generateInstrument(InstrumentRole role, List<Chord> chords) {
         final Phrase p = new Phrase();
 
         if(role == InstrumentRole.THIRDS) {
