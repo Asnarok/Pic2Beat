@@ -9,5 +9,6 @@ Pic2Beat.iml
 config.app
 properties.app
 /target/
+.gradle/
 pom.xml
 

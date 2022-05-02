@@ -1,19 +1,17 @@
 package pic2beat;
 
-import java.util.List;
-
 import jm.JMC;
+import jm.music.data.Note;
+import jm.music.data.Part;
+import jm.music.data.Phrase;
 import jm.music.data.Score;
 import jm.util.View;
 import pic2beat.harmonia.Chord;
-import pic2beat.harmonia.Chord.ChordType;
-import pic2beat.melodia.KeyException;
-import pic2beat.melodia.Keys;
 import pic2beat.melodia.Rhythm;
 import pic2beat.song.InstrumentRole;
 import pic2beat.song.Song;
 import pic2beat.song.generators.BasicGenerator;
-import pic2beat.utils.Scale;
+import pic2beat.ui.Frame;
 import pic2beat.utils.Scales;
 
 public class Main implements JMC {
@@ -118,6 +116,15 @@ public class Main implements JMC {
 		 * 
 		 */
         
+        Frame frame = new Frame();
+        frame.setVisible(true);
+        Part p = new Part();
+        Phrase phrase = new Phrase();
+        for(int i = 0; i < 40; i++) {
+        	phrase.add(new Note(i, CROTCHET));
+        }
+        p.add(phrase);
+        frame.scorePane.show(p);
 	}
 
 }
