@@ -48,6 +48,7 @@ public class DummyGenerator implements SongGenerator {
         l.add(c2);
         l.add(c3);
         l.add(c4);
+        
 
         return l;
     }

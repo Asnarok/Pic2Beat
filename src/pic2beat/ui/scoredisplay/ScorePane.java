@@ -7,8 +7,7 @@ import java.awt.event.AdjustmentListener;
 
 import javax.swing.JPanel;
 
-import jm.music.data.CPhrase;
-import jm.music.data.Part;
+import pic2beat.song.SongPart;
 
 public class ScorePane extends JPanel implements AdjustmentListener{
 
@@ -34,9 +33,9 @@ public class ScorePane extends JPanel implements AdjustmentListener{
 
 	}
 
-	public void show(Part p) {
-		noteScrollPane.show(p);
+	public void show(SongPart p) {
 		noteLabelPanel.setup(p.getLowestPitch(), p.getHighestPitch());
+		noteScrollPane.show(p);
 	}
 	
 	@Override

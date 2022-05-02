@@ -1,24 +1,23 @@
 package pic2beat;
 
 import jm.JMC;
-import jm.music.data.Note;
-import jm.music.data.Part;
-import jm.music.data.Phrase;
 import jm.music.data.Score;
 import jm.util.View;
 import pic2beat.harmonia.Chord;
 import pic2beat.song.InstrumentRole;
 import pic2beat.song.Song;
 import pic2beat.song.generators.BasicGenerator;
-import pic2beat.ui.Frame;
+import pic2beat.ui.ComposerFrame;
 import pic2beat.utils.Scales;
 
 public class Main implements JMC {
 
-	public static Frame frame1;
+	public static ComposerFrame frame1;
 
 	private static final AppProperties properties = AppProperties.get();
 	private static final AppConfig config = AppConfig.get();
+	
+	public static Song song; 
 
     public static void main(String[] args) {
         System.out.println("Hello world! (suce pute)");
@@ -39,16 +38,13 @@ public class Main implements JMC {
 
 		// TODO decalage entre toutes les phrases -> les combiner
 
-        Song song = new Song("press F to pay respect")
+        song = new Song("press F to pay respect")
                         .setLead(VIBRAPHONE)
                         .setChords(PIANO)
                         .setDrums(PIANO) // TODO DrumKit
                         .setBass(BASS)
                         .addInstrument("Alto", InstrumentRole.THIRDS, VIOLA)
                         .addInstrument("Violin", InstrumentRole.FIFTHS, VIOLIN);
-        song.generate(BasicGenerator.class);
-        Score score = song.toScore();
-        View.show(score);
 
         
 
@@ -112,17 +108,9 @@ public class Main implements JMC {
 		 * FileUtils.writeXYToFile("excel.csv", new double[]{0, 1, 2, 3, 4, 5, 6, 7, 8,
 		 * 9, 10, 11}, y);
 		 * 
-		 */
-		
-        Frame frame = new Frame();
+		 */    
+        ComposerFrame frame = new ComposerFrame();
         frame.setVisible(true);
-        Part p = new Part();
-        Phrase phrase = new Phrase();
-        for(int i = 0; i < 40; i++) {
-        	phrase.add(new Note(i, CROTCHET));
-        }
-        p.add(phrase);
-        frame.scorePane.show(p);
 	}
 
 }
