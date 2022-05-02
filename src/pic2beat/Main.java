@@ -7,7 +7,6 @@ import jm.music.data.Phrase;
 import jm.music.data.Score;
 import jm.util.View;
 import pic2beat.harmonia.Chord;
-import pic2beat.melodia.Rhythm;
 import pic2beat.song.InstrumentRole;
 import pic2beat.song.Song;
 import pic2beat.song.generators.BasicGenerator;
@@ -27,8 +26,7 @@ public class Main implements JMC {
         System.out.println(config.getParam(AppConfig.Param.TEMPO) + " " + config.getParam(AppConfig.Param.TIME_SIGNATURE));
         //config.setParam(AppConfig.Param.TEMPO, "90").save();
 
-        System.out.println(Chord.fromRoman("viidim7", 0, Scales.NATURAL_MAJOR_INTERVALS));
-        Rhythm.init();
+        System.out.println(Chord.fromRoman("viidim7", 0, Scales.MAJOR_SCALE));
 
 //        CPhrase cp = new CPhrase();
 //        for(Chord c : HarmonIA.generateProgression(0, MAJOR_SCALE, 12, 4)) {
@@ -115,7 +113,7 @@ public class Main implements JMC {
 		 * 9, 10, 11}, y);
 		 * 
 		 */
-        
+		
         Frame frame = new Frame();
         frame.setVisible(true);
         Part p = new Part();
