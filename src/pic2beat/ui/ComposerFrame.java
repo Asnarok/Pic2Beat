@@ -40,10 +40,12 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JSlider;
+import javax.swing.JSpinner;
 import javax.swing.JTextField;
 import javax.swing.JToggleButton;
 import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
+import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.EmptyBorder;
@@ -56,17 +58,17 @@ import javax.swing.event.ChangeListener;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
-import pic2beat.song.Song.SongPartType;
-import pic2beat.song.generators.BasicGenerator;
+import jm.music.data.Score;
+import jm.util.Play;
 import pic2beat.Main;
+import pic2beat.song.Song.SongPartType;
 import pic2beat.song.SongPart;
+import pic2beat.song.generators.BasicGenerator;
 import pic2beat.ui.scoredisplay.ScorePane;
 import pic2beat.ui.timeline.ChorusPanel;
 import pic2beat.ui.timeline.IntroPanel;
 import pic2beat.ui.timeline.SongPartPanel;
 import pic2beat.ui.timeline.VersePanel;
-import javax.swing.JSpinner;
-import javax.swing.SpinnerNumberModel;
 
 public class ComposerFrame extends JFrame {
 
@@ -149,10 +151,18 @@ public class ComposerFrame extends JFrame {
 		fileMenu.add(newMenu);
 
 		JMenuItem saveMenuItem = new JMenuItem("Enregistrer");
+		saveMenuItem.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+			}
+		});
 		saveMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.CTRL_DOWN_MASK));
 		fileMenu.add(saveMenuItem);
 
 		JMenuItem exportMenuItem = new JMenuItem("Exporter...");
+		exportMenuItem.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+			}
+		});
 		exportMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_E, InputEvent.CTRL_DOWN_MASK));
 		fileMenu.add(exportMenuItem);
 
@@ -160,7 +170,21 @@ public class ComposerFrame extends JFrame {
 		menuBar.add(projectMenu);
 
 		JMenuItem showScoreMenuItem = new JMenuItem("Afficher la partition");
+		showScoreMenuItem.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+			}
+		});
 		projectMenu.add(showScoreMenuItem);
+		
+		JMenuItem playMenuItem = new JMenuItem("Jouer la partition");
+		playMenuItem.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				Score s = Main.song.toScore();
+				Play.midi(s);
+			}
+		});
+		playMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_P, InputEvent.CTRL_DOWN_MASK));
+		projectMenu.add(playMenuItem);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);

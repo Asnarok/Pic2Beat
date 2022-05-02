@@ -1,12 +1,14 @@
 package pic2beat.harmonia;
 
-import pic2beat.utils.JsonChordParser;
-import pic2beat.utils.Scales;
-
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.Map;
 import java.util.Map.Entry;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+
+import pic2beat.utils.JsonChordParser;
 
 public class HarmonIA {
 	public static LinkedList<Chord> progression = new LinkedList<>();

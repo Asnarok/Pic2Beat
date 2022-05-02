@@ -18,7 +18,7 @@ public class SongPart {
 	private final HashMap<Part, Object> phrases;
 
 	private final List<Chord> chords;
-	
+
 	private SongPartType structType;
 	private int length = 4;
 

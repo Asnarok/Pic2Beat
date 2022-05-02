@@ -1,10 +1,9 @@
 package pic2beat.song;
 
+import java.util.List;
+
 import jm.music.data.Phrase;
 import pic2beat.harmonia.Chord;
-
-import java.util.List;
-import java.util.ListResourceBundle;
 
 public interface SongGenerator {
 
