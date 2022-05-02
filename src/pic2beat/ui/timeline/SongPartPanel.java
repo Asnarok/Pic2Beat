@@ -7,15 +7,12 @@ import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
-import java.awt.event.MouseListener;
 import java.awt.geom.AffineTransform;
 import java.util.HashMap;
 
 import javax.swing.JPanel;
 
-import pic2beat.ui.Frame;
+import pic2beat.song.Song.SongPartType;
 
 public class SongPartPanel extends JPanel {
 
@@ -26,10 +23,12 @@ public class SongPartPanel extends JPanel {
 	private Color background;
 	private Color selectedColor;
 	private Color hoverColor;
+	private SongPartType structType;
 
-	public SongPartPanel(String label, String HTMLColorCode) {
+	public SongPartPanel(String label, String HTMLColorCode, SongPartType structType) {
 		this.label = label;
 		this.background = new Color(Integer.parseInt(HTMLColorCode, 16));
+		this.structType = structType;
 
 		float[] hsv = new float[3];
 		Color.RGBtoHSB(background.getRed(), background.getGreen(), background.getBlue(), hsv);
@@ -104,6 +103,10 @@ public class SongPartPanel extends JPanel {
 	public void unfocus() {
 		focused = false;
 		toFillWith = background;
+	}
+	
+	public SongPartType getStructType() {
+		return structType;
 	}
 
 }

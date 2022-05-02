@@ -3,15 +3,14 @@ package pic2beat.ui.scoredisplay;
 import javax.swing.JScrollPane;
 
 import jm.music.data.Part;
+import pic2beat.song.SongPart;
 
 @SuppressWarnings("serial")
 public class NoteScrollPane extends JScrollPane{
 
-	private Part score;
 	private NotePanel panel;
 	
 	public NoteScrollPane() {
-		this.score = new Part();
 		panel = new NotePanel();
 		this.setViewportView(panel);
 		this.setVerticalScrollBarPolicy(VERTICAL_SCROLLBAR_AS_NEEDED);
@@ -19,7 +18,7 @@ public class NoteScrollPane extends JScrollPane{
 		
 	}
 	
-	public void show(Part p) {
+	public void show(SongPart p) {
 		panel.show(p);
 		this.revalidate();
 	}

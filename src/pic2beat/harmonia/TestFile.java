@@ -1,4 +1,4 @@
-package pic2beat.Harmonie;
+package pic2beat.harmonia;
 
 import java.util.LinkedList;
 

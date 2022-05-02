@@ -1,7 +1,7 @@
 package pic2beat.song;
 
 import jm.music.data.Phrase;
-import pic2beat.Harmonie.Chord;
+import pic2beat.harmonia.Chord;
 
 import java.util.List;
 import java.util.ListResourceBundle;

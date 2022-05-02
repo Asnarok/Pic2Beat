@@ -1,4 +1,4 @@
-package pic2beat.Harmonie;
+package pic2beat.harmonia;
 
 import pic2beat.utils.JsonChordParser;
 import pic2beat.utils.Scales;
@@ -54,7 +54,7 @@ public class HarmonIA {
 		// System.out.println("Progression générée : ");
 		if (VERBOSE) {
 			for (Chord c : progression) {
-				System.out.print(c.name + " " + c.length + ", ");
+				if(c != null)System.out.print(c.name + " " + c.length + ", ");
 			}
 		}
 		return progression;
