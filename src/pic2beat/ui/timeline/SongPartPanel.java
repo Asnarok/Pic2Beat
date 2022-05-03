@@ -12,7 +12,7 @@ import java.util.HashMap;
 
 import javax.swing.JPanel;
 
-import pic2beat.song.Song.SongPartType;
+import pic2beat.song.SongPart;
 
 public class SongPartPanel extends JPanel {
 
@@ -23,9 +23,9 @@ public class SongPartPanel extends JPanel {
 	private Color background;
 	private Color selectedColor;
 	private Color hoverColor;
-	private SongPartType structType;
+	private SongPart.SongPartType structType;
 
-	public SongPartPanel(String label, String HTMLColorCode, SongPartType structType) {
+	public SongPartPanel(String label, String HTMLColorCode, SongPart.SongPartType structType) {
 		this.label = label;
 		this.background = new Color(Integer.parseInt(HTMLColorCode, 16));
 		this.structType = structType;
@@ -105,7 +105,7 @@ public class SongPartPanel extends JPanel {
 		toFillWith = background;
 	}
 	
-	public SongPartType getStructType() {
+	public SongPart.SongPartType getStructType() {
 		return structType;
 	}
 

@@ -1,15 +1,10 @@
 package pic2beat.harmonia;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.Map;
-import java.util.Map.Entry;
-
-import jm.constants.Scales;
 import pic2beat.utils.JsonChordParser;
+import pic2beat.utils.Scales;
+
+import java.util.*;
+import java.util.Map.Entry;
 
 public class HarmonIA {
 	public static LinkedList<Chord> progression = new LinkedList<>();
@@ -23,8 +18,9 @@ public class HarmonIA {
 	public static int tona;
 	public static int[] scale;
 	public static Map<Chord, Map<Chord, Integer>> matrix;
-	
-	private static final boolean VERBOSE = true;
+
+	private static final boolean VERBOSE = false;
+
 
 	public static LinkedList<Chord> generateProgression(int tona, int[] scale, int length, int carrure) {
 
@@ -41,6 +37,8 @@ public class HarmonIA {
 
 		Chord.ChordType typ = Chord.ChordType.typeFromIntervals(scale[2], scale[4]);
 
+		progression.clear();
+
 		// initialisation de la tonalité
 		tonality = new Chord(tona, typ);
 		progression.add(tonality);
@@ -49,15 +47,19 @@ public class HarmonIA {
 		matrix = initProbaMatrix();
 
 		for (int mes = 1; mes < length; mes++) {
-
-			progression.add(computeNext());
+			final Chord c = computeNext();
+			if(c != null) {
+				progression.add(computeNext());
+			} else {
+				mes--;
+			}
 			// System.out.println(Progression);
 
 		}
 		// System.out.println("Progression générée : ");
 		if (VERBOSE) {
 			for (Chord c : progression) {
-				if(c != null)System.out.print(c.name + " " + c.length + ", ");
+				System.out.print(c.name + " " + c.length + ", ");
 			}
 		}
 		return progression;
@@ -72,19 +74,20 @@ public class HarmonIA {
 			}
 		}
 
-		if(potentialChords == null) {
+		if (potentialChords == null) {
 			return null;
 		}
 
 		final int random = (int) (Math.random() * 100);
 
-		final Iterator<Entry<Chord, Integer>> it = potentialChords.entrySet().stream().sorted(Map.Entry.comparingByValue()).iterator();
+		final Iterator<Entry<Chord, Integer>> it = potentialChords.entrySet().stream()
+				.sorted(Map.Entry.comparingByValue()).iterator();
 
 		int sum = 0;
-		while(it.hasNext()) {
+		while (it.hasNext()) {
 			final Entry<Chord, Integer> entry = it.next();
 			sum += entry.getValue();
-			if(random < sum) {
+			if (random < sum) {
 				entry.getKey().length = 4; // TODO
 				return entry.getKey();
 			}
@@ -128,9 +131,9 @@ public class HarmonIA {
 
 		final Map<Chord, Map<Chord, Integer>> toReturn = new HashMap<>();
 
-		for(Entry<String, Map<String, Integer>> entry1 : jsonMap.entrySet()) {
+		for (Entry<String, Map<String, Integer>> entry1 : jsonMap.entrySet()) {
 			final Map<Chord, Integer> inner = new HashMap<>();
-			for(Entry<String, Integer> entry2 : entry1.getValue().entrySet()) {
+			for (Entry<String, Integer> entry2 : entry1.getValue().entrySet()) {
 				inner.put(Chord.fromRoman(entry2.getKey(), tona, scale), entry2.getValue());
 			}
 			toReturn.put(Chord.fromRoman(entry1.getKey(), tona, scale), inner);
@@ -208,6 +211,7 @@ public class HarmonIA {
 //		return probaMatrix;
 	}
 
+	// TODO generate random rhythms over 1-4 beats
 	public static void setChordLength(Chord chord) {
 		int nbTemps = 0;
 		for (Chord c : progression) {

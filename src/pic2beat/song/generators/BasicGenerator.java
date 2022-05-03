@@ -9,7 +9,6 @@ import pic2beat.song.InstrumentRole;
 import pic2beat.song.SongGenerator;
 import pic2beat.utils.Scales;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class BasicGenerator implements SongGenerator {
@@ -33,18 +32,17 @@ public class BasicGenerator implements SongGenerator {
     }
 
     @Override
-    public List<Chord> generateChords() {
-        return HarmonIA.generateProgression(0, Scales.MINOR_SCALE, 4,  4);
+    public List<Chord> generateChords(int length) {
+        return HarmonIA.generateProgression(0, Scales.MAJOR_SCALE, length, 4);
     }
 
     @Override
     public Phrase generateBass(List<Chord> chords) {
         final Phrase p = new Phrase();
 
-//        p.addNote(new Note(JMC.DS1, 4));
-//        p.addNote(new Note(JMC.D1, 4));
-//        p.addNote(new Note(JMC.G1, 4));
-//        p.addNote(new Note(JMC.C1, 4));
+        for(Chord c : chords) {
+            p.addNote(new Note(c.getNotes()[0] % 12 + JMC.C2, c.length));
+        }
 
         return p;
     }
