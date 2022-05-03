@@ -39,7 +39,7 @@ public class SongPart implements Serializable {
 	public void generate(SongGenerator generator) {
 		Part p = song.getChords();
 		if (p != null) {
-			final List<Chord> chords = generator.generateChords(this.length);
+			final List<Chord> chords = generator.generateChords();
 			this.chords.clear();
 			this.chords.addAll(chords);
 			final CPhrase cp = new CPhrase();
@@ -58,7 +58,7 @@ public class SongPart implements Serializable {
 				for (Chord c : chords) {
 					System.out.print(c.toString()+ " ");
 					if(structType != SongPartType.INTRO) {
-						lead.addNoteList(MelodIA.get().phrase(c.getNotes(), c.length).getNoteArray());
+						lead.addNoteList(MelodIA.get().phrase(song.getTonality(), song.getScale(), c.getNotes(), c.length).getNoteArray());
 					} else {
 						lead.addNote(new Note(Note.REST, c.length));
 					}
@@ -71,7 +71,7 @@ public class SongPart implements Serializable {
 
 		p = song.getBass();
 		if (p != null) {
-			final Phrase bass = generator.generateBass(this.chords);
+			final Phrase bass = generator.generateBass();
 			phrases.put(p, bass);
 		}
 
@@ -83,7 +83,7 @@ public class SongPart implements Serializable {
 		}
 
 		for (Map.Entry<Part, InstrumentRole> entry : song.getInstrumentsWithRole().entrySet()) {
-			final Phrase instru =  generator.generateInstrument(entry.getValue(), this.chords);
+			final Phrase instru =  generator.generateInstrument(entry.getValue());
 			phrases.put(entry.getKey(), instru);
 		}
 	}
@@ -141,6 +141,8 @@ public class SongPart implements Serializable {
 	public List<Chord> getChords() {
 		return this.chords;
 	}
-	
 
+	public Song getSong() {
+		return song;
+	}
 }

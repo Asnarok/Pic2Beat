@@ -13,6 +13,7 @@ import jm.music.data.CPhrase;
 import jm.music.data.Part;
 import jm.music.data.Phrase;
 import jm.music.data.Score;
+import pic2beat.utils.Scales;
 
 public class Song implements Serializable {
 
@@ -33,6 +34,7 @@ public class Song implements Serializable {
 	private int tempo = 80;
 
 	private int tonality;
+	private int[] scale = Scales.MAJOR_SCALE;
 
 	public Song(String title) {
 		this.title = title;
@@ -258,6 +260,14 @@ public class Song implements Serializable {
 
 	public void setTonality(int tonality) {
 		this.tonality = tonality;
+	}
+
+	public int[] getScale() {
+		return scale;
+	}
+
+	public void setScale(int[] scale) {
+		this.scale = scale;
 	}
 
 	public void clearSongParts() {

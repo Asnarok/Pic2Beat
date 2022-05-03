@@ -6,6 +6,7 @@ import jm.music.data.Phrase;
 import pic2beat.harmonia.Chord;
 import pic2beat.song.InstrumentRole;
 import pic2beat.song.SongGenerator;
+import pic2beat.song.SongPart;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,7 +32,7 @@ public class DummyGenerator implements SongGenerator {
     }
 
     @Override
-    public List<Chord> generateChords(int length) {
+    public List<Chord> generateChords() {
         final List<Chord> l = new ArrayList<>();
 
         Chord c1 = new Chord("D#", Chord.ChordType.MAJ7);
@@ -54,7 +55,7 @@ public class DummyGenerator implements SongGenerator {
     }
 
     @Override
-    public Phrase generateBass(List<Chord> chords) {
+    public Phrase generateBass() {
         final Phrase p = new Phrase();
 
         p.addNote(new Note(JMC.DS1, 4));
@@ -66,7 +67,7 @@ public class DummyGenerator implements SongGenerator {
     }
 
     @Override
-    public Phrase generateInstrument(InstrumentRole role, List<Chord> chords) {
+    public Phrase generateInstrument(InstrumentRole role) {
         final Phrase p = new Phrase();
 
         if(role == InstrumentRole.THIRDS) {
@@ -82,5 +83,10 @@ public class DummyGenerator implements SongGenerator {
         }
 
         return p;
+    }
+
+    @Override
+    public void setSongPart(SongPart part) {
+
     }
 }
