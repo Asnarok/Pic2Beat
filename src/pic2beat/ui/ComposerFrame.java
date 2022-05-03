@@ -114,10 +114,9 @@ public class ComposerFrame extends JFrame implements JMC {
 			"G", "G#" };
 
 	public static void initInstruments() {
-		List<String> bass = loadJson("bass_instruments.json");
-		List<String> comping = loadJson("comping_instruments.json");
-		List<String> drums = loadJson("drum_instruments.json");
-		List<String> lead = loadJson("lead_instruments.json");
+		List<String> bass = loadJson("assets/instruments/bass_instruments.json");
+		List<String> comping = loadJson("assets/instruments/comping_instruments.json");
+		List<String> lead = loadJson("assets/instruments/lead_instruments.json");
 
 		for (String s : bass) {
 			try {
