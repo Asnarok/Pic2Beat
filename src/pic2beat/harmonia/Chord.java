@@ -1,4 +1,5 @@
 package pic2beat.harmonia;
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -6,10 +7,9 @@ import java.util.regex.Pattern;
 import jm.JMC;
 import jm.music.data.Note;
 import pic2beat.melodia.MelodIA;
-import pic2beat.utils.JsonChordParser;
 
 
-public class Chord implements JMC {
+public class Chord implements JMC, Serializable{
 
 	public String name;
 	public ChordType type;

@@ -2,7 +2,6 @@ package pic2beat.ui.scoredisplay;
 
 import javax.swing.JScrollPane;
 
-import jm.music.data.Part;
 import pic2beat.song.SongPart;
 
 @SuppressWarnings("serial")

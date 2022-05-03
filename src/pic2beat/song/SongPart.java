@@ -1,5 +1,6 @@
 package pic2beat.song;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -12,7 +13,7 @@ import pic2beat.harmonia.Chord;
 import pic2beat.melodia.MelodIA;
 import pic2beat.song.Song.SongPartType;
 
-public class SongPart {
+public class SongPart implements Serializable {
 
 	private final Song song;
 	private final HashMap<Part, Object> phrases;
@@ -105,11 +106,22 @@ public class SongPart {
 				Phrase p = (Phrase) o;
 				if (p.getEndTime() > max)
 					max = p.getEndTime();
-			} else
-				break;
+			}
 		}
 
 		return max;
+	}
+
+	public int getLength() {
+		return length;
+	}
+
+	public void setLength(int length) {
+		this.length = length;
+	}
+	
+	public List<Chord> getChords() {
+		return chords;
 	}
 
 }

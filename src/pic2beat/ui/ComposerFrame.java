@@ -17,10 +17,12 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -31,6 +33,7 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
@@ -54,12 +57,15 @@ import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import javax.swing.filechooser.FileFilter;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
+import jm.JMC;
 import jm.music.data.Score;
 import jm.util.Play;
+import jm.util.View;
 import pic2beat.Main;
 import pic2beat.song.Song.SongPartType;
 import pic2beat.song.SongPart;
@@ -69,6 +75,7 @@ import pic2beat.ui.timeline.ChorusPanel;
 import pic2beat.ui.timeline.IntroPanel;
 import pic2beat.ui.timeline.SongPartPanel;
 import pic2beat.ui.timeline.VersePanel;
+import pic2beat.utils.FileUtils;
 
 public class ComposerFrame extends JFrame {
 
@@ -85,20 +92,57 @@ public class ComposerFrame extends JFrame {
 
 	public static SongPartPanel lastHovered;
 	public static SongPartPanel lastFocused;
+	public static int selectedIndex;
 
 	public static List<SongPart> songPattern = new LinkedList<>();
 
-	public static List<String> bassInstruments;
-	public static List<String> compingInstruments;
-	public static List<String> drumInstruments;
-	public static List<String> leadInstruments;
+	public static final HashMap<Integer, String> BASS_INSTRUMENTS = new HashMap<>();
+	public static final HashMap<Integer, String> COMPING_INSTRUMENTS = new HashMap<>();
+	public static final HashMap<Integer, String> DRUM_INSTRUMENTS = new HashMap<>();
+	public static final HashMap<Integer, String> LEAD_INSTRUMENTS = new HashMap<>();
 	public static boolean initialized = false;
-
+	
+	public static final String[] NOTES_LABELS = new String[] { "A", "A#", "B", "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#" };
+	
 	public static void initInstruments() {
-		bassInstruments = loadJson("bass_instruments.json");
-		compingInstruments = loadJson("comping_instruments.json");
-		drumInstruments = loadJson("drum_instruments.json");
-		leadInstruments = loadJson("lead_instruments.json");
+		List<String> bass = loadJson("bass_instruments.json");
+		List<String> comping = loadJson("comping_instruments.json");
+		List<String> drums = loadJson("drum_instruments.json");
+		List<String> lead = loadJson("lead_instruments.json");
+		
+		for(String s : bass) {
+			try {
+				BASS_INSTRUMENTS.put(JMC.class.getField(s).getInt(null), s);
+			} catch (IllegalArgumentException | IllegalAccessException | NoSuchFieldException | SecurityException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		for(String s : comping) {
+			try {
+				COMPING_INSTRUMENTS.put(JMC.class.getField(s).getInt(null), s);
+			} catch (IllegalArgumentException | IllegalAccessException | NoSuchFieldException | SecurityException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		for(String s : drums) {
+			try {
+				DRUM_INSTRUMENTS.put(JMC.class.getField(s).getInt(null), s);
+			} catch (IllegalArgumentException | IllegalAccessException | NoSuchFieldException | SecurityException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		for(String s : lead) {
+			try {
+				LEAD_INSTRUMENTS.put(JMC.class.getField(s).getInt(null), s);
+			} catch (IllegalArgumentException | IllegalAccessException | NoSuchFieldException | SecurityException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		
 	}
 
 	private static ArrayList<String> loadJson(String fileName) {
@@ -121,11 +165,70 @@ public class ComposerFrame extends JFrame {
 
 	public ScorePane scorePane;
 	private JTextField titleTextField;
+	private JSpinner barNumberSpinner;
+	private JPanel partSettingsPanel;
+	private JLabel barNumberLabel;
+
+	private JMenuBar menuBar;
+
+	private JMenu fileMenu;
+	private JMenuItem newMenu;
+	private JMenuItem saveMenuItem;
+	private JMenuItem exportMenuItem;
+
+	private JMenu projectMenu;
+	private JMenuItem showScoreMenuItem;
+	private JMenuItem playMenuItem;
+	private JSeparator separator;
+	private JPanel leadInstrumentPanel_1;
+	private JPanel panel;
+	private JPanel instrumentsPanel;
+	private JPanel timeLineContainer;
+	private JLabel compingLabel;
+	private JPanel compingInstrumentPanel;
+	private JComboBox drumsComboBox;
+	private JToggleButton chorusButton;
+	private Box verticalBox;
+	private JLabel leadLabel;
+	private JPanel leadInstrumentPanel;
+	private JLabel bpm;
+	private JComboBox compingComboBox;
+	private JLabel bassLabel;
+	private JPanel generateButtonContainer;
+	private JPanel northSettingsPanel;
+	private JComboBox bassComboBox;
+	private JComboBox leadComboBox;
+	private JPanel settingsPanel;
+	private JLabel lblNewLabel;
+	private JPanel bassInstrumentPanel;
+	private JButton deleteButton;
+	private JPanel centerPanel;
+	private JPanel scorePaneContainer;
+	private JToggleButton introButton;
+	private JScrollPane instrumentsPane;
+	private JSeparator separator_1;
+	private JSlider bpmSlider;
+	private JLabel drumLabel;
+	private JToggleButton verseButton;
+	private JLabel titleLabel;
+	private JComboBox<String> tonalityComboBox;
+	private JPanel leftPanel;
+	private JPanel timeLineToolbar;
+	private JPanel southPanel;
+	private JLabel lblTonalit;
+	private JToolBar toolBar;
+	private JToggleButton selectionMode;
+	private JMenuItem openMenuItem;
 
 	/**
 	 * Create the frame.
 	 */
 	public ComposerFrame() {
+
+		barNumberSpinner = new JSpinner();
+		partSettingsPanel = new JPanel();
+		barNumberLabel = new JLabel("Nombre de mesures :");
+		barNumberSpinner.setEnabled(false);
 		if (!initialized)
 			initInstruments();
 
@@ -135,13 +238,13 @@ public class ComposerFrame extends JFrame {
 		setBounds(100, 100, 986, 634);
 		this.setLocationRelativeTo(null);
 
-		JMenuBar menuBar = new JMenuBar();
+		menuBar = new JMenuBar();
 		setJMenuBar(menuBar);
 
-		JMenu fileMenu = new JMenu("Fichier");
+		fileMenu = new JMenu("Fichier");
 		menuBar.add(fileMenu);
 
-		JMenuItem newMenu = new JMenuItem("Nouveau...");
+		newMenu = new JMenuItem("Nouveau...");
 		newMenu.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				newProject();
@@ -150,33 +253,74 @@ public class ComposerFrame extends JFrame {
 		newMenu.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, InputEvent.CTRL_DOWN_MASK));
 		fileMenu.add(newMenu);
 
-		JMenuItem saveMenuItem = new JMenuItem("Enregistrer");
+		saveMenuItem = new JMenuItem("Enregistrer");
 		saveMenuItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				Main.song.setTitle(titleTextField.getText());
+				Main.song.setTempo(bpmSlider.getValue());
+				Main.song.setTonality(tonalityComboBox.getSelectedIndex());
+				JFileChooser jfc = new JFileChooser();
+				jfc.setSelectedFile(new File(Main.song.getTitle()+".song"));
+				int i = jfc.showSaveDialog(null);
+				if(i == JFileChooser.APPROVE_OPTION) {
+					String name = jfc.getSelectedFile().getName();
+					if(!name.endsWith(".song"))name+=".song";
+					File f = new File(jfc.getSelectedFile().getParentFile().getAbsolutePath()+"/"+name);
+					FileUtils.saveToFile(f, Main.song);
+				}
 			}
 		});
 		saveMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.CTRL_DOWN_MASK));
 		fileMenu.add(saveMenuItem);
 
-		JMenuItem exportMenuItem = new JMenuItem("Exporter...");
+		exportMenuItem = new JMenuItem("Exporter...");
 		exportMenuItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 			}
 		});
+		
+		openMenuItem = new JMenuItem("Ouvrir");
+		openMenuItem.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				JFileChooser jfc = new JFileChooser();
+				jfc.setFileFilter(new FileFilter() {
+					
+					@Override
+					public String getDescription() {
+						return "";
+					}
+					
+					@Override
+					public boolean accept(File e) {
+						return e.getName().endsWith(".song");
+					}
+				});
+				
+				int i = jfc.showOpenDialog(null);
+				if(i == JFileChooser.APPROVE_OPTION) {
+					Main.song = FileUtils.loadFromFile(jfc.getSelectedFile());
+					updateFields();
+				}
+			}
+		});
+		openMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, InputEvent.CTRL_DOWN_MASK));
+		fileMenu.add(openMenuItem);
 		exportMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_E, InputEvent.CTRL_DOWN_MASK));
 		fileMenu.add(exportMenuItem);
 
-		JMenu projectMenu = new JMenu("Projet");
+		projectMenu = new JMenu("Projet");
 		menuBar.add(projectMenu);
 
-		JMenuItem showScoreMenuItem = new JMenuItem("Afficher la partition");
+		showScoreMenuItem = new JMenuItem("Afficher la partition");
 		showScoreMenuItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				Score s = Main.song.toScore();
+				View.notate(s);
 			}
 		});
 		projectMenu.add(showScoreMenuItem);
-		
-		JMenuItem playMenuItem = new JMenuItem("Jouer la partition");
+
+		playMenuItem = new JMenuItem("Jouer la partition");
 		playMenuItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				Score s = Main.song.toScore();
@@ -190,16 +334,16 @@ public class ComposerFrame extends JFrame {
 		setContentPane(contentPane);
 		contentPane.setLayout(new BorderLayout(0, 0));
 
-		JPanel leftPanel = new JPanel();
+		leftPanel = new JPanel();
 		contentPane.add(leftPanel, BorderLayout.WEST);
 		leftPanel.setLayout(new BorderLayout(0, 0));
 
-		Box verticalBox = Box.createVerticalBox();
+		verticalBox = Box.createVerticalBox();
 		leftPanel.add(verticalBox);
 		verticalBox.setPreferredSize(new Dimension(250, 0));
 		verticalBox.setMaximumSize(new Dimension(250, 0));
 
-		JPanel settingsPanel = new JPanel();
+		settingsPanel = new JPanel();
 		verticalBox.add(settingsPanel);
 		settingsPanel.setMaximumSize(new Dimension(245, 1000));
 		settingsPanel.setPreferredSize(new Dimension(245, 303));
@@ -208,19 +352,19 @@ public class ComposerFrame extends JFrame {
 				new Color(0, 0, 0)));
 		settingsPanel.setLayout(new BorderLayout(0, 0));
 
-		JPanel northSettingsPanel = new JPanel();
+		northSettingsPanel = new JPanel();
 		northSettingsPanel.setPreferredSize(new Dimension(160, 160));
 		settingsPanel.add(northSettingsPanel, BorderLayout.NORTH);
 		northSettingsPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 10, 10));
 
-		JLabel titleLabel = new JLabel("Titre : ");
+		titleLabel = new JLabel("Titre : ");
 		northSettingsPanel.add(titleLabel);
 
 		titleTextField = new JTextField();
 		northSettingsPanel.add(titleTextField);
 		titleTextField.setColumns(16);
 
-		JLabel lblNewLabel = new JLabel("Tempo : ");
+		lblNewLabel = new JLabel("Tempo : ");
 		northSettingsPanel.add(lblNewLabel);
 		lblNewLabel.setOpaque(true);
 		lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
@@ -233,48 +377,48 @@ public class ComposerFrame extends JFrame {
 		northSettingsPanel.add(bpmTextField);
 		bpmTextField.setColumns(3);
 
-		JLabel bpm = new JLabel("bpm");
+		bpm = new JLabel("bpm");
 		northSettingsPanel.add(bpm);
 
-		JSlider slider = new JSlider();
-		slider.addChangeListener(new ChangeListener() {
+		bpmSlider = new JSlider();
+		bpmSlider.addChangeListener(new ChangeListener() {
 			public void stateChanged(ChangeEvent e) {
-				bpmTextField.setText(slider.getValue() + "");
+				bpmTextField.setText(bpmSlider.getValue() + "");
 			}
 		});
-		northSettingsPanel.add(slider);
-		slider.setOpaque(false);
-		slider.setBackground(new Color(220, 220, 220));
-		slider.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
-		slider.setValue(120);
-		slider.setMinorTickSpacing(5);
-		slider.setMajorTickSpacing(60);
-		slider.setMaximum(200);
-		slider.setMinimum(20);
-		slider.setToolTipText("");
-		slider.setPaintLabels(true);
-		slider.setPaintTicks(true);
+		northSettingsPanel.add(bpmSlider);
+		bpmSlider.setOpaque(false);
+		bpmSlider.setBackground(new Color(220, 220, 220));
+		bpmSlider.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+		bpmSlider.setValue(120);
+		bpmSlider.setMinorTickSpacing(5);
+		bpmSlider.setMajorTickSpacing(60);
+		bpmSlider.setMaximum(200);
+		bpmSlider.setMinimum(20);
+		bpmSlider.setToolTipText("");
+		bpmSlider.setPaintLabels(true);
+		bpmSlider.setPaintTicks(true);
 
-		JLabel lblTonalit = new JLabel("Tonalit\u00E9 :");
+		lblTonalit = new JLabel("Tonalit\u00E9 :");
 		northSettingsPanel.add(lblTonalit);
 		lblTonalit.setOpaque(true);
 		lblTonalit.setHorizontalAlignment(SwingConstants.CENTER);
 
-		JComboBox<String> comboBox = new JComboBox<>();
-		northSettingsPanel.add(comboBox);
-		comboBox.setModel(new DefaultComboBoxModel<String>(
-				new String[] { "A", "A#", "B", "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#" }));
+		tonalityComboBox = new JComboBox<>();
+		northSettingsPanel.add(tonalityComboBox);
+		tonalityComboBox.setModel(new DefaultComboBoxModel<String>(
+				NOTES_LABELS));
 
-		JScrollPane instrumentsPane = new JScrollPane();
+		instrumentsPane = new JScrollPane();
 		instrumentsPane.setViewportBorder(
 				new TitledBorder(null, "Instruments", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 		settingsPanel.add(instrumentsPane, BorderLayout.CENTER);
 
-		JPanel instrumentsPanel = new JPanel();
+		instrumentsPanel = new JPanel();
 		instrumentsPane.setViewportView(instrumentsPanel);
 		instrumentsPanel.setLayout(new BoxLayout(instrumentsPanel, BoxLayout.Y_AXIS));
 
-		JPanel bassInstrumentPanel = new JPanel();
+		bassInstrumentPanel = new JPanel();
 		bassInstrumentPanel.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
 		FlowLayout fl_bassInstrumentPanel = (FlowLayout) bassInstrumentPanel.getLayout();
 		fl_bassInstrumentPanel.setAlignment(FlowLayout.LEADING);
@@ -282,13 +426,29 @@ public class ComposerFrame extends JFrame {
 		bassInstrumentPanel.setPreferredSize(new Dimension(10, 70));
 		instrumentsPanel.add(bassInstrumentPanel);
 
-		JLabel bassLabel = new JLabel("Basse : ");
+		bassLabel = new JLabel("Basse : ");
 		bassInstrumentPanel.add(bassLabel);
 
-		JComboBox bassComboBox = new JComboBox(bassInstruments.toArray());
+		bassComboBox = new JComboBox(BASS_INSTRUMENTS.values().toArray());
+		bassComboBox.addItemListener(new ItemListener() {
+			public void itemStateChanged(ItemEvent e) {
+				try {
+					System.out.println(JMC.class.getField((String) e.getItem()).getInt(null));
+					Main.song.setBass(JMC.class.getField((String) e.getItem()).getInt(null));
+				} catch (IllegalArgumentException e1) {
+					e1.printStackTrace();
+				} catch (IllegalAccessException e1) {
+					e1.printStackTrace();
+				} catch (NoSuchFieldException e1) {
+					e1.printStackTrace();
+				} catch (SecurityException e1) {
+					e1.printStackTrace();
+				}
+			}
+		});
 		bassInstrumentPanel.add(bassComboBox);
 
-		JPanel compingInstrumentPanel = new JPanel();
+		compingInstrumentPanel = new JPanel();
 		compingInstrumentPanel.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
 		FlowLayout fl_compingInstrumentPanel = (FlowLayout) compingInstrumentPanel.getLayout();
 		fl_compingInstrumentPanel.setAlignment(FlowLayout.LEFT);
@@ -296,13 +456,28 @@ public class ComposerFrame extends JFrame {
 		compingInstrumentPanel.setMaximumSize(new Dimension(32767, 60));
 		instrumentsPanel.add(compingInstrumentPanel);
 
-		JLabel compingLabel = new JLabel("Accompagnement : ");
+		compingLabel = new JLabel("Accompagnement : ");
 		compingInstrumentPanel.add(compingLabel);
 
-		JComboBox compingComboBox = new JComboBox(compingInstruments.toArray());
+		compingComboBox = new JComboBox(COMPING_INSTRUMENTS.values().toArray());
+		compingComboBox.addItemListener(new ItemListener() {
+			public void itemStateChanged(ItemEvent e) {
+				try {
+					Main.song.setChords(JMC.class.getField((String) e.getItem()).getInt(null));
+				} catch (IllegalArgumentException e1) {
+					e1.printStackTrace();
+				} catch (IllegalAccessException e1) {
+					e1.printStackTrace();
+				} catch (NoSuchFieldException e1) {
+					e1.printStackTrace();
+				} catch (SecurityException e1) {
+					e1.printStackTrace();
+				}
+			}
+		});
 		compingInstrumentPanel.add(compingComboBox);
 
-		JPanel leadInstrumentPanel = new JPanel();
+		leadInstrumentPanel = new JPanel();
 		leadInstrumentPanel.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
 		FlowLayout fl_leadInstrumentPanel = (FlowLayout) leadInstrumentPanel.getLayout();
 		fl_leadInstrumentPanel.setAlignment(FlowLayout.LEFT);
@@ -310,27 +485,57 @@ public class ComposerFrame extends JFrame {
 		leadInstrumentPanel.setMaximumSize(new Dimension(32767, 60));
 		instrumentsPanel.add(leadInstrumentPanel);
 
-		JLabel leadLabel = new JLabel("Lead : ");
+		leadLabel = new JLabel("Lead : ");
 		leadInstrumentPanel.add(leadLabel);
 
-		JComboBox leadCombobox = new JComboBox(leadInstruments.toArray());
-		leadInstrumentPanel.add(leadCombobox);
+		leadComboBox = new JComboBox(LEAD_INSTRUMENTS.values().toArray());
+		leadComboBox.addItemListener(new ItemListener() {
+			public void itemStateChanged(ItemEvent e) {
+				try {
+					Main.song.setLead(JMC.class.getField((String) e.getItem()).getInt(null));
+				} catch (IllegalArgumentException e1) {
+					e1.printStackTrace();
+				} catch (IllegalAccessException e1) {
+					e1.printStackTrace();
+				} catch (NoSuchFieldException e1) {
+					e1.printStackTrace();
+				} catch (SecurityException e1) {
+					e1.printStackTrace();
+				}
+			}
+		});
+		leadInstrumentPanel.add(leadComboBox);
 
-		JPanel leadInstrumentPanel_1 = new JPanel();
+		leadInstrumentPanel_1 = new JPanel();
 		leadInstrumentPanel_1.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
-		FlowLayout flowLayout_1 = (FlowLayout) leadInstrumentPanel_1.getLayout();
-		flowLayout_1.setAlignment(FlowLayout.LEFT);
+		FlowLayout fl_leadInstrumentPanel_1 = (FlowLayout) leadInstrumentPanel_1.getLayout();
+		fl_leadInstrumentPanel_1.setAlignment(FlowLayout.LEFT);
 		leadInstrumentPanel_1.setPreferredSize(new Dimension(10, 70));
 		leadInstrumentPanel_1.setMaximumSize(new Dimension(32767, 60));
 		instrumentsPanel.add(leadInstrumentPanel_1);
 
-		JLabel drumLabel = new JLabel("Batterie :");
+		drumLabel = new JLabel("Batterie :");
 		leadInstrumentPanel_1.add(drumLabel);
 
-		JComboBox drumsComboBox = new JComboBox(drumInstruments.toArray());
+		drumsComboBox = new JComboBox(DRUM_INSTRUMENTS.values().toArray());
+		drumsComboBox.addItemListener(new ItemListener() {
+			public void itemStateChanged(ItemEvent e) {
+				try {
+					Main.song.setDrums(JMC.class.getField((String) e.getItem()).getInt(null));
+				} catch (IllegalArgumentException e1) {
+					e1.printStackTrace();
+				} catch (IllegalAccessException e1) {
+					e1.printStackTrace();
+				} catch (NoSuchFieldException e1) {
+					e1.printStackTrace();
+				} catch (SecurityException e1) {
+					e1.printStackTrace();
+				}
+			}
+		});
 		leadInstrumentPanel_1.add(drumsComboBox);
 
-		JPanel generateButtonContainer = new JPanel();
+		generateButtonContainer = new JPanel();
 		verticalBox.add(generateButtonContainer);
 		generateButtonContainer.setPreferredSize(new Dimension(10, 30));
 		generateButtonContainer.setMinimumSize(new Dimension(10, 0));
@@ -342,24 +547,25 @@ public class ComposerFrame extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				Main.song.setStruct(getStructure());
 				Main.song.generate(BasicGenerator.class);
+				scorePane.show(Main.song.getSongParts().get(selectedIndex));
 			}
 		});
 		generateButtonContainer.add(generate);
 
-		JSeparator separator_1 = new JSeparator();
+		separator_1 = new JSeparator();
 		verticalBox.add(separator_1);
 		separator_1.setMaximumSize(new Dimension(32767, 2));
 
-		JSeparator separator = new JSeparator();
+		separator = new JSeparator();
 		separator.setOrientation(SwingConstants.VERTICAL);
 		separator.setMinimumSize(new Dimension(2, 0));
 		leftPanel.add(separator, BorderLayout.EAST);
 
-		JPanel centerPanel = new JPanel();
+		centerPanel = new JPanel();
 		contentPane.add(centerPanel, BorderLayout.CENTER);
 		centerPanel.setLayout(new BorderLayout(0, 0));
 
-		JPanel southPanel = new JPanel();
+		southPanel = new JPanel();
 		southPanel.setBorder(new TitledBorder(new LineBorder(new Color(128, 128, 128), 3, true), "Time line",
 				TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
 		centerPanel.add(southPanel, BorderLayout.SOUTH);
@@ -368,10 +574,10 @@ public class ComposerFrame extends JFrame {
 		southPanel.setMinimumSize(new Dimension(588, 214));
 		southPanel.setLayout(new BorderLayout(0, 0));
 
-		JPanel timeLineContainer = new JPanel();
+		timeLineContainer = new JPanel();
 		southPanel.add(timeLineContainer, BorderLayout.CENTER);
 
-		JButton deleteButton = new JButton("");
+		deleteButton = new JButton("");
 		deleteButton.setEnabled(false);
 		deleteButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -381,19 +587,25 @@ public class ComposerFrame extends JFrame {
 				timeLinePanel.revalidate();
 				timeLinePanel.repaint();
 				partCount--;
+				if (partCount == 0) {
+
+					partSettingsPanel.setEnabled(false);
+					barNumberLabel.setEnabled(false);
+					barNumberSpinner.setEnabled(false);
+				}
 			}
 		});
 		timeLineContainer.setLayout(new BorderLayout(0, 0));
 
-		JPanel timeLineToolbar = new JPanel();
+		timeLineToolbar = new JPanel();
 		timeLineContainer.add(timeLineToolbar, BorderLayout.NORTH);
 		FlowLayout fl_timeLineToolbar = (FlowLayout) timeLineToolbar.getLayout();
 		fl_timeLineToolbar.setAlignment(FlowLayout.LEADING);
 
-		JToolBar toolBar = new JToolBar();
+		toolBar = new JToolBar();
 		timeLineToolbar.add(toolBar);
 
-		JToggleButton introButton = new JToggleButton("Intro");
+		introButton = new JToggleButton("Intro");
 		introButton.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {
 				if (e.getStateChange() == 1)
@@ -401,7 +613,7 @@ public class ComposerFrame extends JFrame {
 			}
 		});
 
-		JToggleButton selectionMode = new JToggleButton("");
+		selectionMode = new JToggleButton("");
 		selectionMode.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {
 				if (e.getStateChange() == 1)
@@ -418,7 +630,7 @@ public class ComposerFrame extends JFrame {
 		introButton.setActionCommand("");
 		toolBar.add(introButton);
 
-		JToggleButton verseButton = new JToggleButton("Couplet");
+		verseButton = new JToggleButton("Couplet");
 		verseButton.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {
 				if (e.getStateChange() == 1)
@@ -427,7 +639,7 @@ public class ComposerFrame extends JFrame {
 		});
 		toolBar.add(verseButton);
 
-		JToggleButton chorusButton = new JToggleButton("Refrain");
+		chorusButton = new JToggleButton("Refrain");
 		chorusButton.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {
 				if (e.getStateChange() == 1)
@@ -501,8 +713,17 @@ public class ComposerFrame extends JFrame {
 						if (c instanceof SongPartPanel) {
 							SongPartPanel p = (SongPartPanel) c;
 							deleteButton.setEnabled(true);
+							barNumberSpinner.setEnabled(true);
+							partSettingsPanel.setEnabled(true);
+							barNumberLabel.setEnabled(true);
+
 							if (p != lastFocused) {
-								scorePane.show(Main.song.getSongParts().get(focusIndex));
+								selectedIndex = focusIndex;
+								if (Main.song.getSongParts().size() > focusIndex) {
+									scorePane.show(Main.song.getSongParts().get(focusIndex));
+									barNumberSpinner.setValue(Main.song.getSongParts().get(focusIndex).getLength());
+								}
+
 								p.focus();
 								p.repaint();
 								if (lastFocused != null) {
@@ -549,31 +770,31 @@ public class ComposerFrame extends JFrame {
 		timeLinePanel.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
 		timeLinePanel.setLayout(new GridLayout(1, 0, 5, 0));
 
-		JPanel panel = new JPanel();
-		panel.setBorder(new TitledBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null),
+		partSettingsPanel.setEnabled(false);
+		partSettingsPanel.setBorder(new TitledBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null),
 				"Param\u00E8tres de partie", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-		panel.setPreferredSize(new Dimension(200, 10));
-		southPanel.add(panel, BorderLayout.EAST);
-		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+		partSettingsPanel.setPreferredSize(new Dimension(200, 10));
+		southPanel.add(partSettingsPanel, BorderLayout.EAST);
+		partSettingsPanel.setLayout(new BoxLayout(partSettingsPanel, BoxLayout.Y_AXIS));
 
-		JPanel panel_1 = new JPanel();
-		FlowLayout flowLayout = (FlowLayout) panel_1.getLayout();
-		flowLayout.setAlignment(FlowLayout.LEFT);
-		panel_1.setMaximumSize(new Dimension(30000, 50));
-		panel.add(panel_1);
+		panel = new JPanel();
+		FlowLayout fl_panel = (FlowLayout) panel.getLayout();
+		fl_panel.setAlignment(FlowLayout.LEFT);
+		panel.setMaximumSize(new Dimension(30000, 50));
+		partSettingsPanel.add(panel);
 
-		JLabel barNumberLabel = new JLabel("Nombre de mesures :");
-		panel_1.add(barNumberLabel);
+		barNumberLabel.setEnabled(false);
+		panel.add(barNumberLabel);
 
-		JSpinner spinner = new JSpinner();
-		spinner.addChangeListener(new ChangeListener() {
+		barNumberSpinner.addChangeListener(new ChangeListener() {
 			public void stateChanged(ChangeEvent e) {
+				Main.song.getSongParts().get(selectedIndex).setLength((int) barNumberSpinner.getValue());
 			}
 		});
-		spinner.setModel(new SpinnerNumberModel(new Integer(4), new Integer(1), null, new Integer(1)));
-		panel_1.add(spinner);
+		barNumberSpinner.setModel(new SpinnerNumberModel(new Integer(4), new Integer(1), null, new Integer(1)));
+		panel.add(barNumberSpinner);
 
-		JPanel scorePaneContainer = new JPanel();
+		scorePaneContainer = new JPanel();
 		centerPanel.add(scorePaneContainer, BorderLayout.CENTER);
 		scorePaneContainer.setLayout(new BorderLayout(0, 0));
 
@@ -594,10 +815,38 @@ public class ComposerFrame extends JFrame {
 	}
 
 	public void newProject() {
-
+		partSettingsPanel.setEnabled(false);
+		barNumberLabel.setEnabled(false);
+		barNumberSpinner.setEnabled(false);
+		partCount = 0;
+		bpmSlider.setValue(120);
+		bpmTextField.setText(120+"");
+		tonalityComboBox.setSelectedIndex(0);
+		timeLinePanel.removeAll();
+		timeLinePanel.revalidate();
+		deleteButton.setEnabled(false);
+		titleTextField.setText("Nouveau morceau");
+	}
+	
+	public void updateFields() {
+		newProject();
+		bpmSlider.setValue(Main.song.getTempo());
+		bpmTextField.setText(Main.song.getTempo()+"");
+		tonalityComboBox.setSelectedItem(NOTES_LABELS[Main.song.getTonality()]);
+		for(SongPartType t : Main.song.getStructure()) {
+			if(t == SongPartType.INTRO)timeLinePanel.add(new IntroPanel());
+			else if(t == SongPartType.VERSE)timeLinePanel.add(new VersePanel());
+			else if(t == SongPartType.CHORUS)timeLinePanel.add(new ChorusPanel());
+		}
+		
+		bassComboBox.setSelectedItem(BASS_INSTRUMENTS.get(Main.song.getBass().getInstrument()));
+		compingComboBox.setSelectedItem(COMPING_INSTRUMENTS.get(Main.song.getChords().getInstrument()));
+		leadComboBox.setSelectedItem(LEAD_INSTRUMENTS.get(Main.song.getLead().getInstrument()));
+		drumsComboBox.setSelectedItem(DRUM_INSTRUMENTS.get(Main.song.getDrums().getInstrument()));
+		
+		partCount = Main.song.getStructure().size();
+		timeLinePanel.revalidate();
+		titleTextField.setText(Main.song.getTitle());
 	}
 
-	public static int[] getSongStructure() {
-		return null;
-	}
 }

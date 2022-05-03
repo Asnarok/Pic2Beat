@@ -82,6 +82,7 @@ public class Main implements JMC {
               .addInstrument("Alto", InstrumentRole.THIRDS, VIOLA)
               .addInstrument("Violin", InstrumentRole.FIFTHS, VIOLIN);        
         ComposerFrame frame = new ComposerFrame();
+        frame.newProject();
         frame.setVisible(true);
 	}
 

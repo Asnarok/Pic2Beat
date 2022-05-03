@@ -36,9 +36,11 @@ public class NotePanel extends JPanel implements JMC {
 		high = part.getHighestPitch();
 		low = part.getLowestPitch();
 
-		int bars = (int) (part.getEndTime() / 4);
+		int bars = (int) (part.getEndTime() / 4)+1;
 		int width = (BAR_WIDTH * bars);
 		height = NOTE_HEIGHT * (high - low + 1);
+		
+		System.out.println(part.getEndTime());
 
 		this.setPreferredSize(new Dimension(width, height));
 		this.repaint();
@@ -49,7 +51,7 @@ public class NotePanel extends JPanel implements JMC {
 	private static final Color backgroundColor = new Color(170, 170, 170);
 	private static final Color gridColor = new Color(160, 160, 160);
 	private static final Color[] toChange = { noteColor, new Color(0, 10, 150), new Color(10, 150, 0),
-			new Color(150, 150, 0) };
+			new Color(150, 150, 0), new Color(200, 50, 150)};
 
 	public void paintComponent(Graphics g) {
 		currentHeight = this.getHeight();

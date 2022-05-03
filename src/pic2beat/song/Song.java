@@ -1,5 +1,6 @@
 package pic2beat.song;
 
+import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -12,7 +13,7 @@ import jm.music.data.Part;
 import jm.music.data.Phrase;
 import jm.music.data.Score;
 
-public class Song {
+public class Song implements Serializable{
 
 	private String title;
 
@@ -24,6 +25,10 @@ public class Song {
 	private List<SongPartType> structure;
 
 	private SongPart chorus;
+	
+	private int tempo;
+	
+	private int tonality;
 
 	public Song(String title) {
 		this.title = title;
@@ -192,6 +197,10 @@ public class Song {
 		return null;
 	}
 
+	public List<SongPartType> getStructure() {
+		return structure;
+	}
+	
 	public void addToStruct(SongPartType part) {
 		this.structure.add(part);
 	}
@@ -210,6 +219,22 @@ public class Song {
 	
 	public List<SongPart> getSongParts() {
 		return parts;
+	}
+
+	public int getTempo() {
+		return tempo;
+	}
+
+	public void setTempo(int tempo) {
+		this.tempo = tempo;
+	}
+
+	public int getTonality() {
+		return tonality;
+	}
+
+	public void setTonality(int tonality) {
+		this.tonality = tonality;
 	}
 
 }
