@@ -119,6 +119,7 @@ public class Song implements Serializable {
 		instruments.put(new Part("Bass", instrument, 2), InstrumentRole.BASS);
 		return this;
 	}
+	
 
 	public Part getBass() {
 		return getPartWithName("Bass");

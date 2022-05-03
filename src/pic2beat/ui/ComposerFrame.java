@@ -67,6 +67,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import jm.JMC;
+import jm.constants.Instruments;
 import jm.music.data.Score;
 import jm.util.Play;
 import jm.util.View;
@@ -119,7 +120,7 @@ public class ComposerFrame extends JFrame implements JMC {
 
 		for (String s : bass) {
 			try {
-				BASS_INSTRUMENTS.put(JMC.class.getField(s).getInt(null), s);
+				BASS_INSTRUMENTS.put(Instruments.class.getField(s).getInt(null), s);
 			} catch (IllegalArgumentException | IllegalAccessException | NoSuchFieldException | SecurityException e) {
 				e.printStackTrace();
 			}
@@ -127,7 +128,7 @@ public class ComposerFrame extends JFrame implements JMC {
 
 		for (String s : comping) {
 			try {
-				COMPING_INSTRUMENTS.put(JMC.class.getField(s).getInt(null), s);
+				COMPING_INSTRUMENTS.put(Instruments.class.getField(s).getInt(null), s);
 			} catch (IllegalArgumentException | IllegalAccessException | NoSuchFieldException | SecurityException e) {
 				e.printStackTrace();
 			}
@@ -135,7 +136,7 @@ public class ComposerFrame extends JFrame implements JMC {
 
 		for (String s : drums) {
 			try {
-				DRUM_INSTRUMENTS.put(JMC.class.getField(s).getInt(null), s);
+				DRUM_INSTRUMENTS.put(Instruments.class.getField(s).getInt(null), s);
 			} catch (IllegalArgumentException | IllegalAccessException | NoSuchFieldException | SecurityException e) {
 				e.printStackTrace();
 			}
@@ -143,7 +144,7 @@ public class ComposerFrame extends JFrame implements JMC {
 
 		for (String s : lead) {
 			try {
-				LEAD_INSTRUMENTS.put(JMC.class.getField(s).getInt(null), s);
+				LEAD_INSTRUMENTS.put(Instruments.class.getField(s).getInt(null), s);
 			} catch (IllegalArgumentException | IllegalAccessException | NoSuchFieldException | SecurityException e) {
 				e.printStackTrace();
 			}
@@ -552,10 +553,12 @@ public class ComposerFrame extends JFrame implements JMC {
 					Main.song.setStruct(struct);
 
 					try {
-						Main.song.setBass(JMC.class.getField((String) bassComboBox.getSelectedItem()).getInt(null));
-						Main.song
-								.setChords(JMC.class.getField((String) compingComboBox.getSelectedItem()).getInt(null));
-						Main.song.setLead(JMC.class.getField((String) leadComboBox.getSelectedItem()).getInt(null));
+						Main.song.setBass(
+								Instruments.class.getField((String) bassComboBox.getSelectedItem()).getInt(null));
+						Main.song.setChords(
+								Instruments.class.getField((String) compingComboBox.getSelectedItem()).getInt(null));
+						Main.song.setLead(
+								Instruments.class.getField((String) leadComboBox.getSelectedItem()).getInt(null));
 					} catch (IllegalArgumentException | IllegalAccessException | NoSuchFieldException
 							| SecurityException e1) {
 						// TODO Auto-generated catch block
@@ -602,6 +605,10 @@ public class ComposerFrame extends JFrame implements JMC {
 		deleteButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				timeLinePanel.remove(lastFocused);
+				if (Main.song.getSongParts().size() == partCount) {
+					Main.song.getSongParts().remove(selectedIndex);
+					Main.song.removeFromStruct(selectedIndex);
+				}
 				lastFocused = null;
 				deleteButton.setEnabled(false);
 				timeLinePanel.revalidate();
@@ -854,13 +861,11 @@ public class ComposerFrame extends JFrame implements JMC {
 	}
 
 	public void updateFields() {
-		newProject();
 		bpmSlider.setValue(Main.song.getTempo());
 		bpmTextField.setText(Main.song.getTempo() + "");
 		tonalityComboBox.setSelectedItem(NOTES_LABELS[Main.song.getTonality()]);
 		System.out.println(Main.song.getStructure().size());
 		for (SongPartType t : Main.song.getStructure()) {
-			System.out.println(t);
 			if (t == SongPartType.INTRO)
 				timeLinePanel.add(new IntroPanel());
 			else if (t == SongPartType.VERSE)
