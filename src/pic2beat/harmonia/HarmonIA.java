@@ -19,7 +19,7 @@ public class HarmonIA {
 	public static int[] scale;
 	public static Map<Chord, Map<Chord, Integer>> matrix;
 
-	private static final boolean VERBOSE = false;
+	private static final boolean VERBOSE = true;
 
 
 	public static LinkedList<Chord> generateProgression(int tona, int[] scale, int length, int carrure) {
@@ -42,15 +42,18 @@ public class HarmonIA {
 		// initialisation de la tonalité
 		tonality = new Chord(tona, typ);
 		progression.add(tonality);
+		System.out.println(progression.getLast());
 		progression.getLast().length = carrure;
-		// System.out.println(Progression);
 		matrix = initProbaMatrix();
 
 		for (int mes = 1; mes < length; mes++) {
+			System.out.println(progression);
 			final Chord c = computeNext();
 			if(c != null) {
-				progression.add(computeNext());
+				progression.add(c);
+				if(VERBOSE)System.out.println("added "+c.name);
 			} else {
+				if(VERBOSE)System.out.println("err.");
 				mes--;
 			}
 			// System.out.println(Progression);
@@ -68,7 +71,10 @@ public class HarmonIA {
 	public static Chord computeNext() {
 		LinkedHashMap<Chord, Integer> potentialChords = null;
 
+		System.out.println(progression.getLast());
+		
 		for(Entry<Chord, Map<Chord, Integer>> entry : matrix.entrySet()) {
+			System.out.println("computing " + entry.getKey());
 			if(entry.getKey().notes[0].equals(progression.getLast().notes[0])) { // TODO at least check if they are major/minor
 				potentialChords = new LinkedHashMap<>(entry.getValue());
 			}
@@ -135,6 +141,8 @@ public class HarmonIA {
 			final Map<Chord, Integer> inner = new HashMap<>();
 			for (Entry<String, Integer> entry2 : entry1.getValue().entrySet()) {
 				inner.put(Chord.fromRoman(entry2.getKey(), tona, scale), entry2.getValue());
+				
+				System.out.println(entry1.getKey()+"->"+entry2.getKey() +":"+entry2.getValue());
 			}
 			toReturn.put(Chord.fromRoman(entry1.getKey(), tona, scale), inner);
 		}
