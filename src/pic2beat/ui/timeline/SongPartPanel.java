@@ -25,8 +25,8 @@ public class SongPartPanel extends JPanel {
 	private Color hoverColor;
 	private SongPartType structType;
 
-	public SongPartPanel(String label, String HTMLColorCode, SongPartType structType) {
-		this.label = label;
+	public SongPartPanel(String HTMLColorCode, SongPartType structType) {
+		this.label = structType.getLabel();
 		this.background = new Color(Integer.parseInt(HTMLColorCode, 16));
 		this.structType = structType;
 

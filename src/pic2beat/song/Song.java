@@ -16,6 +16,11 @@ import jm.music.data.Score;
 
 public class Song implements Serializable{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1588682771531217718L;
+
 	private String title;
 
 	private List<SongPart> parts;
@@ -216,8 +221,18 @@ public class Song implements Serializable{
 		this.structure.remove(index);
 	}
 
-	public enum SongPartType {
-		INTRO, VERSE, CHORUS
+	public enum SongPartType implements Serializable{
+		INTRO("Intro"), VERSE("Couplet"), CHORUS("Refrain");
+		
+		private String label;
+		
+		SongPartType(String label) {
+			this.label = label;
+		}
+		
+		public String getLabel() {
+			return label;
+		}
 	}
 	
 	public List<SongPart> getSongParts() {

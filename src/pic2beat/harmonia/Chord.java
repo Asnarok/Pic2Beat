@@ -11,6 +11,10 @@ import pic2beat.melodia.MelodIA;
 
 public class Chord implements JMC, Serializable{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 501011515832370098L;
 	public String name;
 	public ChordType type;
 	public String[] notes = new String[4];

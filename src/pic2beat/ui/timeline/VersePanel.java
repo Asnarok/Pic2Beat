@@ -5,7 +5,7 @@ import pic2beat.song.Song.SongPartType;
 public class VersePanel extends SongPartPanel{
 
 	public VersePanel() {
-		super("Couplet", "00C853", SongPartType.VERSE);
+		super("00C853", SongPartType.VERSE);
 	}
 
 }

@@ -5,7 +5,7 @@ import pic2beat.song.Song.SongPartType;
 public class IntroPanel extends SongPartPanel {
 
 	public IntroPanel() {
-		super("Intro", "80D8FF", SongPartType.INTRO);
+		super("80D8FF", SongPartType.INTRO);
 	}
 
 }

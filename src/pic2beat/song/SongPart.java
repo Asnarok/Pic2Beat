@@ -15,6 +15,10 @@ import pic2beat.song.Song.SongPartType;
 
 public class SongPart implements Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 8070701508088677417L;
 	private final Song song;
 	private final HashMap<Part, Object> phrases;
 

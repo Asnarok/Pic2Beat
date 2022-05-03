@@ -306,6 +306,7 @@ public class ComposerFrame extends JFrame implements JMC {
 				if (i == JFileChooser.APPROVE_OPTION) {
 					Main.song = FileUtils.loadFromFile(jfc.getSelectedFile());
 					updateFields();
+					
 				}
 			}
 		});
@@ -857,7 +858,9 @@ public class ComposerFrame extends JFrame implements JMC {
 		bpmSlider.setValue(Main.song.getTempo());
 		bpmTextField.setText(Main.song.getTempo() + "");
 		tonalityComboBox.setSelectedItem(NOTES_LABELS[Main.song.getTonality()]);
+		System.out.println(Main.song.getStructure().size());
 		for (SongPartType t : Main.song.getStructure()) {
+			System.out.println(t);
 			if (t == SongPartType.INTRO)
 				timeLinePanel.add(new IntroPanel());
 			else if (t == SongPartType.VERSE)

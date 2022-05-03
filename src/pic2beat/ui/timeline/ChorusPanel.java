@@ -5,7 +5,7 @@ import pic2beat.song.Song.SongPartType;
 public class ChorusPanel extends SongPartPanel {
 
 	public ChorusPanel() {
-		super("Refrain", "EF5350", SongPartType.CHORUS);
+		super("EF5350", SongPartType.CHORUS);
 	}
 
 }
