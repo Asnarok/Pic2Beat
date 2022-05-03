@@ -217,6 +217,7 @@ public class ComposerFrame extends JFrame implements JMC {
 	private JToggleButton selectionMode;
 	private JMenuItem openMenuItem;
 	private JMenuItem stopMenuItem;
+	private JComboBox<String> minOrMajComboBox;
 
 	/**
 	 * Create the frame.
@@ -341,7 +342,7 @@ public class ComposerFrame extends JFrame implements JMC {
 
 		stopMenuItem = new JMenuItem("Arr\u00EAter");
 		stopMenuItem.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
+			public void actionPerformed(ActionEvent e) {
 				Play.stopMidi();
 			}
 		});
@@ -441,6 +442,16 @@ public class ComposerFrame extends JFrame implements JMC {
 		tonalityComboBox = new JComboBox<>();
 		northSettingsPanel.add(tonalityComboBox);
 		tonalityComboBox.setModel(new DefaultComboBoxModel<String>(NOTES_LABELS));
+		
+		minOrMajComboBox = new JComboBox();
+		minOrMajComboBox.addItemListener(new ItemListener() {
+			public void itemStateChanged(ItemEvent e) {
+				if(minOrMajComboBox.getSelectedIndex() == 0)Main.song.setMajor(true);
+				else Main.song.setMajor(false);
+			}
+		});
+		minOrMajComboBox.setModel(new DefaultComboBoxModel<String>(new String[] {"Maj", "min"}));
+		northSettingsPanel.add(minOrMajComboBox);
 
 		instrumentsPane = new JScrollPane();
 		instrumentsPane.setViewportBorder(
@@ -865,7 +876,6 @@ public class ComposerFrame extends JFrame implements JMC {
 		bpmSlider.setValue(Main.song.getTempo());
 		bpmTextField.setText(Main.song.getTempo() + "");
 		tonalityComboBox.setSelectedItem(NOTES_LABELS[Main.song.getTonality()]);
-		System.out.println(Main.song.getStructure().size());
 		for (SongPartType t : Main.song.getStructure()) {
 			if (t == SongPartType.INTRO)
 				timeLinePanel.add(new IntroPanel());
@@ -880,6 +890,8 @@ public class ComposerFrame extends JFrame implements JMC {
 		leadComboBox.setSelectedItem(LEAD_INSTRUMENTS.get(Main.song.getLead().getInstrument()));
 
 		partCount = Main.song.getStructure().size();
+		if(Main.song.isMajor())minOrMajComboBox.setSelectedIndex(0);
+		else minOrMajComboBox.setSelectedIndex(1);
 		timeLinePanel.revalidate();
 		titleTextField.setText(Main.song.getTitle());
 	}
