@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import jm.JMC;
 import jm.music.data.CPhrase;
 import jm.music.data.Part;
 import jm.music.data.Phrase;
@@ -17,8 +18,8 @@ public class Song implements Serializable{
 
 	private String title;
 
-	private final List<SongPart> parts;
-	private final HashMap<Part, InstrumentRole> instruments;
+	private List<SongPart> parts;
+	private HashMap<Part, InstrumentRole> instruments;
 
 	public static final int INTRO = 0, VERSE = 1, CHORUS = 2;
 
@@ -26,7 +27,7 @@ public class Song implements Serializable{
 
 	private SongPart chorus;
 	
-	private int tempo = 120;
+	private int tempo = 80;
 	
 	private int tonality;
 
@@ -36,6 +37,7 @@ public class Song implements Serializable{
 		this.parts = new ArrayList<>();
 		this.instruments = new HashMap<>();
 		this.structure = new ArrayList<SongPartType>();
+		this.setDrums(JMC.DRUM);
 	}
 
 	/**
@@ -236,6 +238,10 @@ public class Song implements Serializable{
 
 	public void setTonality(int tonality) {
 		this.tonality = tonality;
+	}
+	
+	public void clearSongParts() {
+		parts.clear();
 	}
 
 }
