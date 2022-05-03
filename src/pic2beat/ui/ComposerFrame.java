@@ -68,9 +68,11 @@ import com.google.gson.reflect.TypeToken;
 
 import jm.JMC;
 import jm.constants.Instruments;
+import jm.music.data.Phrase;
 import jm.music.data.Score;
 import jm.util.Play;
 import jm.util.View;
+import jm.util.Write;
 import pic2beat.Main;
 import pic2beat.song.InstrumentRole;
 import pic2beat.song.Song;
@@ -105,7 +107,6 @@ public class ComposerFrame extends JFrame implements JMC {
 
 	public static final HashMap<Integer, String> BASS_INSTRUMENTS = new HashMap<>();
 	public static final HashMap<Integer, String> COMPING_INSTRUMENTS = new HashMap<>();
-	public static final HashMap<Integer, String> DRUM_INSTRUMENTS = new HashMap<>();
 	public static final HashMap<Integer, String> LEAD_INSTRUMENTS = new HashMap<>();
 	public static boolean initialized = false;
 
@@ -134,13 +135,6 @@ public class ComposerFrame extends JFrame implements JMC {
 			}
 		}
 
-		for (String s : drums) {
-			try {
-				DRUM_INSTRUMENTS.put(Instruments.class.getField(s).getInt(null), s);
-			} catch (IllegalArgumentException | IllegalAccessException | NoSuchFieldException | SecurityException e) {
-				e.printStackTrace();
-			}
-		}
 
 		for (String s : lead) {
 			try {
@@ -283,6 +277,14 @@ public class ComposerFrame extends JFrame implements JMC {
 		exportMenuItem = new JMenuItem("Exporter...");
 		exportMenuItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				if(selectedIndex < Main.song.getSongParts().size()) {
+					for(Object o : Main.song.getSongParts().get(selectedIndex).getPhrases().values()) {
+						if(o instanceof Phrase) {
+							Phrase p = (Phrase)o;
+							Write.midi(p);
+						}
+					}
+				}
 			}
 		});
 
