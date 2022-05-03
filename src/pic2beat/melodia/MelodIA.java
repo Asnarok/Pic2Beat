@@ -72,16 +72,13 @@ public class MelodIA implements JMC, pic2beat.utils.Scales {
 	 * @param chordLength  <code>currentChord</code> length
 	 * @return <code>Phrase</code> object containing the generated melody
 	 */
-	public Phrase phrase(final int[] currentChord, double chordLength) {
+	public Phrase phrase(int tonality, int[] scale, final int[] currentChord, double chordLength) {
 
 		Phrase p = new Phrase();
 
 		// décision gamme ( avec config )
 		// -> soit on reste dans une gamme prédef (tona du morceau)
 		// -> soit on choisit un mode compatible
-
-		int tonality = getNote("C0"); // TODO connect to ui
-		int[] scale = Scales.MAJOR_SCALE; // TODO connect to ui
 
 		while (p.getBeatLength() < chordLength) {
 			p.addNoteList(computeNextRhythmic(p, currentChord, chordLength, tonality, scale).toArray(new Note[0]));

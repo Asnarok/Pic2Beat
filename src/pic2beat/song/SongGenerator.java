@@ -9,9 +9,11 @@ public interface SongGenerator {
 
     Phrase generateDrums();
 
-    List<Chord> generateChords(int length);
+    List<Chord> generateChords();
 
-    Phrase generateBass(List<Chord> chords);
+    Phrase generateBass();
 
-    Phrase generateInstrument(InstrumentRole role, List<Chord> chords);
+    Phrase generateInstrument(InstrumentRole role);
+
+    void setSongPart(SongPart part);
 }

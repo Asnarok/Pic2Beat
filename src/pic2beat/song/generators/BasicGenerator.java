@@ -8,15 +8,18 @@ import pic2beat.harmonia.Chord;
 import pic2beat.harmonia.HarmonIA;
 import pic2beat.song.InstrumentRole;
 import pic2beat.song.SongGenerator;
+import pic2beat.song.SongPart;
 import pic2beat.utils.Scales;
 
 public class BasicGenerator implements SongGenerator {
 
+    private SongPart part;
+
     @Override
     public Phrase generateDrums() {
         final Phrase p = new Phrase();
-
-        for(int i = 0; i < 4; i++) {
+        
+        for(int i = 0; i < part.getLength(); i++) {
             p.addNote(new Note(36, 0.5));
             p.addNote(new Note(42, 0.5));
             p.addNote(new Note(42, 0.5));
@@ -26,20 +29,20 @@ public class BasicGenerator implements SongGenerator {
             p.addNote(new Note(42, 0.5));
             p.addNote(new Note(42, 0.5));
         }
-
+ 
         return p;
     }
 
     @Override
-    public List<Chord> generateChords(int length) {
-        return HarmonIA.generateProgression(0, Scales.MINOR_SCALE, length, 4);
+    public List<Chord> generateChords() {
+        return HarmonIA.generateProgression(part.getSong().getTonality(), part.getSong().getScale(), part.getLength(), 4);
     }
 
     @Override
-    public Phrase generateBass(List<Chord> chords) {
+    public Phrase generateBass() {
         final Phrase p = new Phrase();
 
-        for(Chord c : chords) {
+        for(Chord c : part.getChords()) {
         	int i = (int)(Math.random()*c.getNotes().length);
         	p.add(new Note(c.getNotes()[0]%12+24, c.length));
         }
@@ -48,7 +51,7 @@ public class BasicGenerator implements SongGenerator {
     }
 
     @Override
-    public Phrase generateInstrument(InstrumentRole role, List<Chord> chords) {
+    public Phrase generateInstrument(InstrumentRole role) {
         final Phrase p = new Phrase();
 
 //        if(role == InstrumentRole.THIRDS) {
@@ -63,5 +66,10 @@ public class BasicGenerator implements SongGenerator {
 //        }
 
         return p;
+    }
+
+    @Override
+    public void setSongPart(SongPart part) {
+        this.part = part;
     }
 }
