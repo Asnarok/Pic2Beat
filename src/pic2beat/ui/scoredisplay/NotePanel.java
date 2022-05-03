@@ -36,10 +36,10 @@ public class NotePanel extends JPanel implements JMC {
 		high = part.getHighestPitch();
 		low = part.getLowestPitch();
 
-		int bars = (int) (part.getEndTime() / 4)+1;
+		int bars = (int) (part.getEndTime() / 4) + 1;
 		int width = (BAR_WIDTH * bars);
 		height = NOTE_HEIGHT * (high - low + 1);
-		
+
 		System.out.println(part.getEndTime());
 
 		this.setPreferredSize(new Dimension(width, height));
@@ -48,10 +48,10 @@ public class NotePanel extends JPanel implements JMC {
 	}
 
 	private static final Color noteColor = Color.orange;
-	private static final Color backgroundColor = new Color(170, 170, 170);
+	private static final Color backgroundColor = new Color(180, 180, 180);
 	private static final Color gridColor = new Color(160, 160, 160);
-	private static final Color[] toChange = { noteColor, new Color(0, 10, 150), new Color(10, 150, 0),
-			new Color(150, 150, 0), new Color(200, 50, 150)};
+	private static final Color[] toChange = { noteColor, new Color(63, 168, 50), new Color(10, 150, 0),
+			new Color(228, 132, 18), new Color(209, 0, 0) };
 
 	public void paintComponent(Graphics g) {
 		currentHeight = this.getHeight();
@@ -73,16 +73,17 @@ public class NotePanel extends JPanel implements JMC {
 			int i = 0;
 			for (Object o : part.getPhrases().values()) {
 				if (o instanceof Phrase) {
-
 					currentX = 0;
 					Phrase p = (Phrase) o;
 					for (Note n : p.getNoteArray()) {
 						g.setColor(toChange[i]);
-						double width = (BAR_WIDTH * (n.getDuration() * 0.25));
+						double width = CROTCHET_WIDTH * n.getRhythmValue();
 						int y = this.getHeight() - (n.getPitch() - low + 1) * NOTE_HEIGHT;
-						g.fillRect((int)currentX, y, (int)width, NOTE_HEIGHT);
-						g.setColor(new Color(190, 190, 190));
-						g.drawRect((int)currentX, y, (int)width, NOTE_HEIGHT);
+						if (!n.isRest()) {
+							g.fillRect((int) currentX, y, (int) width, NOTE_HEIGHT);
+							g.setColor(new Color(100, 100, 100));
+							g.drawRect((int) currentX, y, (int) width, NOTE_HEIGHT);
+						}
 						currentX += width;
 					}
 					i++;

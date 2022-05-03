@@ -10,9 +10,12 @@ import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
 import java.awt.event.InputEvent;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -39,6 +42,7 @@ import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
@@ -63,11 +67,14 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import jm.JMC;
+import jm.constants.Instruments;
 import jm.music.data.Score;
 import jm.util.Play;
 import jm.util.View;
 import pic2beat.Main;
-import pic2beat.song.SongPart.SongPartType;
+import pic2beat.song.InstrumentRole;
+import pic2beat.song.Song;
+import pic2beat.song.Song.SongPartType;
 import pic2beat.song.SongPart;
 import pic2beat.song.generators.BasicGenerator;
 import pic2beat.ui.scoredisplay.ScorePane;
@@ -77,7 +84,7 @@ import pic2beat.ui.timeline.SongPartPanel;
 import pic2beat.ui.timeline.VersePanel;
 import pic2beat.utils.FileUtils;
 
-public class ComposerFrame extends JFrame {
+public class ComposerFrame extends JFrame implements JMC {
 
 	public static final int IDLE = 0, INTRO = 1, VERSE = 2, CHORUS = 3;
 	public static int adding = IDLE;
@@ -101,48 +108,48 @@ public class ComposerFrame extends JFrame {
 	public static final HashMap<Integer, String> DRUM_INSTRUMENTS = new HashMap<>();
 	public static final HashMap<Integer, String> LEAD_INSTRUMENTS = new HashMap<>();
 	public static boolean initialized = false;
-	
-	public static final String[] NOTES_LABELS = new String[] { "A", "A#", "B", "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#" };
-	
+
+	public static final String[] NOTES_LABELS = new String[] { "A", "A#", "B", "C", "C#", "D", "D#", "E", "F", "F#",
+			"G", "G#" };
+
 	public static void initInstruments() {
 		List<String> bass = loadJson("bass_instruments.json");
 		List<String> comping = loadJson("comping_instruments.json");
 		List<String> drums = loadJson("drum_instruments.json");
 		List<String> lead = loadJson("lead_instruments.json");
-		
-		for(String s : bass) {
+
+		for (String s : bass) {
 			try {
-				BASS_INSTRUMENTS.put(JMC.class.getField(s).getInt(null), s);
+				BASS_INSTRUMENTS.put(Instruments.class.getField(s).getInt(null), s);
 			} catch (IllegalArgumentException | IllegalAccessException | NoSuchFieldException | SecurityException e) {
 				e.printStackTrace();
 			}
 		}
-		
-		for(String s : comping) {
+
+		for (String s : comping) {
 			try {
-				COMPING_INSTRUMENTS.put(JMC.class.getField(s).getInt(null), s);
+				COMPING_INSTRUMENTS.put(Instruments.class.getField(s).getInt(null), s);
 			} catch (IllegalArgumentException | IllegalAccessException | NoSuchFieldException | SecurityException e) {
 				e.printStackTrace();
 			}
 		}
-		
-		for(String s : drums) {
+
+		for (String s : drums) {
 			try {
-				DRUM_INSTRUMENTS.put(JMC.class.getField(s).getInt(null), s);
+				DRUM_INSTRUMENTS.put(Instruments.class.getField(s).getInt(null), s);
 			} catch (IllegalArgumentException | IllegalAccessException | NoSuchFieldException | SecurityException e) {
 				e.printStackTrace();
 			}
 		}
-		
-		for(String s : lead) {
+
+		for (String s : lead) {
 			try {
-				LEAD_INSTRUMENTS.put(JMC.class.getField(s).getInt(null), s);
+				LEAD_INSTRUMENTS.put(Instruments.class.getField(s).getInt(null), s);
 			} catch (IllegalArgumentException | IllegalAccessException | NoSuchFieldException | SecurityException e) {
 				e.printStackTrace();
 			}
 		}
-		
-		
+
 	}
 
 	private static ArrayList<String> loadJson(String fileName) {
@@ -180,13 +187,11 @@ public class ComposerFrame extends JFrame {
 	private JMenuItem showScoreMenuItem;
 	private JMenuItem playMenuItem;
 	private JSeparator separator;
-	private JPanel leadInstrumentPanel_1;
 	private JPanel panel;
 	private JPanel instrumentsPanel;
 	private JPanel timeLineContainer;
 	private JLabel compingLabel;
 	private JPanel compingInstrumentPanel;
-	private JComboBox drumsComboBox;
 	private JToggleButton chorusButton;
 	private Box verticalBox;
 	private JLabel leadLabel;
@@ -208,7 +213,6 @@ public class ComposerFrame extends JFrame {
 	private JScrollPane instrumentsPane;
 	private JSeparator separator_1;
 	private JSlider bpmSlider;
-	private JLabel drumLabel;
 	private JToggleButton verseButton;
 	private JLabel titleLabel;
 	private JComboBox<String> tonalityComboBox;
@@ -219,11 +223,13 @@ public class ComposerFrame extends JFrame {
 	private JToolBar toolBar;
 	private JToggleButton selectionMode;
 	private JMenuItem openMenuItem;
+	private JMenuItem stopMenuItem;
 
 	/**
 	 * Create the frame.
 	 */
 	public ComposerFrame() {
+		setTitle("Pic2Beat Composer");
 
 		barNumberSpinner = new JSpinner();
 		partSettingsPanel = new JPanel();
@@ -260,12 +266,13 @@ public class ComposerFrame extends JFrame {
 				Main.song.setTempo(bpmSlider.getValue());
 				Main.song.setTonality(tonalityComboBox.getSelectedIndex());
 				JFileChooser jfc = new JFileChooser();
-				jfc.setSelectedFile(new File(Main.song.getTitle()+".song"));
+				jfc.setSelectedFile(new File(Main.song.getTitle() + ".song"));
 				int i = jfc.showSaveDialog(null);
-				if(i == JFileChooser.APPROVE_OPTION) {
+				if (i == JFileChooser.APPROVE_OPTION) {
 					String name = jfc.getSelectedFile().getName();
-					if(!name.endsWith(".song"))name+=".song";
-					File f = new File(jfc.getSelectedFile().getParentFile().getAbsolutePath()+"/"+name);
+					if (!name.endsWith(".song"))
+						name += ".song";
+					File f = new File(jfc.getSelectedFile().getParentFile().getAbsolutePath() + "/" + name);
 					FileUtils.saveToFile(f, Main.song);
 				}
 			}
@@ -278,28 +285,29 @@ public class ComposerFrame extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 			}
 		});
-		
+
 		openMenuItem = new JMenuItem("Ouvrir");
 		openMenuItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				JFileChooser jfc = new JFileChooser();
 				jfc.setFileFilter(new FileFilter() {
-					
+
 					@Override
 					public String getDescription() {
 						return "";
 					}
-					
+
 					@Override
 					public boolean accept(File e) {
 						return e.getName().endsWith(".song");
 					}
 				});
-				
+
 				int i = jfc.showOpenDialog(null);
-				if(i == JFileChooser.APPROVE_OPTION) {
+				if (i == JFileChooser.APPROVE_OPTION) {
 					Main.song = FileUtils.loadFromFile(jfc.getSelectedFile());
 					updateFields();
+
 				}
 			}
 		});
@@ -329,6 +337,14 @@ public class ComposerFrame extends JFrame {
 		});
 		playMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_P, InputEvent.CTRL_DOWN_MASK));
 		projectMenu.add(playMenuItem);
+
+		stopMenuItem = new JMenuItem("Arr\u00EAter");
+		stopMenuItem.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				Play.stopMidi();
+			}
+		});
+		projectMenu.add(stopMenuItem);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
@@ -370,10 +386,26 @@ public class ComposerFrame extends JFrame {
 		lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
 
 		bpmTextField = new JTextField();
+		bpmTextField.addFocusListener(new FocusAdapter() {
+			@Override
+			public void focusLost(FocusEvent e) {
+				bpmSlider.setValue(Integer.parseInt(bpmTextField.getText()));
+				Main.song.setTempo(bpmSlider.getValue());
+			}
+		});
+		bpmTextField.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+					bpmSlider.setValue(Integer.parseInt(bpmTextField.getText()));
+					Main.song.setTempo(bpmSlider.getValue());
+				}
+			}
+		});
 		bpmTextField.setHorizontalAlignment(SwingConstants.RIGHT);
 		bpmTextField.setPreferredSize(new Dimension(50, 20));
 		bpmTextField.setMaximumSize(new Dimension(50, 50));
-		bpmTextField.setText("120");
+		bpmTextField.setText("80");
 		northSettingsPanel.add(bpmTextField);
 		bpmTextField.setColumns(3);
 
@@ -384,13 +416,14 @@ public class ComposerFrame extends JFrame {
 		bpmSlider.addChangeListener(new ChangeListener() {
 			public void stateChanged(ChangeEvent e) {
 				bpmTextField.setText(bpmSlider.getValue() + "");
+				Main.song.setTempo(bpmSlider.getValue());
 			}
 		});
 		northSettingsPanel.add(bpmSlider);
 		bpmSlider.setOpaque(false);
 		bpmSlider.setBackground(new Color(220, 220, 220));
 		bpmSlider.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
-		bpmSlider.setValue(120);
+		bpmSlider.setValue(80);
 		bpmSlider.setMinorTickSpacing(5);
 		bpmSlider.setMajorTickSpacing(60);
 		bpmSlider.setMaximum(200);
@@ -406,8 +439,7 @@ public class ComposerFrame extends JFrame {
 
 		tonalityComboBox = new JComboBox<>();
 		northSettingsPanel.add(tonalityComboBox);
-		tonalityComboBox.setModel(new DefaultComboBoxModel<String>(
-				NOTES_LABELS));
+		tonalityComboBox.setModel(new DefaultComboBoxModel<String>(NOTES_LABELS));
 
 		instrumentsPane = new JScrollPane();
 		instrumentsPane.setViewportBorder(
@@ -433,7 +465,6 @@ public class ComposerFrame extends JFrame {
 		bassComboBox.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {
 				try {
-					System.out.println(JMC.class.getField((String) e.getItem()).getInt(null));
 					Main.song.setBass(JMC.class.getField((String) e.getItem()).getInt(null));
 				} catch (IllegalArgumentException e1) {
 					e1.printStackTrace();
@@ -506,35 +537,6 @@ public class ComposerFrame extends JFrame {
 		});
 		leadInstrumentPanel.add(leadComboBox);
 
-		leadInstrumentPanel_1 = new JPanel();
-		leadInstrumentPanel_1.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
-		FlowLayout fl_leadInstrumentPanel_1 = (FlowLayout) leadInstrumentPanel_1.getLayout();
-		fl_leadInstrumentPanel_1.setAlignment(FlowLayout.LEFT);
-		leadInstrumentPanel_1.setPreferredSize(new Dimension(10, 70));
-		leadInstrumentPanel_1.setMaximumSize(new Dimension(32767, 60));
-		instrumentsPanel.add(leadInstrumentPanel_1);
-
-		drumLabel = new JLabel("Batterie :");
-		leadInstrumentPanel_1.add(drumLabel);
-
-		drumsComboBox = new JComboBox(DRUM_INSTRUMENTS.values().toArray());
-		drumsComboBox.addItemListener(new ItemListener() {
-			public void itemStateChanged(ItemEvent e) {
-				try {
-					Main.song.setDrums(JMC.class.getField((String) e.getItem()).getInt(null));
-				} catch (IllegalArgumentException e1) {
-					e1.printStackTrace();
-				} catch (IllegalAccessException e1) {
-					e1.printStackTrace();
-				} catch (NoSuchFieldException e1) {
-					e1.printStackTrace();
-				} catch (SecurityException e1) {
-					e1.printStackTrace();
-				}
-			}
-		});
-		leadInstrumentPanel_1.add(drumsComboBox);
-
 		generateButtonContainer = new JPanel();
 		verticalBox.add(generateButtonContainer);
 		generateButtonContainer.setPreferredSize(new Dimension(10, 30));
@@ -545,9 +547,30 @@ public class ComposerFrame extends JFrame {
 		JButton generate = new JButton("G\u00E9n\u00E9rer");
 		generate.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				Main.song.setStruct(getStructure());
-				Main.song.generate(BasicGenerator.class);
-				scorePane.show(Main.song.getSongParts().get(selectedIndex));
+				Main.song.clearSongParts();
+				List<SongPartType> struct = getStructure();
+				if (struct.size() > 0) {
+					Main.song.setStruct(struct);
+
+					try {
+						Main.song.setBass(
+								Instruments.class.getField((String) bassComboBox.getSelectedItem()).getInt(null));
+						Main.song.setChords(
+								Instruments.class.getField((String) compingComboBox.getSelectedItem()).getInt(null));
+						Main.song.setLead(
+								Instruments.class.getField((String) leadComboBox.getSelectedItem()).getInt(null));
+					} catch (IllegalArgumentException | IllegalAccessException | NoSuchFieldException
+							| SecurityException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+
+					Main.song.generate(BasicGenerator.class);
+					scorePane.show(Main.song.getSongParts().get(selectedIndex));
+				} else {
+					JOptionPane.showMessageDialog(newMenu,
+							"La structure du morceau ne peut pas être vide. Veuillez la définir.");
+				}
 			}
 		});
 		generateButtonContainer.add(generate);
@@ -582,6 +605,10 @@ public class ComposerFrame extends JFrame {
 		deleteButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				timeLinePanel.remove(lastFocused);
+				if (Main.song.getSongParts().size() == partCount) {
+					Main.song.getSongParts().remove(selectedIndex);
+					Main.song.removeFromStruct(selectedIndex);
+				}
 				lastFocused = null;
 				deleteButton.setEnabled(false);
 				timeLinePanel.revalidate();
@@ -621,11 +648,12 @@ public class ComposerFrame extends JFrame {
 			}
 		});
 		selectionMode.setMargin(new Insets(0, 0, 0, 0));
-		selectionMode.setIcon(new ImageIcon(ComposerFrame.class.getResource("/pic2beat/res/img/cursor.png")));
+		String imagesFolderPath = System.getProperty("user.dir");
+		selectionMode.setIcon(new ImageIcon(imagesFolderPath + "\\assets\\images\\cursor.png"));
 		toolBar.add(selectionMode);
 
 		deleteButton.setMargin(new Insets(0, 0, 0, 0));
-		deleteButton.setIcon(new ImageIcon(ComposerFrame.class.getResource("/pic2beat/res/img/delete.png")));
+		deleteButton.setIcon(new ImageIcon(imagesFolderPath + "\\assets\\images\\delete.png"));
 		toolBar.add(deleteButton);
 		introButton.setActionCommand("");
 		toolBar.add(introButton);
@@ -802,8 +830,8 @@ public class ComposerFrame extends JFrame {
 		scorePaneContainer.add(scorePane, BorderLayout.CENTER);
 	}
 
-	public List<SongPart.SongPartType> getStructure() {
-		List<SongPart.SongPartType> structure = new ArrayList<>();
+	public List<SongPartType> getStructure() {
+		List<SongPartType> structure = new ArrayList<>();
 		for (Component c : timeLinePanel.getComponents()) {
 			if (c instanceof SongPartPanel) {
 				SongPartPanel s = (SongPartPanel) c;
@@ -819,31 +847,37 @@ public class ComposerFrame extends JFrame {
 		barNumberLabel.setEnabled(false);
 		barNumberSpinner.setEnabled(false);
 		partCount = 0;
-		bpmSlider.setValue(120);
-		bpmTextField.setText(120+"");
+		bpmSlider.setValue(80);
+		bpmTextField.setText(80 + "");
 		tonalityComboBox.setSelectedIndex(0);
 		timeLinePanel.removeAll();
 		timeLinePanel.revalidate();
 		deleteButton.setEnabled(false);
 		titleTextField.setText("Nouveau morceau");
+		Main.song = new Song("Nouveau morceau");
+		Main.song.setLead(VIBRAPHONE).setChords(PIANO).setDrums(PIANO) // TODO DrumKit
+				.setBass(BASS).addInstrument("Alto", InstrumentRole.THIRDS, VIOLA)
+				.addInstrument("Violin", InstrumentRole.FIFTHS, VIOLIN);
 	}
-	
+
 	public void updateFields() {
-		newProject();
 		bpmSlider.setValue(Main.song.getTempo());
-		bpmTextField.setText(Main.song.getTempo()+"");
+		bpmTextField.setText(Main.song.getTempo() + "");
 		tonalityComboBox.setSelectedItem(NOTES_LABELS[Main.song.getTonality()]);
-		for(SongPartType t : Main.song.getStructure()) {
-			if(t == SongPartType.INTRO)timeLinePanel.add(new IntroPanel());
-			else if(t == SongPartType.VERSE)timeLinePanel.add(new VersePanel());
-			else if(t == SongPartType.CHORUS)timeLinePanel.add(new ChorusPanel());
+		System.out.println(Main.song.getStructure().size());
+		for (SongPartType t : Main.song.getStructure()) {
+			if (t == SongPartType.INTRO)
+				timeLinePanel.add(new IntroPanel());
+			else if (t == SongPartType.VERSE)
+				timeLinePanel.add(new VersePanel());
+			else if (t == SongPartType.CHORUS)
+				timeLinePanel.add(new ChorusPanel());
 		}
-		
+
 		bassComboBox.setSelectedItem(BASS_INSTRUMENTS.get(Main.song.getBass().getInstrument()));
 		compingComboBox.setSelectedItem(COMPING_INSTRUMENTS.get(Main.song.getChords().getInstrument()));
 		leadComboBox.setSelectedItem(LEAD_INSTRUMENTS.get(Main.song.getLead().getInstrument()));
-		drumsComboBox.setSelectedItem(DRUM_INSTRUMENTS.get(Main.song.getDrums().getInstrument()));
-		
+
 		partCount = Main.song.getStructure().size();
 		timeLinePanel.revalidate();
 		titleTextField.setText(Main.song.getTitle());

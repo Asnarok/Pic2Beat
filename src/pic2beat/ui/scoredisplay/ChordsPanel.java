@@ -31,7 +31,7 @@ public class ChordsPanel extends JPanel {
 			if (!chordsColors.containsKey(chords.get(i).name)) {
 				float h = (float) (Math.random());
 				float s = (float) (Math.random() * 0.5 + 0.2);
-				float b = (float) (Math.random() * 0.2 + 0.7);
+				float b = 0.9f;
 				Color c = Color.getHSBColor(h, s, b);
 				chordsColors.put(chords.get(i).name, c);
 			}
