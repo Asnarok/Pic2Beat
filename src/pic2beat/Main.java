@@ -26,11 +26,6 @@ public class Main implements JMC {
 
         System.out.println(Chord.fromRoman("viidim7", 0, Scales.MAJOR_SCALE));
 
-        CPhrase cp = new CPhrase();
-        for(Chord c : HarmonIA.generateProgression(0, MAJOR_SCALE, 12, 4)) {
-            cp.addChord(c.getNotes(), c.length);
-        }
-
         // Melodia tests
         //LinkedList<Chord> progression = HarmonIA.generateProgression("HAPPY", 4, 4);
         //System.out.println(progression.size());

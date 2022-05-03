@@ -1,6 +1,7 @@
 package pic2beat.song.generators;
 
-import jm.JMC;
+import java.util.List;
+
 import jm.music.data.Note;
 import jm.music.data.Phrase;
 import pic2beat.harmonia.Chord;
@@ -8,9 +9,6 @@ import pic2beat.harmonia.HarmonIA;
 import pic2beat.song.InstrumentRole;
 import pic2beat.song.SongGenerator;
 import pic2beat.utils.Scales;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class BasicGenerator implements SongGenerator {
 
@@ -41,11 +39,10 @@ public class BasicGenerator implements SongGenerator {
     public Phrase generateBass(List<Chord> chords) {
         final Phrase p = new Phrase();
 
-//        p.addNote(new Note(JMC.DS1, 4));
-//        p.addNote(new Note(JMC.D1, 4));
-//        p.addNote(new Note(JMC.G1, 4));
-//        p.addNote(new Note(JMC.C1, 4));
-
+        for(Chord c : chords) {
+        	int i = (int)(Math.random()*c.getNotes().length);
+        	p.add(new Note(c.getNotes()[0]%12+24, c.length));
+        }
         return p;
     }
 

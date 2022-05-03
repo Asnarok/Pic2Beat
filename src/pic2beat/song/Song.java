@@ -26,7 +26,7 @@ public class Song implements Serializable{
 
 	private SongPart chorus;
 	
-	private int tempo;
+	private int tempo = 120;
 	
 	private int tonality;
 
@@ -176,6 +176,7 @@ public class Song implements Serializable{
 			}
 		}
 
+		score.setTempo(tempo);
 		return score;
 	}
 
