@@ -38,6 +38,7 @@ public class SongPart implements Serializable {
 
 	public void generate(SongGenerator generator) {
 		Part p = song.getChords();
+		generator.setSongPart(this);
 		if (p != null) {
 			final List<Chord> chords = generator.generateChords();
 			this.chords.clear();
