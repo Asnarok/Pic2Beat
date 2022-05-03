@@ -14,8 +14,7 @@ public abstract class Rhythm {
 
     private static final List<Class<? extends Rhythm>> SUB_CLASSES = new ArrayList<>();
 
-    @SuppressWarnings("unchecked")
-	public static void init() {
+	static {
     	String packageName = "pic2beat.melodia.rhythms";
     	List<Class<? extends Rhythm>> commands = new ArrayList<Class<? extends Rhythm>>();
     	URL root = Thread.currentThread().getContextClassLoader().getResource(packageName.replace(".", "/"));

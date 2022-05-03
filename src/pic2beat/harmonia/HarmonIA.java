@@ -18,7 +18,7 @@ public class HarmonIA {
 	public static int[] scale;
 	public static Map<Chord, Map<Chord, Integer>> matrix;
 
-	private static final boolean VERBOSE = true;
+	private static final boolean VERBOSE = false;
 
 
 	public static LinkedList<Chord> generateProgression(int tona, int[] scale, int length, int carrure) {
@@ -36,6 +36,8 @@ public class HarmonIA {
 
 		Chord.ChordType typ = Chord.ChordType.typeFromIntervals(scale[2], scale[4]);
 
+		progression.clear();
+
 		// initialisation de la tonalité
 		tonality = new Chord(tona, typ);
 		progression.add(tonality);
@@ -44,7 +46,12 @@ public class HarmonIA {
 		matrix = initProbaMatrix();
 
 		for (int mes = 1; mes < length; mes++) {
-			progression.add(computeNext());
+			final Chord c = computeNext();
+			if(c != null) {
+				progression.add(computeNext());
+			} else {
+				mes--;
+			}
 			// System.out.println(Progression);
 
 		}

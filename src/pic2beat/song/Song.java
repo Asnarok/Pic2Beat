@@ -15,13 +15,12 @@ import jm.music.data.Score;
 public class Song {
 
 	private String title;
+	private int tempo;
 
 	private final List<SongPart> parts;
 	private final HashMap<Part, InstrumentRole> instruments;
 
-	public static final int INTRO = 0, VERSE = 1, CHORUS = 2;
-
-	private List<SongPartType> structure;
+	private List<SongPart.SongPartType> structure;
 
 	private SongPart chorus;
 
@@ -30,7 +29,7 @@ public class Song {
 
 		this.parts = new ArrayList<>();
 		this.instruments = new HashMap<>();
-		this.structure = new ArrayList<SongPartType>();
+		this.structure = new ArrayList<>();
 	}
 
 	/**
@@ -60,11 +59,11 @@ public class Song {
 		 * // CHORUS sp = new SongPart(this); sp.generate(generator); parts.add(chorus);
 		 */
 
-		for (SongPartType t : structure) {
-			System.out.println("dadada");
-			if (t == SongPartType.CHORUS) {
+		for (SongPart.SongPartType t : structure) { // Il faut que t'édit direct la list de SongPart avec l'ui comme ça quand tu les initialises tu passes length direct
+			System.out.println("don dada mixtape");
+			if (t == SongPart.SongPartType.CHORUS) {
 				if (chorus == null) {
-					SongPart sp = new SongPart(this, t);
+					SongPart sp = new SongPart(this, t, 4);
 					sp.generate(generator);
 					parts.add(sp);
 					chorus = sp;
@@ -72,10 +71,9 @@ public class Song {
 					parts.add(chorus);
 				}
 			} else {
-				SongPart sp = new SongPart(this, t);
+				SongPart sp = new SongPart(this, t, 4);
 				sp.generate(generator);
 				parts.add(sp);
-
 			}
 		}
 	}
@@ -148,7 +146,7 @@ public class Song {
 		return instruments.entrySet().stream()
 				.filter(e -> !(e.getKey().getTitle().equals("Lead") || e.getKey().getTitle().equals("Chords")
 						|| e.getKey().getTitle().equals("Drums") || e.getKey().getTitle().equals("Bass")))
-				.collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue()));
+				.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 	}
 
 	public Score toScore() {
@@ -162,15 +160,17 @@ public class Song {
 			// System.out.println(sp);
 			for (Map.Entry<Part, Object> entry : sp.getPhrases().entrySet()) {
 				// System.out.println(entry);
-				if (entry.getValue() instanceof Phrase)
-					entry.getKey().appendPhrase((Phrase) entry.getValue());
-				else if (entry.getValue() instanceof CPhrase) {
+				if (entry.getValue() instanceof Phrase) {
+					entry.getKey().appendPhrase((Phrase) entry.getValue()); //map.get(entry.getKey()).addNoteList(((Phrase) entry.getValue()).getNoteArray());
+				} else if (entry.getValue() instanceof CPhrase) {
 					CPhrase cp = ((CPhrase) entry.getValue()).copy();
 					cp.setAppend(true);
 					entry.getKey().addCPhrase(cp);
 				}
 			}
 		}
+
+		score.setTempo(tempo);
 
 		return score;
 	}
@@ -193,20 +193,27 @@ public class Song {
 		return null;
 	}
 
-	public void addToStruct(SongPartType part) {
-		this.structure.add(part);
+	public Song addToStruct(SongPart.SongPartType type) {
+		this.structure.add(type);
+		return this;
 	}
 
-	public void setStruct(List<SongPartType> struct) {
+	public Song setStruct(List<SongPart.SongPartType> struct) {
 		this.structure = struct;
+		return this;
 	}
 
 	public void removeFromStruct(int index) {
 		this.structure.remove(index);
 	}
 
-	public enum SongPartType {
-		INTRO, VERSE, CHORUS
+	public Song setTempo(int tempo) {
+		this.tempo = tempo;
+		return this;
+	}
+
+	public int getTempo() {
+		return this.tempo;
 	}
 
 	public List<SongPart> getSongParts() {

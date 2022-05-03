@@ -31,7 +31,7 @@ public class DummyGenerator implements SongGenerator {
     }
 
     @Override
-    public List<Chord> generateChords() {
+    public List<Chord> generateChords(int length) {
         final List<Chord> l = new ArrayList<>();
 
         Chord c1 = new Chord("D#", Chord.ChordType.MAJ7);

@@ -171,6 +171,12 @@
         "degree": "ii",
         "proba": 7
       }
+    ],
+    "vii": [
+      {
+        "degree": "I",
+        "proba": 100
+      }
     ]
   }
 }

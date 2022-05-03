@@ -1,11 +1,11 @@
 package pic2beat;
 
 import jm.JMC;
-import jm.music.data.Score;
 import jm.util.View;
 import pic2beat.harmonia.Chord;
 import pic2beat.song.InstrumentRole;
 import pic2beat.song.Song;
+import pic2beat.song.SongPart;
 import pic2beat.song.generators.BasicGenerator;
 import pic2beat.ui.ComposerFrame;
 import pic2beat.utils.Scales;
@@ -36,16 +36,20 @@ public class Main implements JMC {
         //LinkedList<Chord> progression = HarmonIA.generateProgression("HAPPY", 4, 4);
         //System.out.println(progression.size());
 
-		// TODO decalage entre toutes les phrases -> les combiner
-
         song = new Song("press F to pay respect")
                         .setLead(VIBRAPHONE)
                         .setChords(PIANO)
                         .setDrums(PIANO) // TODO DrumKit
                         .setBass(BASS)
                         .addInstrument("Alto", InstrumentRole.THIRDS, VIOLA)
-                        .addInstrument("Violin", InstrumentRole.FIFTHS, VIOLIN);
-
+                        .addInstrument("Violin", InstrumentRole.FIFTHS, VIOLIN)
+						.addToStruct(SongPart.SongPartType.INTRO)
+						.addToStruct(SongPart.SongPartType.VERSE)
+						.addToStruct(SongPart.SongPartType.CHORUS)
+						.addToStruct(SongPart.SongPartType.CHORUS)
+						.setTempo(120);
+        song.generate(BasicGenerator.class);
+		View.show(song.toScore());
         
 
 //        Chord c1 = new Chord("D#Maj7");
@@ -109,8 +113,8 @@ public class Main implements JMC {
 		 * 9, 10, 11}, y);
 		 * 
 		 */    
-        ComposerFrame frame = new ComposerFrame();
-        frame.setVisible(true);
+//        ComposerFrame frame = new ComposerFrame();
+//        frame.setVisible(true);
 	}
 
 }

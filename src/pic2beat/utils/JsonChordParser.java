@@ -18,7 +18,6 @@ public class JsonChordParser {
 
     static {
         MAJOR = new HashMap<>();
-        Gson gson = new Gson();
 
         try {
             String content = Files.readString(Paths.get("chords.json"));

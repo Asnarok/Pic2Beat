@@ -6,11 +6,11 @@ import java.util.List;
 import java.util.Map;
 
 import jm.music.data.CPhrase;
+import jm.music.data.Note;
 import jm.music.data.Part;
 import jm.music.data.Phrase;
 import pic2beat.harmonia.Chord;
 import pic2beat.melodia.MelodIA;
-import pic2beat.song.Song.SongPartType;
 
 public class SongPart {
 
@@ -19,57 +19,75 @@ public class SongPart {
 
 	private final List<Chord> chords;
 	
-	private SongPartType structType;
-	private int length = 4;
+	private final SongPartType structType;
+	private final int length;
 
-	public SongPart(final Song song, SongPartType structType) {
+	public SongPart(final Song song, SongPartType structType, int length) {
 		this.song = song;
 		this.phrases = new HashMap<>();
 		this.chords = new ArrayList<>();
 		this.structType = structType;
+		this.length = length;
 	}
 
 	public void generate(SongGenerator generator) {
 		Part p = song.getChords();
 		if (p != null) {
-			final List<Chord> chords = generator.generateChords();
+			final List<Chord> chords = generator.generateChords(this.length);
 			this.chords.clear();
 			this.chords.addAll(chords);
 			final CPhrase cp = new CPhrase();
+			System.out.println("Chord prog");
 			for (Chord c : chords) {
+				System.out.print(c.toString()+ " ");
 				cp.addChord(c.getNotes(), c.length);
 			}
+			System.out.println("\n--------------------");
 			phrases.put(p, cp);
 
 			p = song.getLead();
 			if (p != null) {
 				final Phrase lead = new Phrase();
+				System.out.println("Generating over: ");
 				for (Chord c : chords) {
-					lead.addNoteList(MelodIA.get().phrase(c.getNotes(), c.length).getNoteArray());
+					System.out.print(c.toString()+ " ");
+					if(structType != SongPartType.INTRO) {
+						lead.addNoteList(MelodIA.get().phrase(c.getNotes(), c.length).getNoteArray());
+					} else {
+						lead.addNote(new Note(Note.REST, c.length));
+					}
+
 				}
+				System.out.println("\n--------------------");
 				phrases.put(p, lead);
 			}
 		}
 
 		p = song.getBass();
 		if (p != null) {
-
-			phrases.put(p, generator.generateBass(this.chords));
+			final Phrase bass = generator.generateBass(this.chords);
+			phrases.put(p, bass);
 		}
 
 		p = song.getDrums();
 		if (p != null) {
-			phrases.put(p, generator.generateDrums());
+			final Phrase drums = generator.generateDrums();
+			phrases.put(p, drums);
 
 		}
 
 		for (Map.Entry<Part, InstrumentRole> entry : song.getInstrumentsWithRole().entrySet()) {
-			phrases.put(entry.getKey(), generator.generateInstrument(entry.getValue(), this.chords));
+			final Phrase instru =  generator.generateInstrument(entry.getValue(), this.chords);
+			phrases.put(entry.getKey(), instru);
 		}
 	}
 
 	public HashMap<Part, Object> getPhrases() {
 		return phrases;
+	}
+
+	public int getLength() {
+		return length;
 	}
 
 	public int getHighestPitch() {
@@ -109,6 +127,12 @@ public class SongPart {
 		}
 
 		return max;
+	}
+
+	public enum SongPartType {
+		INTRO,
+		VERSE,
+		CHORUS
 	}
 
 }

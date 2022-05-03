@@ -56,7 +56,6 @@ import javax.swing.event.ChangeListener;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
-import pic2beat.song.Song.SongPartType;
 import pic2beat.song.generators.BasicGenerator;
 import pic2beat.Main;
 import pic2beat.song.SongPart;
@@ -557,8 +556,8 @@ public class ComposerFrame extends JFrame {
 		scorePaneContainer.add(scorePane, BorderLayout.CENTER);
 	}
 
-	public List<SongPartType> getStructure() {
-		List<SongPartType> structure = new ArrayList<>();
+	public List<SongPart.SongPartType> getStructure() {
+		List<SongPart.SongPartType> structure = new ArrayList<>();
 		for (Component c : timeLinePanel.getComponents()) {
 			if (c instanceof SongPartPanel) {
 				SongPartPanel s = (SongPartPanel) c;

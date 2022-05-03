@@ -9,7 +9,7 @@ public interface SongGenerator {
 
     Phrase generateDrums();
 
-    List<Chord> generateChords();
+    List<Chord> generateChords(int length);
 
     Phrase generateBass(List<Chord> chords);
 

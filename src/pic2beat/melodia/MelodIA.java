@@ -1,6 +1,5 @@
 package pic2beat.melodia;
 
-import java.lang.invoke.CallSite;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
@@ -13,6 +12,7 @@ import jm.music.data.Phrase;
 import pic2beat.AppConfig;
 import pic2beat.AppConfig.Param;
 import pic2beat.utils.MathUtils;
+import pic2beat.utils.Scales;
 
 /**
  * Singleton for melody generation over a specified chord
@@ -80,24 +80,12 @@ public class MelodIA implements JMC, pic2beat.utils.Scales {
 		// -> soit on reste dans une gamme prédef (tona du morceau)
 		// -> soit on choisit un mode compatible
 
-		if (!AppConfig.get().getParam(Param.TONALITY).equals("MODAL")) {
-			String tona = AppConfig.get().getParam(Param.TONALITY);
-			String scaleS = AppConfig.get().getParam(Param.SCALE);
+		int tonality = getNote("C0"); // TODO connect to ui
+		int[] scale = Scales.MAJOR_SCALE; // TODO connect to ui
 
-			int tonality = getNote(tona + "0");
-			int[] scale = getScale(scaleS);
-
-			// System.out.println(tonality);
-
-			while (p.getBeatLength() < chordLength) {
-				p.addNoteList(computeNextRhythmic(p, currentChord, chordLength, tonality, scale).toArray(new Note[0]));
-			}
-			return p;
-
-		} else {
-
+		while (p.getBeatLength() < chordLength) {
+			p.addNoteList(computeNextRhythmic(p, currentChord, chordLength, tonality, scale).toArray(new Note[0]));
 		}
-
 		return p;
 	}
 
@@ -115,7 +103,6 @@ public class MelodIA implements JMC, pic2beat.utils.Scales {
 		return r.asNotes();
 	}
 
-	// TODO
 	private Note computeNextNote(Phrase phr, final int[] currentChord, double chordLength, int tonality, int[] scale) {
 		final double prob = Math.random();
 		final double[] probas = new double[7];

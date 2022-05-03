@@ -1,11 +1,11 @@
 package pic2beat.ui.timeline;
 
-import pic2beat.song.Song.SongPartType;
+import pic2beat.song.SongPart;
 
 public class ChorusPanel extends SongPartPanel {
 
 	public ChorusPanel() {
-		super("Refrain", "EF5350", SongPartType.CHORUS);
+		super("Refrain", "EF5350", SongPart.SongPartType.CHORUS);
 	}
 
 }
