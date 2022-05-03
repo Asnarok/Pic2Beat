@@ -1,12 +1,10 @@
 package pic2beat;
 
 import jm.JMC;
-import jm.util.View;
 import pic2beat.harmonia.Chord;
 import pic2beat.song.InstrumentRole;
 import pic2beat.song.Song;
-import pic2beat.song.SongPart;
-import pic2beat.song.generators.BasicGenerator;
+import pic2beat.song.Song.SongPartType;
 import pic2beat.ui.ComposerFrame;
 import pic2beat.utils.Scales;
 
@@ -26,11 +24,6 @@ public class Main implements JMC {
         //config.setParam(AppConfig.Param.TEMPO, "90").save();
 
         System.out.println(Chord.fromRoman("viidim7", 0, Scales.MAJOR_SCALE));
-
-//        CPhrase cp = new CPhrase();
-//        for(Chord c : HarmonIA.generateProgression(0, MAJOR_SCALE, 12, 4)) {
-//            cp.addChord(c.getNotes(), c.length);
-//        }
 
         // Melodia tests
         //LinkedList<Chord> progression = HarmonIA.generateProgression("HAPPY", 4, 4);
@@ -87,11 +80,11 @@ public class Main implements JMC {
                 .setBass(BASS)
                 .addInstrument("Alto", InstrumentRole.THIRDS, VIOLA)
                 .addInstrument("Violin", InstrumentRole.FIFTHS, VIOLIN)
-				.addToStruct(SongPart.SongPartType.INTRO)
-				.addToStruct(SongPart.SongPartType.VERSE)
-				.addToStruct(SongPart.SongPartType.CHORUS)
-				.addToStruct(SongPart.SongPartType.CHORUS)
-				.setTempo(120);  
+				.addToStruct(SongPartType.INTRO)
+				.addToStruct(SongPartType.VERSE)
+				.addToStruct(SongPartType.CHORUS)
+				.addToStruct(SongPartType.CHORUS)
+				.setTempo(120);
         ComposerFrame frame = new ComposerFrame();
         frame.newProject();
         frame.setVisible(true);

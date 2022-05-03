@@ -54,10 +54,10 @@ public class NoteLabelPanel extends JPanel {
 			FontMetrics fm = g.getFontMetrics();
 			//int currentNoteIndex = (NotePanel.currentHeight+scrollPx-y/NotePanel.NOTE_HEIGHT+1)%12+lowPitch;
 			
-			int currentNoteIndex = ((this.getHeight()-y+scrollPx)/NotePanel.NOTE_HEIGHT+lowPitch-2)%12;
+			int currentNoteIndex = ((this.getHeight()-y+scrollPx)/NotePanel.NOTE_HEIGHT+lowPitch+1)%12;
 			if(currentNoteIndex < 0)currentNoteIndex+=12;
 			
-			int octave = ((this.getHeight()+scrollPx-y)/(NotePanel.NOTE_HEIGHT)-2+lowPitch)/12-1;
+			int octave = ((this.getHeight()+scrollPx-y)/(NotePanel.NOTE_HEIGHT)+lowPitch+1)/12-1;
 			g.drawLine(0, y-2, this.getWidth(), y-2);
 			String toDraw = NOTES[currentNoteIndex];
 			//g.drawString(toDraw, this.getWidth()/2-fm.stringWidth(toDraw)/2, y+fm.getHeight()/2);

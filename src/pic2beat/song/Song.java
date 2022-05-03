@@ -8,24 +8,30 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import jm.JMC;
 import jm.music.data.CPhrase;
 import jm.music.data.Part;
 import jm.music.data.Phrase;
 import jm.music.data.Score;
-import pic2beat.song.SongPart.SongPartType;
 
-public class Song implements Serializable{
+public class Song implements Serializable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1588682771531217718L;
 
 	private String title;
-	private int tempo;
 
-	private final List<SongPart> parts;
-	private final HashMap<Part, InstrumentRole> instruments;
+	private List<SongPart> parts;
+	private HashMap<Part, InstrumentRole> instruments;
 
-	private List<SongPart.SongPartType> structure;
+	private List<SongPartType> structure;
 
 	private SongPart chorus;
-	
+
+	private int tempo = 80;
+
 	private int tonality;
 
 	public Song(String title) {
@@ -34,6 +40,7 @@ public class Song implements Serializable{
 		this.parts = new ArrayList<>();
 		this.instruments = new HashMap<>();
 		this.structure = new ArrayList<>();
+		this.setDrums(JMC.DRUM);
 	}
 
 	/**
@@ -63,9 +70,10 @@ public class Song implements Serializable{
 		 * // CHORUS sp = new SongPart(this); sp.generate(generator); parts.add(chorus);
 		 */
 
-		for (SongPart.SongPartType t : structure) { // Il faut que t'édit direct la list de SongPart avec l'ui comme ça quand tu les initialises tu passes length direct
+		for (SongPartType t : structure) { // Il faut que t'édit direct la list de SongPart avec l'ui comme
+													// ça quand tu les initialises tu passes length direct
 			System.out.println("don dada mixtape");
-			if (t == SongPart.SongPartType.CHORUS) {
+			if (t == SongPartType.CHORUS) {
 				if (chorus == null) {
 					SongPart sp = new SongPart(this, t, 4);
 					sp.generate(generator);
@@ -165,7 +173,8 @@ public class Song implements Serializable{
 			for (Map.Entry<Part, Object> entry : sp.getPhrases().entrySet()) {
 				// System.out.println(entry);
 				if (entry.getValue() instanceof Phrase) {
-					entry.getKey().appendPhrase((Phrase) entry.getValue()); //map.get(entry.getKey()).addNoteList(((Phrase) entry.getValue()).getNoteArray());
+					entry.getKey().appendPhrase((Phrase) entry.getValue()); // map.get(entry.getKey()).addNoteList(((Phrase)
+																			// entry.getValue()).getNoteArray());
 				} else if (entry.getValue() instanceof CPhrase) {
 					CPhrase cp = ((CPhrase) entry.getValue()).copy();
 					cp.setAppend(true);
@@ -175,7 +184,6 @@ public class Song implements Serializable{
 		}
 
 		score.setTempo(tempo);
-
 		return score;
 	}
 
@@ -200,12 +208,13 @@ public class Song implements Serializable{
 	public List<SongPartType> getStructure() {
 		return structure;
 	}
-	public Song addToStruct(SongPart.SongPartType type) {
+
+	public Song addToStruct(SongPartType type) {
 		this.structure.add(type);
 		return this;
 	}
 
-	public Song setStruct(List<SongPart.SongPartType> struct) {
+	public Song setStruct(List<SongPartType> struct) {
 		this.structure = struct;
 		return this;
 	}
@@ -217,6 +226,21 @@ public class Song implements Serializable{
 	public Song setTempo(int tempo) {
 		this.tempo = tempo;
 		return this;
+
+	}
+	
+	public enum SongPartType implements Serializable{
+		INTRO("Intro"), VERSE("Couplet"), CHORUS("Refrain");
+		
+		private String label;
+		
+		SongPartType(String label) {
+			this.label = label;
+		}
+		
+		public String getLabel() {
+			return label;
+		}
 	}
 
 	public int getTempo() {
@@ -233,6 +257,10 @@ public class Song implements Serializable{
 
 	public void setTonality(int tonality) {
 		this.tonality = tonality;
+	}
+
+	public void clearSongParts() {
+		parts.clear();
 	}
 
 }

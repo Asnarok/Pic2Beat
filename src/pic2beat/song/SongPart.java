@@ -12,9 +12,14 @@ import jm.music.data.Part;
 import jm.music.data.Phrase;
 import pic2beat.harmonia.Chord;
 import pic2beat.melodia.MelodIA;
+import pic2beat.song.Song.SongPartType;
 
 public class SongPart implements Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 8070701508088677417L;
 	private final Song song;
 	private final HashMap<Part, Object> phrases;
 
@@ -136,13 +141,6 @@ public class SongPart implements Serializable {
 	public List<Chord> getChords() {
 		return this.chords;
 	}
-	
-	public enum SongPartType {
-		INTRO,
-		VERSE,
-		CHORUS
-	}
-	
 	
 
 }
