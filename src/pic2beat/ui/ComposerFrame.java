@@ -640,11 +640,12 @@ public class ComposerFrame extends JFrame implements JMC {
 			}
 		});
 		selectionMode.setMargin(new Insets(0, 0, 0, 0));
-		selectionMode.setIcon(new ImageIcon(ComposerFrame.class.getResource("/pic2beat/res/img/cursor.png")));
+		String imagesFolderPath = System.getProperty("user.dir");
+		selectionMode.setIcon(new ImageIcon(imagesFolderPath+"\\assets\\images\\cursor.png"));
 		toolBar.add(selectionMode);
 
 		deleteButton.setMargin(new Insets(0, 0, 0, 0));
-		deleteButton.setIcon(new ImageIcon(ComposerFrame.class.getResource("/pic2beat/res/img/delete.png")));
+		deleteButton.setIcon(new ImageIcon(imagesFolderPath+"\\assets\\images\\delete.png"));
 		toolBar.add(deleteButton);
 		introButton.setActionCommand("");
 		toolBar.add(introButton);
