@@ -8,6 +8,7 @@ import java.util.LinkedList;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import jm.constants.Scales;
 import pic2beat.utils.JsonChordParser;
 
 public class HarmonIA {
@@ -22,7 +23,7 @@ public class HarmonIA {
 	public static int tona;
 	public static int[] scale;
 	public static Map<Chord, Map<Chord, Integer>> matrix;
-
+	
 	private static final boolean VERBOSE = true;
 
 	public static LinkedList<Chord> generateProgression(int tona, int[] scale, int length, int carrure) {
@@ -123,7 +124,7 @@ public class HarmonIA {
 	}
 
 	public static Map<Chord, Map<Chord, Integer>> initProbaMatrix() {
-		final Map<String, Map<String, Integer>> jsonMap = JsonChordParser.MAJOR;
+		final Map<String, Map<String, Integer>> jsonMap = (scale.equals(Scales.MAJOR_SCALE) ? JsonChordParser.MAJOR : JsonChordParser.MINOR);
 
 		final Map<Chord, Map<Chord, Integer>> toReturn = new HashMap<>();
 

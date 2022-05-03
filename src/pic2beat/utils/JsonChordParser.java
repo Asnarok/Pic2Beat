@@ -13,9 +13,12 @@ import java.util.Map;
 public class JsonChordParser {
 
     public static final Map<String, Map<String, Integer>> MAJOR;
+    public static final Map<String, Map<String, Integer>> MINOR;
+
 
     static {
         MAJOR = new HashMap<>();
+        MINOR = new HashMap<>();
         Gson gson = new Gson();
 
         try {
@@ -38,6 +41,34 @@ public class JsonChordParser {
                     final int proba = chordObj.get("proba").getAsInt();
 
                     MAJOR.get(outerChord).put(degree, proba);
+
+                    //System.out.println("degree " +degree+" / proba "+proba);
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        
+        try {
+            String content = Files.readString(Paths.get("chords.json"));
+
+            JsonElement element = new JsonParser().parse(content);
+            JsonObject jsonObject = element.getAsJsonObject().getAsJsonObject("MINOR");
+
+            for(Map.Entry<String, JsonElement> entry : jsonObject.entrySet()) {
+                final String outerChord = entry.getKey();
+
+                MINOR.put(outerChord, new HashMap<>());
+
+                final JsonArray jarray = entry.getValue().getAsJsonArray();
+
+                for(JsonElement chord : jarray) {
+                    final JsonObject chordObj = chord.getAsJsonObject();
+
+                    final String degree = chordObj.get("degree").getAsString();
+                    final int proba = chordObj.get("proba").getAsInt();
+
+                    MINOR.get(outerChord).put(degree, proba);
 
                     //System.out.println("degree " +degree+" / proba "+proba);
                 }

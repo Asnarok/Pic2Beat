@@ -171,6 +171,313 @@
         "degree": "ii",
         "proba": 7
       }
-    ]
+    ],
+     "VII": [
+	{
+        "degree": "I",
+        "proba": 16
+      },
+      {
+        "degree": "ii",
+        "proba": 2
+      },
+      {
+        "degree": "iii",
+        "proba": 4
+      },
+      {
+        "degree": "IV",
+        "proba": 21
+      },
+      {
+        "degree": "V",
+        "proba": 10
+      },
+      {
+        "degree": "vimin7",
+        "proba": 25
+      },
+      {
+        "degree": "V7",
+        "proba": 9
+      },
+      {
+        "degree": "vi",
+        "proba": 12
+      },
+      {
+        "degree": "VII",
+        "proba": 1
+      }
+]
+  },
+  
+  "MINOR": {
+    "i": [
+      {
+        "degree": "i",
+        "proba": 5
+      },
+      {
+        "degree": "iidim7",
+        "proba": 0
+      },
+      {
+        "degree": "III",
+        "proba": 25
+      },
+      {
+        "degree": "iv",
+        "proba": 17
+      },
+      {
+        "degree": "v",
+        "proba": 23
+      },
+      {
+        "degree": "vmin7",
+        "proba": 5
+      },
+      {
+        "degree": "V7",
+        "proba": 2
+      },
+      {
+        "degree": "VI",
+        "proba": 8
+      },
+      {
+        "degree": "VII",
+        "proba": 15
+      }
+    ],
+    "ii": [
+       {
+        "degree": "i",
+        "proba": 5
+      },
+      {
+        "degree": "iidim7",
+        "proba": 0
+      },
+      {
+        "degree": "III",
+        "proba": 10
+      },
+      {
+        "degree": "iv",
+        "proba": 8
+      },
+      {
+        "degree": "v",
+        "proba": 2
+      },
+      {
+        "degree": "vmin7",
+        "proba": 8
+      },
+      {
+        "degree": "V7",
+        "proba": 64
+      },
+      {
+        "degree": "VI",
+        "proba": 2
+      },
+      {
+        "degree": "VII",
+        "proba": 1
+      }
+    ],
+    "III": [
+      {
+        "degree": "i",
+        "proba": 15
+      },
+      {
+        "degree": "iidim7",
+        "proba": 7
+      },
+      {
+        "degree": "III",
+        "proba": 3
+      },
+      {
+        "degree": "iv",
+        "proba": 10
+      },
+      {
+        "degree": "v",
+        "proba": 14
+      },
+      {
+        "degree": "vmin7",
+        "proba": 24
+      },
+      {
+        "degree": "V7",
+        "proba": 11
+      },
+      {
+        "degree": "VI",
+        "proba": 5
+      },
+      {
+        "degree": "VII",
+        "proba": 11
+      }
+    ],
+    "iv": [
+      {
+        "degree": "i",
+        "proba": 15
+      },
+      {
+        "degree": "iidim7",
+        "proba": 5
+      },
+      {
+        "degree": "III",
+        "proba": 8
+      },
+      {
+        "degree": "iv",
+        "proba": 2
+      },
+      {
+        "degree": "v",
+        "proba": 10
+      },
+      {
+        "degree": "vmin7",
+        "proba": 7
+      },
+      {
+        "degree": "V7",
+        "proba": 11
+      },
+      {
+        "degree": "VI",
+        "proba": 19
+      },
+      {
+        "degree": "VII",
+        "proba": 23
+      }
+    ],
+    "v": [
+      {
+        "degree": "i",
+        "proba": 42
+      },
+      {
+        "degree": "iidim7",
+        "proba": 0
+      },
+      {
+        "degree": "III",
+        "proba": 3
+      },
+      {
+        "degree": "iv",
+        "proba": 9
+      },
+      {
+        "degree": "v",
+        "proba": 0
+      },
+      {
+        "degree": "vmin7",
+        "proba": 0
+      },
+      {
+        "degree": "V7",
+        "proba": 19
+      },
+      {
+        "degree": "VI",
+        "proba": 19
+      },
+      {
+        "degree": "VII",
+        "proba": 8
+      }
+    ],
+    "VI": [
+      {
+        "degree": "i",
+        "proba": 15
+      },
+      {
+        "degree": "iidim7",
+        "proba": 12
+      },
+      {
+        "degree": "III",
+        "proba": 9
+      },
+      {
+        "degree": "iv",
+        "proba": 37
+      },
+      {
+        "degree": "v",
+        "proba": 2
+      },
+      {
+        "degree": "vmin7",
+        "proba": 5
+      },
+      {
+        "degree": "V7",
+        "proba": 6
+      },
+      {
+        "degree": "VI",
+        "proba": 2
+      },
+      {
+        "degree": "VII",
+        "proba": 12
+      }
+    ],
+    "VII": [
+	{
+        "degree": "i",
+        "proba": 16
+      },
+      {
+        "degree": "iidim7",
+        "proba": 2
+      },
+      {
+        "degree": "III",
+        "proba": 4
+      },
+      {
+        "degree": "iv",
+        "proba": 21
+      },
+      {
+        "degree": "v",
+        "proba": 10
+      },
+      {
+        "degree": "vmin7",
+        "proba": 25
+      },
+      {
+        "degree": "V7",
+        "proba": 9
+      },
+      {
+        "degree": "VI",
+        "proba": 12
+      },
+      {
+        "degree": "VII",
+        "proba": 1
+      }
+]
   }
 }

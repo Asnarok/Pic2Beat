@@ -165,7 +165,10 @@ public class Chord implements JMC, Serializable{
 	}
 
 	public int interval(int note, int interval) {
-		return (note + interval) % 12;
+		if (interval != 11||interval != 10) {
+			return (note + interval) % 12;
+		}else 
+			return note + interval;
 	}
 
 	public int interval(String note, int interval) {
