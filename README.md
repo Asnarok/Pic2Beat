@@ -33,10 +33,10 @@ Pic2Beat permet de générer une musique de zéro, des percussions à la mélodi
 
 ## Dépendances
 
-| Librairie | Lien |
-| ------ | ------ |
-| Gson | https://github.com/google/gson |
-| Jmusic | https://explodingart.com/jmusic/ |
+| Librairie | Lien | Version |
+| ------ | ------ | ------ |
+| Gson | https://github.com/google/gson | 2.9.0 |
+| Jmusic | https://explodingart.com/jmusic/ | 1.6.5 |
 
 ## Version
 
