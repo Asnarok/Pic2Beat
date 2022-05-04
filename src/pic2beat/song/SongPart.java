@@ -11,6 +11,7 @@ import jm.music.data.Note;
 import jm.music.data.Part;
 import jm.music.data.Phrase;
 import pic2beat.harmonia.Chord;
+import pic2beat.harmonia.ChordRhythm;
 import pic2beat.melodia.MelodIA;
 import pic2beat.song.Song.SongPartType;
 
@@ -48,13 +49,16 @@ public class SongPart implements Serializable {
 			System.out.println("Chord prog");
 			for (Chord c : chords) {
 				System.out.print(c.toString()+ " ");
-				cp.addChord(c.getNotes(), c.length);
+				ChordRhythm cr = ChordRhythm.randomRhythm();
+				for (Double duration : cr.getDurations()) {
+					cp.addChord(c.getNotes(), duration);
+				}
 			}
 			System.out.println("\n--------------------");
 			phrases.put(p, cp);
 
 			p = song.getLead();
-			if (p != null) {
+			if (p != null) { 
 				final Phrase lead = new Phrase();
 				System.out.println("Generating over: ");
 				for (Chord c : chords) {
