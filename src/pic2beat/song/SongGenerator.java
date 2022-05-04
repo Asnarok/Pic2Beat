@@ -1,9 +1,9 @@
 package pic2beat.song;
 
-import jm.music.data.Phrase;
-import pic2beat.Harmonie.Chord;
-
 import java.util.List;
+
+import jm.music.data.Phrase;
+import pic2beat.harmonia.Chord;
 
 public interface SongGenerator {
 
@@ -14,4 +14,6 @@ public interface SongGenerator {
     Phrase generateBass();
 
     Phrase generateInstrument(InstrumentRole role);
+
+    void setSongPart(SongPart part);
 }

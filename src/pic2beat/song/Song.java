@@ -1,161 +1,289 @@
 package pic2beat.song;
 
+import java.io.Serializable;
+import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import jm.JMC;
 import jm.music.data.CPhrase;
 import jm.music.data.Part;
 import jm.music.data.Phrase;
 import jm.music.data.Score;
+import pic2beat.utils.Scales;
 
-import java.lang.reflect.InvocationTargetException;
-import java.util.*;
-import java.util.stream.Collectors;
+public class Song implements Serializable {
 
-public class Song {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1588682771531217718L;
 
-    private String title;
+	private String title;
 
-    private final List<SongPart> parts;
-    private final HashMap<Part, InstrumentRole> instruments;
+	private List<SongPart> parts;
+	private HashMap<Part, InstrumentRole> instruments;
 
-    public Song(String title) {
-        this.title = title;
+	private List<SongPartType> structure;
 
-        this.parts = new ArrayList<>();
-        this.instruments = new HashMap<>();
-    }
+	private SongPart chorus;
 
-    public void generate(Class<? extends SongGenerator> genClazz) {
-        SongGenerator generator;
-        try {
-            generator = genClazz.getDeclaredConstructor().newInstance();
-        } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-            e.printStackTrace();
-            return;
-        }
+	private int tempo = 80;
 
-        // INTRO
-        SongPart sp = new SongPart(this);
-        sp.generate(generator);
-        parts.add(sp);
+	private int tonality;
 
-        // CHORUS
-        final SongPart chorus = new SongPart(this);
-        chorus.generate(generator);
-        parts.add(chorus);
+	private int[] scale = Scales.MAJOR_SCALE;
+	
+	/*private boolean major = true;
 
-        // VERSE
-        sp = new SongPart(this);
-        sp.generate(generator);
-        parts.add(sp);
+	public boolean isMajor() {
+		return major;
+	}
 
-        // CHORUS
-        sp = new SongPart(this);
-        sp.generate(generator);
-        parts.add(chorus);
-    }
+	public void setMajor(boolean major) {
+		this.major = major;
+	}
+*/
+	public Song(String title) {
+		this.title = title;
 
-    public Song setLead(int instrument) {
-        instruments.remove(getPartWithName("Lead"));
-        instruments.put(new Part("Lead", instrument, 0), InstrumentRole.LEAD);
-        return this;
-    }
+		this.parts = new ArrayList<>();
+		this.instruments = new HashMap<>();
+		this.structure = new ArrayList<>();
+		this.setDrums(JMC.DRUM);
+	}
 
-    public Part getLead() {
-        return getPartWithName("Lead");
-    }
+	/**
+	 * Self generation
+	 * 
+	 * @param genClazz
+	 */
+	public void generate(Class<? extends SongGenerator> genClazz) {
+		SongGenerator generator;
+		try {
+			generator = genClazz.getDeclaredConstructor().newInstance();
+		} catch (InstantiationException | IllegalAccessException | InvocationTargetException
+				| NoSuchMethodException e) {
+			e.printStackTrace();
+			return;
+		}
 
-    public Song setChords(int instrument) {
-        instruments.remove(getPartWithName("Chords"));
-        instruments.put(new Part("Chords", instrument, 1), InstrumentRole.CHORDS);
-        return this;
-    }
+		/*
+		 * // INTRO SongPart sp = new SongPart(this); sp.generate(generator);
+		 * parts.add(sp);
+		 * 
+		 * // CHORUS final SongPart chorus = new SongPart(this);
+		 * chorus.generate(generator); parts.add(chorus);
+		 * 
+		 * // VERSE sp = new SongPart(this); sp.generate(generator); parts.add(sp);
+		 * 
+		 * // CHORUS sp = new SongPart(this); sp.generate(generator); parts.add(chorus);
+		 */
 
-    public Part getChords() {
-        return getPartWithName("Chords");
-    }
+		for (SongPartType t : structure) { // Il faut que t'édit direct la list de SongPart avec l'ui comme
+													// ça quand tu les initialises tu passes length direct
+			System.out.println("don dada mixtape");
+			if (t == SongPartType.CHORUS) {
+				if (chorus == null) {
+					SongPart sp = new SongPart(this, t, 4);
+					sp.generate(generator);
+					parts.add(sp);
+					chorus = sp;
+				} else {
+					parts.add(chorus);
+				}
+			} else {
+				SongPart sp = new SongPart(this, t, 4);
+				sp.generate(generator);
+				parts.add(sp);
+			}
+		}
+	}
 
-    public Song setBass(int instrument) {
-        instruments.remove(getPartWithName("Bass"));
-        instruments.put(new Part("Bass", instrument, 2), InstrumentRole.BASS);
-        return this;
-    }
+	public void addSongPart(SongPart p) {
+		this.parts.add(p);
+	}
 
-    public Part getBass() {
-        return getPartWithName("Bass");
-    }
+	public Song setLead(int instrument) {
+		instruments.remove(getPartWithName("Lead"));
+		instruments.put(new Part("Lead", instrument, 0), InstrumentRole.LEAD);
+		return this;
+	}
 
-    public Song setDrums(int instrument) { // TODO DrumKit
-        instruments.remove(getPartWithName("Drums"));
-        instruments.put(new Part("Drums", instrument, 9), InstrumentRole.DRUMS);
-        return this;
-    }
+	public Part getLead() {
+		return getPartWithName("Lead");
+	}
 
-    public Part getDrums() {
-        return getPartWithName("Drums");
-    }
+	public Song setChords(int instrument) {
+		instruments.remove(getPartWithName("Chords"));
+		instruments.put(new Part("Chords", instrument, 1), InstrumentRole.CHORDS);
+		return this;
+	}
 
-    private int instCount = 0;
-    public Song addInstrument(String name, InstrumentRole role, int instrument) {
-        if(name.equals("Drums") || name.equals("Bass") || name.equals("Chords") || name.equals("Lead"))
-            throw new IllegalArgumentException("Instrument name cannot be " + name + ".");
+	public Part getChords() {
+		return getPartWithName("Chords");
+	}
 
-        final Part toAdd = new Part(name, instrument, instCount + 3);
+	public Song setBass(int instrument) {
+		instruments.remove(getPartWithName("Bass"));
+		instruments.put(new Part("Bass", instrument, 2), InstrumentRole.BASS);
+		return this;
+	}
+	
 
-        instruments.remove(getPartWithName(name));
-        instruments.put(toAdd, role);
+	public Part getBass() {
+		return getPartWithName("Bass");
+	}
 
-        instCount++;
-        return this;
-    }
+	public Song setDrums(int instrument) { // TODO DrumKit
+		instruments.remove(getPartWithName("Drums"));
+		instruments.put(new Part("Drums", instrument, 9), InstrumentRole.DRUMS);
+		return this;
+	}
 
-    public void removeInstrument(String name) {
-        instruments.remove(getPartWithName(name));
-        instCount--;
-    }
+	public Part getDrums() {
+		return getPartWithName("Drums");
+	}
 
-    public Map<Part, InstrumentRole> getInstrumentsWithRole() {
-        return instruments.entrySet().stream().filter(e -> !(e.getKey().getTitle().equals("Lead") || e.getKey().getTitle().equals("Chords") || e.getKey().getTitle().equals("Drums") || e.getKey().getTitle().equals("Bass"))).collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue()));
-    }
+	private int instCount = 0;
 
-    public Score toScore() {
-        final Score score = new Score(this.title);
+	public Song addInstrument(String name, InstrumentRole role, int instrument) {
+		if (name.equals("Drums") || name.equals("Bass") || name.equals("Chords") || name.equals("Lead"))
+			throw new IllegalArgumentException("Instrument name cannot be " + name + ".");
 
-        for(Part p : instruments.keySet()) {
-            score.addPart(p);
-        }
+		final Part toAdd = new Part(name, instrument, instCount + 3);
 
-        for(SongPart sp : parts) {
-            //System.out.println(sp);
-            for(Map.Entry<Part, Object> entry : sp.getPhrases().entrySet()) {
-                //System.out.println(entry);
-                if(entry.getValue() instanceof Phrase)
-                    entry.getKey().appendPhrase((Phrase)entry.getValue());
-                else if(entry.getValue() instanceof CPhrase) {
-                    CPhrase cp = ((CPhrase) entry.getValue()).copy();
-                    cp.setAppend(true);
-                    entry.getKey().addCPhrase(cp);
-                }
-            }
-        }
+		instruments.remove(getPartWithName(name));
+		instruments.put(toAdd, role);
 
-        return score;
-    }
+		instCount++;
+		return this;
+	}
 
-    public Song setTitle(String title) {
-        this.title = title;
-        return this;
-    }
+	public void removeInstrument(String name) {
+		instruments.remove(getPartWithName(name));
+		instCount--;
+	}
 
-    public String getTitle() {
-        return this.title;
-    }
+	public Map<Part, InstrumentRole> getInstrumentsWithRole() {
+		return instruments.entrySet().stream()
+				.filter(e -> !(e.getKey().getTitle().equals("Lead") || e.getKey().getTitle().equals("Chords")
+						|| e.getKey().getTitle().equals("Drums") || e.getKey().getTitle().equals("Bass")))
+				.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+	}
 
-    private Part getPartWithName(String name) {
-        for(Part p : instruments.keySet()) {
-            if(p.getTitle().equals(name)) {
-                return p;
-            }
-        }
-        return null;
-    }
+	public Score toScore() {
+		final Score score = new Score(this.title);
+
+		for (Part p : instruments.keySet()) {
+			p.empty();
+			score.addPart(p);
+		}
+
+		for (SongPart sp : parts) {
+			// System.out.println(sp);
+			for (Map.Entry<Part, Object> entry : sp.getPhrases().entrySet()) {
+				// System.out.println(entry);
+				if (entry.getValue() instanceof Phrase) {
+					entry.getKey().appendPhrase((Phrase) entry.getValue()); // map.get(entry.getKey()).addNoteList(((Phrase)
+								System.out.println(entry.getValue());											// entry.getValue()).getNoteArray());
+				} else if (entry.getValue() instanceof CPhrase) {
+					CPhrase cp = ((CPhrase) entry.getValue()).copy();
+					cp.setAppend(true);
+					entry.getKey().addCPhrase(cp);
+				}
+			}
+		}
+
+		score.setTempo(tempo);
+		return score;
+	}
+
+	public Song setTitle(String title) {
+		this.title = title;
+		return this;
+	}
+
+	public String getTitle() {
+		return this.title;
+	}
+
+	private Part getPartWithName(String name) {
+		for (Part p : instruments.keySet()) {
+			if (p.getTitle().equals(name)) {
+				return p;
+			}
+		}
+		return null;
+	}
+
+	public List<SongPartType> getStructure() {
+		return structure;
+	}
+
+	public Song addToStruct(SongPartType type) {
+		this.structure.add(type);
+		return this;
+	}
+
+	public Song setStruct(List<SongPartType> struct) {
+		this.structure = struct;
+		return this;
+	}
+
+	public void removeFromStruct(int index) {
+		this.structure.remove(index);
+	}
+
+	public Song setTempo(int tempo) {
+		this.tempo = tempo;
+		return this;
+
+	}
+	
+	public enum SongPartType implements Serializable{
+		INTRO("Intro"), VERSE("Couplet"), CHORUS("Refrain");
+		
+		private String label;
+		
+		SongPartType(String label) {
+			this.label = label;
+		}
+		
+		public String getLabel() {
+			return label;
+		}
+	}
+
+	public int getTempo() {
+		return this.tempo;
+	}
+
+	public List<SongPart> getSongParts() {
+		return parts;
+	}
+
+	public int getTonality() {
+		return tonality;
+	}
+
+	public void setTonality(int tonality) {
+		this.tonality = tonality;
+	}
+
+	public int[] getScale() {
+		return scale;
+	}
+
+	public void setScale(int[] scale) {
+		this.scale = scale;
+	}
+
+	public void clearSongParts() {
+		parts.clear();
+	}
 
 }
