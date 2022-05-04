@@ -5,7 +5,6 @@ Pic2Beat permet de générer une musique de zéro, des percussions à la mélodi
 
 ## Contenu
 ### Les packages
-* _jmusic_, contenant des instruments de la lib Jmusic
 * _pic2beat_, contenant le programme principal et contenant :
     + _harmonia_, contenant l'algorithme de génération d'accords
     + _melodia_, contenant l'algorithme de génération de mélodie
