@@ -1,5 +1,8 @@
 package pic2beat.utils;
 
+/**
+ * Represents scales as intervals between the root and the other notes
+ */
 public interface Scales {
 
     int[] CHROMATIC_SCALE = new int[]{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11};

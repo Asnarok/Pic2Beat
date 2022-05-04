@@ -17,6 +17,10 @@ public class JsonChordParser {
     public static final Map<String, Map<String, Integer>> MINOR;
 
 
+    /*
+     * Reads the json chord progression database and caches it as matrices.
+     * The matrices contain strings that represent chords in a relative way (not in a key yet)
+     */
     static {
         MAJOR = new HashMap<>();
         MINOR = new HashMap<>();

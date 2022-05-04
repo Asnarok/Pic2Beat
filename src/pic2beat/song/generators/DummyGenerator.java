@@ -11,6 +11,9 @@ import pic2beat.song.SongPart;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Test generator that does not use the chord generation system
+ */
 public class DummyGenerator implements SongGenerator {
 
     @Override

@@ -12,8 +12,14 @@ import pic2beat.melodia.rhythms.FullQuaverRhythm;
 
 public abstract class Rhythm {
 
+    /**
+     * Contains all classes that inherits from <code>Rhythm</code>
+     */
     private static final List<Class<? extends Rhythm>> SUB_CLASSES = new ArrayList<>();
 
+    /*
+     * Lazy generator to fill up the list above
+     */
 	static {
     	String packageName = "pic2beat.melodia.rhythms";
     	List<Class<? extends Rhythm>> commands = new ArrayList<Class<? extends Rhythm>>();
@@ -42,7 +48,10 @@ public abstract class Rhythm {
     	    SUB_CLASSES.addAll(commands);
     	}
     }
-    
+
+    /**
+     * @return a random <code>Rhythm</code> object
+     */
     public static Rhythm randomRhythm() {
         final double random = Math.random();
         final int nbr = SUB_CLASSES.size();
@@ -65,6 +74,11 @@ public abstract class Rhythm {
         this.notes = new ArrayList<>();
     }
 
+    /**
+     * Applies a rhythm to the notes given
+     * @param notes the notes on which to apply the rhythm
+     * @return the current instance
+     */
     public final Rhythm apply(List<Note> notes) {
         if(notes.size() != getDurations().size()) {
             final String child = this.getClass().getName();
@@ -81,6 +95,10 @@ public abstract class Rhythm {
         return this;
     }
 
+    /**
+     * Offers the possibility for children to have their own generation system, replacing the fully random one
+     * @return the current instance
+     */
     public Rhythm generate() {return this;}
 
     public final List<Note> asNotes() {

@@ -15,11 +15,11 @@ import jm.music.data.Phrase;
 import jm.music.data.Score;
 import pic2beat.utils.Scales;
 
+/**
+ * Represents the song
+ */
 public class Song implements Serializable {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1588682771531217718L;
 
 	private String title;
@@ -57,9 +57,8 @@ public class Song implements Serializable {
 	}
 
 	/**
-	 * Self generation
-	 * 
-	 * @param genClazz
+	 * Starts the song generation using the given generator
+	 * @param genClazz generator to use for song generation
 	 */
 	public void generate(Class<? extends SongGenerator> genClazz) {
 		SongGenerator generator;
@@ -150,6 +149,13 @@ public class Song implements Serializable {
 
 	private int instCount = 0;
 
+	/**
+	 * Adds any other instrument which can have a 'secondary' role
+	 * @param name name of the instrument/part
+	 * @param role role of the instrument
+	 * @param instrument Jmusic instrument index
+	 * @return the current object
+	 */
 	public Song addInstrument(String name, InstrumentRole role, int instrument) {
 		if (name.equals("Drums") || name.equals("Bass") || name.equals("Chords") || name.equals("Lead"))
 			throw new IllegalArgumentException("Instrument name cannot be " + name + ".");
@@ -163,11 +169,21 @@ public class Song implements Serializable {
 		return this;
 	}
 
+	/**
+	 * Removes a 'secondary' instrument
+	 * @param name name of the instrument to remove
+	 */
 	public void removeInstrument(String name) {
+		if (name.equals("Drums") || name.equals("Bass") || name.equals("Chords") || name.equals("Lead"))
+			throw new IllegalArgumentException("Cannot remove " + name + ". It is a primary instrument.");
+
 		instruments.remove(getPartWithName(name));
 		instCount--;
 	}
 
+	/**
+	 * @return a map that associates all 'secondary' instruments with their role
+	 */
 	public Map<Part, InstrumentRole> getInstrumentsWithRole() {
 		return instruments.entrySet().stream()
 				.filter(e -> !(e.getKey().getTitle().equals("Lead") || e.getKey().getTitle().equals("Chords")
@@ -175,6 +191,10 @@ public class Song implements Serializable {
 				.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 	}
 
+	/**
+	 * Finalizes song generation and transforms it into a <code>Score</code> object
+	 * @return a Jmusic <code>Score</code> object which represents the song
+	 */
 	public Score toScore() {
 		final Score score = new Score(this.title);
 
@@ -243,8 +263,11 @@ public class Song implements Serializable {
 		return this;
 
 	}
-	
-	public enum SongPartType implements Serializable{
+
+	/**
+	 * Represents the type of a subpart of the song
+	 */
+	public enum SongPartType implements Serializable {
 		INTRO("Intro"), VERSE("Couplet"), CHORUS("Refrain");
 		
 		private String label;

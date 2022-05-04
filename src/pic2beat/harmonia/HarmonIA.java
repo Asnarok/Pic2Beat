@@ -21,7 +21,14 @@ public class HarmonIA {
 
 	private static final boolean VERBOSE = true;
 
-
+	/**
+	 * Generates a chord progression using statistics
+	 * @param tona tonality to use for chords
+	 * @param scale scale to use for chords
+	 * @param length length of the progression, in number of chords
+	 * @param carrure length of a bar (= length of a chord)
+	 * @return a list of <code>Chord</code> objects representing the progression
+	 */
 	public static LinkedList<Chord> generateProgression(int tona, int[] scale, int length, int carrure) {
 
 		if (VERBOSE) {
@@ -68,6 +75,10 @@ public class HarmonIA {
 		return progression;
 	}
 
+	/**
+	 * Generates the next chord using the last one and the statistics matrix
+	 * @return the chord generated
+	 */
 	public static Chord computeNext() {
 		LinkedHashMap<Chord, Integer> potentialChords = null;
 
@@ -132,6 +143,11 @@ public class HarmonIA {
 
 	}
 
+	/**
+	 * Initializes the matrix containing statistics on chord progressions.
+	 * It transforms the matrix of <code>String</code>s into a matrix of <code>Chord</code>s
+	 * @return the statistics matrix
+	 */
 	public static Map<Chord, Map<Chord, Integer>> initProbaMatrix() {
 		final Map<String, Map<String, Integer>> jsonMap = (scale.equals(Scales.MAJOR_SCALE) ? JsonChordParser.MAJOR : JsonChordParser.MINOR);
 

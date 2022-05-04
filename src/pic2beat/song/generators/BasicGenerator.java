@@ -9,8 +9,10 @@ import pic2beat.harmonia.HarmonIA;
 import pic2beat.song.InstrumentRole;
 import pic2beat.song.SongGenerator;
 import pic2beat.song.SongPart;
-import pic2beat.utils.Scales;
 
+/**
+ * Basic generator
+ */
 public class BasicGenerator implements SongGenerator {
 
     private SongPart part;

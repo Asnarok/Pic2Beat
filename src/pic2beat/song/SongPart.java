@@ -15,11 +15,11 @@ import pic2beat.harmonia.ChordRhythm;
 import pic2beat.melodia.MelodIA;
 import pic2beat.song.Song.SongPartType;
 
+/**
+ * Represents a subpart of the song
+ */
 public class SongPart implements Serializable {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 8070701508088677417L;
 	private final Song song;
 	private final HashMap<Part, Object> phrases;
@@ -37,6 +37,10 @@ public class SongPart implements Serializable {
 		this.length = length;
 	}
 
+	/**
+	 * Generates phrases for each instrument that last the entire subpart
+	 * @param generator the generator to use for the generation
+	 */
 	public void generate(SongGenerator generator) {
 		generator.setSongPart(this);
 		

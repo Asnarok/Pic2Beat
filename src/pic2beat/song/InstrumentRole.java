@@ -1,5 +1,9 @@
 package pic2beat.song;
 
+/**
+ * Represents the role of an instrument.
+ * Mainly used for 'secondary' instruments to create custom behaviours in generators
+ */
 public enum InstrumentRole {
 
     // MAIN ROLES
