@@ -68,9 +68,11 @@ import com.google.gson.reflect.TypeToken;
 
 import jm.JMC;
 import jm.constants.Instruments;
+import jm.music.data.Phrase;
 import jm.music.data.Score;
 import jm.util.Play;
 import jm.util.View;
+import jm.util.Write;
 import pic2beat.Main;
 import pic2beat.song.InstrumentRole;
 import pic2beat.song.Song;
@@ -105,7 +107,6 @@ public class ComposerFrame extends JFrame implements JMC {
 
 	public static final HashMap<Integer, String> BASS_INSTRUMENTS = new HashMap<>();
 	public static final HashMap<Integer, String> COMPING_INSTRUMENTS = new HashMap<>();
-	public static final HashMap<Integer, String> DRUM_INSTRUMENTS = new HashMap<>();
 	public static final HashMap<Integer, String> LEAD_INSTRUMENTS = new HashMap<>();
 	public static boolean initialized = false;
 
@@ -113,10 +114,9 @@ public class ComposerFrame extends JFrame implements JMC {
 			"G", "G#" };
 
 	public static void initInstruments() {
-		List<String> bass = loadJson("bass_instruments.json");
-		List<String> comping = loadJson("comping_instruments.json");
-		List<String> drums = loadJson("drum_instruments.json");
-		List<String> lead = loadJson("lead_instruments.json");
+		List<String> bass = loadJson("assets/instruments/bass_instruments.json");
+		List<String> comping = loadJson("assets/instruments/comping_instruments.json");
+		List<String> lead = loadJson("assets/instruments/lead_instruments.json");
 
 		for (String s : bass) {
 			try {
@@ -134,13 +134,6 @@ public class ComposerFrame extends JFrame implements JMC {
 			}
 		}
 
-		for (String s : drums) {
-			try {
-				DRUM_INSTRUMENTS.put(Instruments.class.getField(s).getInt(null), s);
-			} catch (IllegalArgumentException | IllegalAccessException | NoSuchFieldException | SecurityException e) {
-				e.printStackTrace();
-			}
-		}
 
 		for (String s : lead) {
 			try {
@@ -224,6 +217,7 @@ public class ComposerFrame extends JFrame implements JMC {
 	private JToggleButton selectionMode;
 	private JMenuItem openMenuItem;
 	private JMenuItem stopMenuItem;
+	private JComboBox<String> minOrMajComboBox;
 
 	/**
 	 * Create the frame.
@@ -283,6 +277,14 @@ public class ComposerFrame extends JFrame implements JMC {
 		exportMenuItem = new JMenuItem("Exporter...");
 		exportMenuItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				if(selectedIndex < Main.song.getSongParts().size()) {
+					for(Object o : Main.song.getSongParts().get(selectedIndex).getPhrases().values()) {
+						if(o instanceof Phrase) {
+							Phrase p = (Phrase)o;
+							Write.midi(p);
+						}
+					}
+				}
 			}
 		});
 
@@ -340,7 +342,7 @@ public class ComposerFrame extends JFrame implements JMC {
 
 		stopMenuItem = new JMenuItem("Arr\u00EAter");
 		stopMenuItem.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
+			public void actionPerformed(ActionEvent e) {
 				Play.stopMidi();
 			}
 		});
@@ -440,6 +442,16 @@ public class ComposerFrame extends JFrame implements JMC {
 		tonalityComboBox = new JComboBox<>();
 		northSettingsPanel.add(tonalityComboBox);
 		tonalityComboBox.setModel(new DefaultComboBoxModel<String>(NOTES_LABELS));
+		
+		minOrMajComboBox = new JComboBox();
+		minOrMajComboBox.addItemListener(new ItemListener() {
+			public void itemStateChanged(ItemEvent e) {
+				if(minOrMajComboBox.getSelectedIndex() == 0)Main.song.setMajor(true);
+				else Main.song.setMajor(false);
+			}
+		});
+		minOrMajComboBox.setModel(new DefaultComboBoxModel<String>(new String[] {"Maj", "min"}));
+		northSettingsPanel.add(minOrMajComboBox);
 
 		instrumentsPane = new JScrollPane();
 		instrumentsPane.setViewportBorder(
@@ -864,7 +876,6 @@ public class ComposerFrame extends JFrame implements JMC {
 		bpmSlider.setValue(Main.song.getTempo());
 		bpmTextField.setText(Main.song.getTempo() + "");
 		tonalityComboBox.setSelectedItem(NOTES_LABELS[Main.song.getTonality()]);
-		System.out.println(Main.song.getStructure().size());
 		for (SongPartType t : Main.song.getStructure()) {
 			if (t == SongPartType.INTRO)
 				timeLinePanel.add(new IntroPanel());
@@ -879,6 +890,8 @@ public class ComposerFrame extends JFrame implements JMC {
 		leadComboBox.setSelectedItem(LEAD_INSTRUMENTS.get(Main.song.getLead().getInstrument()));
 
 		partCount = Main.song.getStructure().size();
+		if(Main.song.isMajor())minOrMajComboBox.setSelectedIndex(0);
+		else minOrMajComboBox.setSelectedIndex(1);
 		timeLinePanel.revalidate();
 		titleTextField.setText(Main.song.getTitle());
 	}

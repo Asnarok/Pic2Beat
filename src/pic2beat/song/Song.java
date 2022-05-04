@@ -34,7 +34,18 @@ public class Song implements Serializable {
 	private int tempo = 80;
 
 	private int tonality;
-	private int[] scale = Scales.MINOR_SCALE;
+
+	private int[] scale = Scales.MAJOR_SCALE;
+	
+	private boolean major = true;
+
+	public boolean isMajor() {
+		return major;
+	}
+
+	public void setMajor(boolean major) {
+		this.major = major;
+	}
 
 	public Song(String title) {
 		this.title = title;

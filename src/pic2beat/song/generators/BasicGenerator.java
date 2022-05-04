@@ -18,7 +18,6 @@ public class BasicGenerator implements SongGenerator {
     @Override
     public Phrase generateDrums() {
         final Phrase p = new Phrase();
-        
         for(int i = 0; i < part.getLength(); i++) {
             p.addNote(new Note(36, 0.5));
             p.addNote(new Note(42, 0.5));
