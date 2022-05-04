@@ -68,6 +68,7 @@ import com.google.gson.reflect.TypeToken;
 
 import jm.JMC;
 import jm.constants.Instruments;
+import jm.constants.Scales;
 import jm.music.data.Phrase;
 import jm.music.data.Score;
 import jm.util.Play;
@@ -110,8 +111,8 @@ public class ComposerFrame extends JFrame implements JMC {
 	public static final HashMap<Integer, String> LEAD_INSTRUMENTS = new HashMap<>();
 	public static boolean initialized = false;
 
-	public static final String[] NOTES_LABELS = new String[] { "A", "A#", "B", "C", "C#", "D", "D#", "E", "F", "F#",
-			"G", "G#" };
+	public static final String[] NOTES_LABELS = new String[] { "C", "C#", "D", "D#", "E", "F", "F#",
+			"G", "G#","A", "A#", "B" };
 
 	public static void initInstruments() {
 		List<String> bass = loadJson("assets/instruments/bass_instruments.json");
@@ -258,7 +259,6 @@ public class ComposerFrame extends JFrame implements JMC {
 			public void actionPerformed(ActionEvent e) {
 				Main.song.setTitle(titleTextField.getText());
 				Main.song.setTempo(bpmSlider.getValue());
-				Main.song.setTonality(tonalityComboBox.getSelectedIndex());
 				JFileChooser jfc = new JFileChooser();
 				jfc.setSelectedFile(new File(Main.song.getTitle() + ".song"));
 				int i = jfc.showSaveDialog(null);
@@ -442,12 +442,17 @@ public class ComposerFrame extends JFrame implements JMC {
 		tonalityComboBox = new JComboBox<>();
 		northSettingsPanel.add(tonalityComboBox);
 		tonalityComboBox.setModel(new DefaultComboBoxModel<String>(NOTES_LABELS));
+		tonalityComboBox.addItemListener(new ItemListener() {
+			public void itemStateChanged(ItemEvent e) {
+				Main.song.setTonality(tonalityComboBox.getSelectedIndex());
+			}
+		});
 		
 		minOrMajComboBox = new JComboBox();
 		minOrMajComboBox.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {
-				if(minOrMajComboBox.getSelectedIndex() == 0)Main.song.setMajor(true);
-				else Main.song.setMajor(false);
+				if(minOrMajComboBox.getSelectedIndex() == 0)Main.song.setScale(MAJOR_SCALE);
+				else Main.song.setScale(MINOR_SCALE);
 			}
 		});
 		minOrMajComboBox.setModel(new DefaultComboBoxModel<String>(new String[] {"Maj", "min"}));
@@ -890,7 +895,7 @@ public class ComposerFrame extends JFrame implements JMC {
 		leadComboBox.setSelectedItem(LEAD_INSTRUMENTS.get(Main.song.getLead().getInstrument()));
 
 		partCount = Main.song.getStructure().size();
-		if(Main.song.isMajor())minOrMajComboBox.setSelectedIndex(0);
+		if(Main.song.getScale().equals(Scales.MAJOR_SCALE))minOrMajComboBox.setSelectedIndex(0);
 		else minOrMajComboBox.setSelectedIndex(1);
 		timeLinePanel.revalidate();
 		titleTextField.setText(Main.song.getTitle());

@@ -37,7 +37,7 @@ public class Song implements Serializable {
 
 	private int[] scale = Scales.MAJOR_SCALE;
 	
-	private boolean major = true;
+	/*private boolean major = true;
 
 	public boolean isMajor() {
 		return major;
@@ -46,7 +46,7 @@ public class Song implements Serializable {
 	public void setMajor(boolean major) {
 		this.major = major;
 	}
-
+*/
 	public Song(String title) {
 		this.title = title;
 
@@ -179,6 +179,7 @@ public class Song implements Serializable {
 		final Score score = new Score(this.title);
 
 		for (Part p : instruments.keySet()) {
+			p.empty();
 			score.addPart(p);
 		}
 
@@ -188,7 +189,7 @@ public class Song implements Serializable {
 				// System.out.println(entry);
 				if (entry.getValue() instanceof Phrase) {
 					entry.getKey().appendPhrase((Phrase) entry.getValue()); // map.get(entry.getKey()).addNoteList(((Phrase)
-																			// entry.getValue()).getNoteArray());
+								System.out.println(entry.getValue());											// entry.getValue()).getNoteArray());
 				} else if (entry.getValue() instanceof CPhrase) {
 					CPhrase cp = ((CPhrase) entry.getValue()).copy();
 					cp.setAppend(true);
