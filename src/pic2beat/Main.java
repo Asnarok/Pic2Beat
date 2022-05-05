@@ -25,8 +25,6 @@ public class Main implements JMC {
 			System.out.println("Starting program...");
 		}
 
-        System.out.println("Hello world! (suce pute)");
-
 		song = new Song("press F to pay respect")
                 .setLead(VIBRAPHONE)
                 .setChords(PIANO)
