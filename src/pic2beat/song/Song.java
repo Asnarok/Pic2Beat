@@ -75,7 +75,6 @@ public class Song implements Serializable {
 					SongPart sp = new SongPart(this, t, 4);
 					sp.generate(generator);
 					parts.add(sp);
-					System.out.println("oui");
 					chorus = sp;
 				} else {
 					parts.add(chorus);
