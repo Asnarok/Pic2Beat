@@ -25,7 +25,7 @@ public class Main implements JMC {
 			System.out.println("Starting program...");
 		}
 
-		song = new Song("press F to pay respect")
+		song = new Song("Your song")
                 .setLead(VIBRAPHONE)
                 .setChords(PIANO)
                 .setDrums(PIANO) // TODO DrumKit

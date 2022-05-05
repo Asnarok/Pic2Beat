@@ -84,6 +84,7 @@ import pic2beat.ui.timeline.IntroPanel;
 import pic2beat.ui.timeline.SongPartPanel;
 import pic2beat.ui.timeline.VersePanel;
 import pic2beat.utils.FileUtils;
+import pic2beat.utils.JmusicUtils;
 
 public class ComposerFrame extends JFrame implements JMC {
 
@@ -343,7 +344,7 @@ public class ComposerFrame extends JFrame implements JMC {
 		stopMenuItem = new JMenuItem("Arr\u00EAter");
 		stopMenuItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				Play.stopMidi();
+				JmusicUtils.stopMidi();
 			}
 		});
 		projectMenu.add(stopMenuItem);

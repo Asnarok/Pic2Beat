@@ -94,7 +94,7 @@ public class HarmonIA {
 			final Entry<Chord, Integer> entry = it.next();
 			sum += entry.getValue();
 			if (random < sum) {
-				entry.getKey().length = 4; // TODO
+				entry.getKey().length = carrure;
 				return entry.getKey();
 			}
 		}

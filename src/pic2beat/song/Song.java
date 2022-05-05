@@ -66,13 +66,16 @@ public class Song implements Serializable {
 			return;
 		}
 
+		chorus = null;
+
 		for (SongPartType t : structure) { // Il faut que t'édit direct la list de SongPart avec l'ui comme
-													// ça quand tu les initialises tu passes length direct
+			System.out.println(t == SongPartType.CHORUS);										// ça quand tu les initialises tu passes length direct
 			if (t == SongPartType.CHORUS) {
 				if (chorus == null) {
 					SongPart sp = new SongPart(this, t, 4);
 					sp.generate(generator);
 					parts.add(sp);
+					System.out.println("oui");
 					chorus = sp;
 				} else {
 					parts.add(chorus);
