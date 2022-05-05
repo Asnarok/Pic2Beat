@@ -6,8 +6,6 @@ Pic2Beat.iml
 .classpath
 .project
 .settings/
-config.app
-properties.app
 /target/
 .gradle/
 pom.xml
