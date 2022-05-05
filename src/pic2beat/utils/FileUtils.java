@@ -1,14 +1,13 @@
 package pic2beat.utils;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.PrintWriter;
+import java.awt.image.BufferedImage;
+import java.io.*;
+import java.util.stream.Collectors;
 
 import pic2beat.song.Song;
+
+import javax.imageio.ImageIO;
+import javax.swing.*;
 
 public class FileUtils {
 
@@ -61,4 +60,35 @@ public class FileUtils {
 		return null;
     }
 
+	/**
+	 * Loads a resource inside class path as a string
+	 * @param filename path of the file to load
+	 * @return the content of the file as a string
+	 * @throws IOException on stream errors
+	 */
+    public static String resourceFileAsString(String filename) throws IOException {
+		ClassLoader classLoader = ClassLoader.getSystemClassLoader();
+		try(InputStream is = classLoader.getResourceAsStream(filename)) {
+			if(is == null) return null;
+			try(InputStreamReader isr = new InputStreamReader(is);
+				BufferedReader reader = new BufferedReader(isr)) {
+				return reader.lines().collect(Collectors.joining(System.lineSeparator()));
+			}
+		}
+	}
+
+	/**
+	 * Loads an image inside class path as a <code>ImageIcon</code>
+	 * @param filename path of the file to load
+	 * @return the image as a new <code>ImageIcon</code>
+	 * @throws IOException on stream errors
+	 */
+	public static ImageIcon resourceFileAsImageIcon(String filename) throws IOException {
+		ClassLoader classLoader = ClassLoader.getSystemClassLoader();
+		try(InputStream is = classLoader.getResourceAsStream(filename)) {
+			if(is == null) return null;
+			BufferedImage bi = ImageIO.read(is);
+			return new ImageIcon(bi);
+		}
+	}
 }

@@ -8,57 +8,25 @@ import java.util.ArrayList;
 import java.util.List;
 
 import jm.music.data.Note;
-import pic2beat.melodia.rhythms.FullQuaverRhythm;
+import pic2beat.melodia.rhythms.*;
 
 public abstract class Rhythm {
 
     /**
      * Contains all classes that inherits from <code>Rhythm</code>
      */
-    private static final List<Class<? extends Rhythm>> SUB_CLASSES = new ArrayList<>();
-
-    /*
-     * Lazy generator to fill up the list above
-     */
-	static {
-    	String packageName = "pic2beat.melodia.rhythms";
-    	List<Class<? extends Rhythm>> commands = new ArrayList<Class<? extends Rhythm>>();
-    	URL root = Thread.currentThread().getContextClassLoader().getResource(packageName.replace(".", "/"));
-
-    	// Filter .class files.
-    	File[] files = new File(root.getFile()).listFiles(new FilenameFilter() {
-    	    public boolean accept(File dir, String name) {
-    	        return name.endsWith(".class");
-    	    }
-    	});
-
-    	// Find classes implementing Rhythm.
-    	for (File file : files) {
-    	    String className = file.getName().replaceAll(".class$", "");
-    	    Class<?> cls = null;
-			try {
-				cls = Class.forName(packageName + "." + className);
-			} catch (ClassNotFoundException e) {
-				e.printStackTrace();
-			}
-    	    if (Rhythm.class.isAssignableFrom(cls)) {
-    	        commands.add((Class<Rhythm>) cls);
-    	    }
-    	    
-    	    SUB_CLASSES.addAll(commands);
-    	}
-    }
+    private static final Class<? extends Rhythm>[] SUB_CLASSES = new Class[]{FullQuaverRhythm.class, FullSemiQuaverRhythm.class, OQTSQRhythm.class, SyncopetteRhythm.class, TripletRhythm.class, TSQOQRhythm.class};
 
     /**
      * @return a random <code>Rhythm</code> object
      */
     public static Rhythm randomRhythm() {
         final double random = Math.random();
-        final int nbr = SUB_CLASSES.size();
+        final int nbr = SUB_CLASSES.length;
         for(int i = 0; i < nbr; i++) {
             if(random < (i + 1) / (float) nbr) {
                 try {
-                    return SUB_CLASSES.get(i).getDeclaredConstructor().newInstance();
+                    return SUB_CLASSES[i].getDeclaredConstructor().newInstance();
                 } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
                     e.printStackTrace();
                 }

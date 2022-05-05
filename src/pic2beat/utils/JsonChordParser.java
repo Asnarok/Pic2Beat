@@ -1,7 +1,9 @@
 package pic2beat.utils;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
@@ -26,7 +28,14 @@ public class JsonChordParser {
         MINOR = new HashMap<>();
 
         try {
-            String content = Files.readString(Paths.get("chords.json"));
+            String content = FileUtils.resourceFileAsString("chords.json"); // in jar
+            if(content == null) {
+                content = Files.readString(Path.of("chords.json")); // on disk
+            }
+
+            if(content == null) {
+                throw new FileNotFoundException();
+            }
 
             JsonElement element = new JsonParser().parse(content);
             JsonObject jsonObject = element.getAsJsonObject().getAsJsonObject("MAJOR");
@@ -47,15 +56,9 @@ public class JsonChordParser {
                     MAJOR.get(outerChord).put(degree, proba);
                 }
             }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        
-        try {
-            String content = Files.readString(Paths.get("chords.json"));
 
-            JsonElement element = new JsonParser().parse(content);
-            JsonObject jsonObject = element.getAsJsonObject().getAsJsonObject("MINOR");
+            element = new JsonParser().parse(content);
+            jsonObject = element.getAsJsonObject().getAsJsonObject("MINOR");
 
             for(Map.Entry<String, JsonElement> entry : jsonObject.entrySet()) {
                 final String outerChord = entry.getKey();

@@ -22,12 +22,10 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -150,9 +148,11 @@ public class ComposerFrame extends JFrame implements JMC {
 		Gson gson = new Gson();
 		String loaded = "";
 		try {
-			loaded = Files.readString(Path.of(fileName));
-
-		} catch (IOException e) {
+			loaded = FileUtils.resourceFileAsString(fileName); // in jar
+			if(loaded == null) {
+				loaded = Files.readString(Path.of(fileName)); // on disk
+			}
+		} catch (IOException  e) {
 			e.printStackTrace();
 		}
 
@@ -666,11 +666,27 @@ public class ComposerFrame extends JFrame implements JMC {
 		});
 		selectionMode.setMargin(new Insets(0, 0, 0, 0));
 		String imagesFolderPath = System.getProperty("user.dir");
-		selectionMode.setIcon(new ImageIcon(imagesFolderPath + "\\assets\\images\\cursor.png"));
+		try {
+			ImageIcon icon = FileUtils.resourceFileAsImageIcon("assets/images/cursor.png"); // in jar
+			if(icon == null) {
+				icon = new ImageIcon(imagesFolderPath + "\\assets\\images\\cursor.png"); // on disk
+			}
+			selectionMode.setIcon(icon);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		toolBar.add(selectionMode);
 
 		deleteButton.setMargin(new Insets(0, 0, 0, 0));
-		deleteButton.setIcon(new ImageIcon(imagesFolderPath + "\\assets\\images\\delete.png"));
+		try {
+			ImageIcon icon = FileUtils.resourceFileAsImageIcon("assets/images/delete.png"); // in jar
+			if(icon == null) {
+				icon = new ImageIcon(imagesFolderPath + "\\assets\\images\\delete.png"); // on disk
+			}
+			deleteButton.setIcon(icon);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		toolBar.add(deleteButton);
 		introButton.setActionCommand("");
 		toolBar.add(introButton);

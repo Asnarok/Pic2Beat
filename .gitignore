@@ -12,3 +12,4 @@ properties.app
 .gradle/
 pom.xml
 gson-2.9.0.jar
+src/META-INF/
