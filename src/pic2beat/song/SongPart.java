@@ -51,7 +51,7 @@ public class SongPart implements Serializable {
 			this.chords.clear();
 			this.chords.addAll(chords);
 			final CPhrase cp = new CPhrase();
-			System.out.println("Chord prog");
+
 			for (Chord c : chords) {
 				System.out.print(c.toString()+ " ");
 				ChordRhythm cr = ChordRhythm.randomRhythm();
@@ -59,15 +59,13 @@ public class SongPart implements Serializable {
 					cp.addChord(c.getNotes(), duration);
 				}
 			}
-			System.out.println("\n--------------------");
 			phrases.put(p, cp);
 
 			p = song.getLead();
 			if (p != null) { 
 				final Phrase lead = new Phrase();
-				System.out.println("Generating over: ");
+
 				for (Chord c : chords) {
-					System.out.print(c.toString()+ " ");
 					if(structType != SongPartType.INTRO) {
 						lead.addNoteList(MelodIA.get().phrase(song.getTonality(), song.getScale(), c.getNotes(), c.length).getNoteArray());
 					} else {
@@ -75,7 +73,6 @@ public class SongPart implements Serializable {
 					}
 
 				}
-				System.out.println("\n--------------------");
 				phrases.put(p, lead);
 			}
 		}

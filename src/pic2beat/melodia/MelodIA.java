@@ -33,37 +33,11 @@ public class MelodIA implements JMC, pic2beat.utils.Scales {
 	public int getNote(String s) {
 		try {
 			Field f = Pitches.class.getDeclaredField(s);
-			// System.out.println(f.getName());
 			return f.getInt(null);
-
 		} catch (NoSuchFieldException | SecurityException | IllegalAccessException | IllegalArgumentException e) {
 			e.printStackTrace();
 		}
 		return -1;
-	}
-
-	/**
-	 * @param s name of the scale
-	 * @return list of intervals corresponding to the scale
-	 */
-	public int[] getScale(String s) {
-		try {
-			Field f = pic2beat.utils.Scales.class.getDeclaredField(s);
-			// System.out.println(f.getName());
-			return (int[]) f.get(null);
-		} catch (IllegalAccessException | NoSuchFieldException e) {
-			e.printStackTrace();
-		}
-
-		return new int[7];
-	}
-
-	/**
-	 * @param n index of the note
-	 * @return the name of the corresponding note
-	 */
-	public String getNoteName(int n) {
-		return Note.getName(n);
 	}
 
 	/**
@@ -75,12 +49,7 @@ public class MelodIA implements JMC, pic2beat.utils.Scales {
 	 * @return <code>Phrase</code> object containing the generated melody
 	 */
 	public Phrase phrase(int tonality, int[] scale, final int[] currentChord, double chordLength) {
-
 		Phrase p = new Phrase();
-
-		// décision gamme ( avec config )
-		// -> soit on reste dans une gamme prédef (tona du morceau)
-		// -> soit on choisit un mode compatible
 
 		while (p.getBeatLength() < chordLength) {
 			p.addNoteList(computeNextRhythmic(p, currentChord, chordLength, tonality, scale).toArray(new Note[0]));
@@ -133,43 +102,12 @@ public class MelodIA implements JMC, pic2beat.utils.Scales {
 
 			if (prob < probas[i]) {
 				Note toAdd = new Note(scale[i] + tonality + C3, 0.25);
-//				if (phr.getNoteArray().length > 1) { // on va checker 2x en arrière donc il faut que le tableau soit
-//														// déja assez grand
-//					if (phr.getNote(phr.getNoteArray().length - 1).samePitch(toAdd)) {
-//						if (phr.getNote(phr.getNoteArray().length - 2).samePitch(toAdd)
-//								|| phr.getNote(phr.getNoteArray().length - 1).getDuration() > 0.5) {
-//							return computeNextNote(phr, currentChord, chordLength, tonality, scale); // les deux
-//																										// dernières
-//																										// notes sont
-//							// identiques
-//							// à celle choisie, c'est
-//							// insatisfaisant, donc on
-//						} else {
-//							phr.removeLastNote();
-//							return new Note(toAdd.getPitch(), 0.5);
-//						}
-//					}
-//				}
+
 				return toAdd;
 			}
 		}
 
-//		if (phr.getNoteList().isEmpty()) {
-//
-//
-//
-//		} else {
-//			int temp = (int) (Math.random() * 25 + 60);
-//			for (int k : MAJOR_SCALE) {
-//				if (temp % 12 == k) {
-//					return new Note(temp, Q);
-//				}
-//			}
-//			// si la note fait pas partie de la gamme, on recommence
-//			return computeNextNote(phr, currentChord);
-//		}
-
-		// actually the probas don't reach 1.0, so in case the random number just less than 1, we return a rest
+		// actually the probas don't reach 1.0, so in case the random number is just less than 1, we return a rest
 		return new Note(Note.REST, 0.25);
 	}
 

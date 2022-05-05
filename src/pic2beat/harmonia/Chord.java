@@ -106,43 +106,6 @@ public class Chord implements JMC, Serializable{
 		throw new IllegalArgumentException("'" + expression + "' is not a valid chord expression.");
 	}
 
-//	public Chord(int note0, int note1, int note2, int note3) {
-//		Chord c = new Chord(Note.getName(note0)+ChordType.MAJ.getName());
-//		if (toNum(Maj.notes[0])== note0 && toNum(Maj.notes[1])== note1 && toNum(Maj.notes[2])== note2 && toNum(Maj.notes[3])== note3) {
-//			this.name=Maj.name;
-//			this.notes =Maj.notes;
-//			this.type =Maj.type;
-//		} else {
-//			Chord min = new Chord(toNote(note0)+"min");
-//			if (toNum(min.notes[0])== note0 && toNum(min.notes[1])== note1 && toNum(min.notes[2])== note2 && toNum(min.notes[3])== note3) {
-//				this.name=min.name;
-//				this.notes =min.notes;
-//				this.type =min.type;
-//			} else {
-//				Chord Maj7 = new Chord(toNote(note0)+"Maj7");
-//				if (toNum(Maj7.notes[0])== note0 && toNum(Maj7.notes[1])== note1 && toNum(Maj7.notes[2])== note2 && toNum(Maj7.notes[3])== note3) {
-//					this.name=Maj7.name;
-//					this.notes =Maj7.notes;
-//					this.type =Maj7.type;
-//				} else {
-//					Chord min7 = new Chord(toNote(note0)+"min7");
-//					if (toNum(min7.notes[0])== note0 && toNum(min7.notes[1])== note1 && toNum(min7.notes[2])== note2 && toNum(min7.notes[3])== note3) {
-//						this.name=min7.name;
-//						this.notes =min7.notes;
-//						this.type =min7.type;
-//					} else {
-//						Chord d7 = new Chord(toNote(note0)+"7");
-//						if (toNum(d7.notes[0])== note0 && toNum(d7.notes[1])== note1 && toNum(d7.notes[2])== note2 && toNum(d7.notes[3])== note3) {
-//							this.name=d7.name;
-//							this.notes =d7.notes;
-//							this.type =d7.type;
-//						}
-//					}
-//				}
-//			}
-//		}
-//	}
-
 	@Override
 	public String toString() {
 		String rep = "";
@@ -174,13 +137,6 @@ public class Chord implements JMC, Serializable{
 		};
 	}
 
-	public int interval(int note, int interval) {
-		if (interval != 11||interval != 10) {
-			return (note + interval) % 12;
-		}else 
-			return note + interval;
-	}
-
 	/**
 	 * @param note the first note of the interval
 	 * @param interval the interval between the two notes
@@ -188,10 +144,6 @@ public class Chord implements JMC, Serializable{
 	 */
 	public int interval(String note, int interval) {
 		return (toNum(note) + interval) % 12;
-	}
-
-	public Chord interval (Chord c, int dist) {		// NOT IMPLEMENTED !!
-		return null;
 	}
 
 	@Override
@@ -290,7 +242,5 @@ public class Chord implements JMC, Serializable{
 
 			return null;
 		}
-
 	}
-	
 }

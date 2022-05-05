@@ -36,17 +36,7 @@ public class Song implements Serializable {
 	private int tonality;
 
 	private int[] scale = Scales.MAJOR_SCALE;
-	
-	/*private boolean major = true;
 
-	public boolean isMajor() {
-		return major;
-	}
-
-	public void setMajor(boolean major) {
-		this.major = major;
-	}
-*/
 	public Song(String title) {
 		this.title = title;
 
@@ -70,21 +60,8 @@ public class Song implements Serializable {
 			return;
 		}
 
-		/*
-		 * // INTRO SongPart sp = new SongPart(this); sp.generate(generator);
-		 * parts.add(sp);
-		 * 
-		 * // CHORUS final SongPart chorus = new SongPart(this);
-		 * chorus.generate(generator); parts.add(chorus);
-		 * 
-		 * // VERSE sp = new SongPart(this); sp.generate(generator); parts.add(sp);
-		 * 
-		 * // CHORUS sp = new SongPart(this); sp.generate(generator); parts.add(chorus);
-		 */
-
 		for (SongPartType t : structure) { // Il faut que t'édit direct la list de SongPart avec l'ui comme
 													// ça quand tu les initialises tu passes length direct
-			System.out.println("don dada mixtape");
 			if (t == SongPartType.CHORUS) {
 				if (chorus == null) {
 					SongPart sp = new SongPart(this, t, 4);

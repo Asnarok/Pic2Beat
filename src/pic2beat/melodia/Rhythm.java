@@ -32,7 +32,7 @@ public abstract class Rhythm {
     	    }
     	});
 
-    	// Find classes implementing ICommand.
+    	// Find classes implementing Rhythm.
     	for (File file : files) {
     	    String className = file.getName().replaceAll(".class$", "");
     	    Class<?> cls = null;
@@ -77,9 +77,8 @@ public abstract class Rhythm {
     /**
      * Applies a rhythm to the notes given
      * @param notes the notes on which to apply the rhythm
-     * @return the current instance
      */
-    public final Rhythm apply(List<Note> notes) {
+    public final void apply(List<Note> notes) {
         if(notes.size() != getDurations().size()) {
             final String child = this.getClass().getName();
             throw new IllegalArgumentException("A " + child + " must contain " + getDurations().size() + " notes.");
@@ -92,7 +91,6 @@ public abstract class Rhythm {
             this.notes.get(i).setRhythmValue(getDurations().get(i), true);
         }
 
-        return this;
     }
 
     /**

@@ -45,8 +45,6 @@ public class JsonChordParser {
                     final int proba = chordObj.get("proba").getAsInt();
 
                     MAJOR.get(outerChord).put(degree, proba);
-
-                    //System.out.println("degree " +degree+" / proba "+proba);
                 }
             }
         } catch (IOException e) {
@@ -73,8 +71,6 @@ public class JsonChordParser {
                     final int proba = chordObj.get("proba").getAsInt();
 
                     MINOR.get(outerChord).put(degree, proba);
-
-                    //System.out.println("degree " +degree+" / proba "+proba);
                 }
             }
         } catch (IOException e) {
