@@ -51,6 +51,7 @@ public class MelodIA implements JMC, pic2beat.utils.Scales {
 		Phrase p = new Phrase();
 
 		while (p.getBeatLength() < chordLength) {
+			System.out.println("oui");
 			p.addNoteList(computeNextRhythmic(p, currentChord, chordLength, tonality, scale).toArray(new Note[0]));
 		}
 		return p;

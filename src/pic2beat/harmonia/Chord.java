@@ -49,6 +49,8 @@ public class Chord implements JMC, Serializable{
 				notes[2] = Note.getName(this.interval(notes[1], 3));
 				notes[3] = Note.getName(this.interval(notes[2], 4));
 				break;
+			case POWER_CHORD:
+				notes[1] = Note.getName(this.interval(notes[0], 7));
 		}
 	}
 
@@ -206,7 +208,8 @@ public class Chord implements JMC, Serializable{
 		MAJ7("Maj7", new int[]{4, 7, 11}),
 		MIN7("min7", new int[]{3, 7, 10}),
 		DOM7("7", new int[]{4, 7, 10}),
-		DIM7("dim7", new int[]{3, 6, 10});
+		DIM7("dim7", new int[]{3, 6, 10}),
+		POWER_CHORD("5", new int[]{7});
 
 		private final String name;
 		private final int[] intervals;

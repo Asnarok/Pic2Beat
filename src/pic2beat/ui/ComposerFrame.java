@@ -78,6 +78,7 @@ import pic2beat.song.Song;
 import pic2beat.song.Song.SongPartType;
 import pic2beat.song.SongPart;
 import pic2beat.song.generators.BasicGenerator;
+import pic2beat.song.generators.RockGenerator;
 import pic2beat.ui.scoredisplay.ScorePane;
 import pic2beat.ui.timeline.ChorusPanel;
 import pic2beat.ui.timeline.IntroPanel;
@@ -583,7 +584,7 @@ public class ComposerFrame extends JFrame implements JMC {
 						e1.printStackTrace();
 					}
 
-					Main.song.generate(BasicGenerator.class);
+					Main.song.generate(Main.generator);
 					scorePane.show(Main.song.getSongParts().get(selectedIndex));
 				} else {
 					JOptionPane.showMessageDialog(newMenu,

@@ -27,13 +27,13 @@ public class ChordsPanel extends JPanel {
 	public void show(List<Chord> chords) {
 		this.chords = chords;
 		chordsColors = new HashMap<>();
-		for (int i = 0; i < chords.size(); i++) {
-			if (!chordsColors.containsKey(chords.get(i).name)) {
+		for (Chord chord : chords) {
+			if (!chordsColors.containsKey(chord.name)) {
 				float h = (float) (Math.random());
 				float s = (float) (Math.random() * 0.5 + 0.2);
 				float b = 0.9f;
 				Color c = Color.getHSBColor(h, s, b);
-				chordsColors.put(chords.get(i).name, c);
+				chordsColors.put(chord.name, c);
 			}
 		}
 		this.repaint();
