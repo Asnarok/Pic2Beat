@@ -4,6 +4,7 @@ import java.util.List;
 
 import jm.music.data.Note;
 import jm.music.data.Phrase;
+import pic2beat.Main;
 import pic2beat.harmonia.Chord;
 import pic2beat.harmonia.HarmonIA;
 import pic2beat.song.InstrumentRole;
@@ -19,6 +20,10 @@ public class BasicGenerator implements SongGenerator {
 
     @Override
     public Phrase generateDrums() {
+        if(Main.DEBUG) {
+            System.out.println("\t\t- Generating drums...");
+        }
+
         final Phrase p = new Phrase();
         for(int i = 0; i < part.getLength(); i++) {
             p.addNote(new Note(36, 0.5));
@@ -36,11 +41,19 @@ public class BasicGenerator implements SongGenerator {
 
     @Override
     public List<Chord> generateChords() {
+        if(Main.DEBUG) {
+            System.out.println("\t\t-Generating chords...");
+        }
+
         return HarmonIA.generateProgression(part.getSong().getTonality(), part.getSong().getScale(), part.getLength(), 4);
     }
 
     @Override
     public Phrase generateBass() {
+        if(Main.DEBUG) {
+            System.out.println("\t\t- Generating bass...");
+        }
+
         final Phrase p = new Phrase();
 
         for(Chord c : part.getChords()) {
@@ -53,6 +66,10 @@ public class BasicGenerator implements SongGenerator {
 
     @Override
     public Phrase generateInstrument(InstrumentRole role) {
+        if(Main.DEBUG) {
+            System.out.println("\t\t- Generating secondary instrument of role " + role + "...");
+        }
+
         final Phrase p = new Phrase();
 
 //        if(role == InstrumentRole.THIRDS) {

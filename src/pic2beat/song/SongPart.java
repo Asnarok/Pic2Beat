@@ -10,6 +10,7 @@ import jm.music.data.CPhrase;
 import jm.music.data.Note;
 import jm.music.data.Part;
 import jm.music.data.Phrase;
+import pic2beat.Main;
 import pic2beat.harmonia.Chord;
 import pic2beat.harmonia.ChordRhythm;
 import pic2beat.melodia.MelodIA;
@@ -42,6 +43,10 @@ public class SongPart implements Serializable {
 	 * @param generator the generator to use for the generation
 	 */
 	public void generate(SongGenerator generator) {
+		if(Main.DEBUG) {
+			System.out.println("\t- Generating SongPart of type " + structType + "...");
+		}
+
 		generator.setSongPart(this);
 		
 		Part p = song.getChords();
@@ -53,7 +58,6 @@ public class SongPart implements Serializable {
 			final CPhrase cp = new CPhrase();
 
 			for (Chord c : chords) {
-				System.out.print(c.toString()+ " ");
 				ChordRhythm cr = ChordRhythm.randomRhythm();
 				for (Double duration : cr.getDurations()) {
 					cp.addChord(c.getNotes(), duration);
@@ -67,6 +71,10 @@ public class SongPart implements Serializable {
 
 				for (Chord c : chords) {
 					if(structType != SongPartType.INTRO) {
+						if(Main.DEBUG) {
+							System.out.println("\t\t- Generating lead...");
+						}
+
 						lead.addNoteList(MelodIA.get().phrase(song.getTonality(), song.getScale(), c.getNotes(), c.length).getNoteArray());
 					} else {
 						lead.addNote(new Note(Note.REST, c.length));
@@ -93,6 +101,10 @@ public class SongPart implements Serializable {
 		for (Map.Entry<Part, InstrumentRole> entry : song.getInstrumentsWithRole().entrySet()) {
 			final Phrase instru =  generator.generateInstrument(entry.getValue());
 			phrases.put(entry.getKey(), instru);
+		}
+
+		if(Main.DEBUG) {
+			System.out.println("\t- SongPart generated.");
 		}
 	}
 

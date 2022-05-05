@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 import jm.JMC;
@@ -13,6 +14,7 @@ import jm.music.data.CPhrase;
 import jm.music.data.Part;
 import jm.music.data.Phrase;
 import jm.music.data.Score;
+import pic2beat.Main;
 import pic2beat.utils.Scales;
 
 /**
@@ -51,6 +53,10 @@ public class Song implements Serializable {
 	 * @param genClazz generator to use for song generation
 	 */
 	public void generate(Class<? extends SongGenerator> genClazz) {
+		if(Main.DEBUG) {
+			System.out.println("Generating song...");
+		}
+
 		SongGenerator generator;
 		try {
 			generator = genClazz.getDeclaredConstructor().newInstance();
@@ -76,6 +82,10 @@ public class Song implements Serializable {
 				sp.generate(generator);
 				parts.add(sp);
 			}
+		}
+
+		if(Main.DEBUG) {
+			System.out.println("Song generated.");
 		}
 	}
 
@@ -173,6 +183,10 @@ public class Song implements Serializable {
 	 * @return a Jmusic <code>Score</code> object which represents the song
 	 */
 	public Score toScore() {
+		if(Main.DEBUG) {
+			System.out.println("Generating score...");
+		}
+
 		final Score score = new Score(this.title);
 
 		for (Part p : instruments.keySet()) {
@@ -181,12 +195,9 @@ public class Song implements Serializable {
 		}
 
 		for (SongPart sp : parts) {
-			// System.out.println(sp);
 			for (Map.Entry<Part, Object> entry : sp.getPhrases().entrySet()) {
-				// System.out.println(entry);
 				if (entry.getValue() instanceof Phrase) {
-					entry.getKey().appendPhrase((Phrase) entry.getValue()); // map.get(entry.getKey()).addNoteList(((Phrase)
-								System.out.println(entry.getValue());											// entry.getValue()).getNoteArray());
+					entry.getKey().appendPhrase((Phrase) entry.getValue());
 				} else if (entry.getValue() instanceof CPhrase) {
 					CPhrase cp = ((CPhrase) entry.getValue()).copy();
 					cp.setAppend(true);
@@ -196,6 +207,11 @@ public class Song implements Serializable {
 		}
 
 		score.setTempo(tempo);
+
+		if(Main.DEBUG) {
+			System.out.println("Score generated.");
+		}
+
 		return score;
 	}
 

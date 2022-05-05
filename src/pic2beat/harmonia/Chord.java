@@ -14,7 +14,6 @@ public class Chord implements JMC, Serializable{
 	public String name;
 	public ChordType type;
 	public String[] notes = new String[4];
-	public double[] proba;
 	public int length; //en nombre de temps de 1 à 4
 
 	public Chord(String name, ChordType type) {
@@ -55,10 +54,6 @@ public class Chord implements JMC, Serializable{
 
 	public Chord(int note, ChordType type) {
 		this(Note.getName(note), type);
-	}
-
-	public Chord(Chord chord) {
-		this(chord.notes[0], chord.type);
 	}
 
 	/**

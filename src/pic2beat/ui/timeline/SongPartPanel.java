@@ -85,7 +85,6 @@ public class SongPartPanel extends JPanel {
 	public void hover() {
 		if (!focused) {
 			toFillWith = hoverColor;
-			System.out.println("oddd");
 		}
 			
 	}

@@ -40,8 +40,6 @@ public class NotePanel extends JPanel implements JMC {
 		int width = (BAR_WIDTH * bars);
 		height = NOTE_HEIGHT * (high - low + 1);
 
-		System.out.println(part.getEndTime());
-
 		this.setPreferredSize(new Dimension(width, height));
 		this.repaint();
 

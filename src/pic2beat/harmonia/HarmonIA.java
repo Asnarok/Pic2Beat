@@ -1,5 +1,7 @@
 package pic2beat.harmonia;
 
+import jm.music.data.Note;
+import pic2beat.Main;
 import pic2beat.utils.JsonChordParser;
 import pic2beat.utils.Scales;
 
@@ -16,8 +18,6 @@ public class HarmonIA {
 	public static int[] scale;
 	public static Map<Chord, Map<Chord, Integer>> matrix;
 
-	private static final boolean VERBOSE = true;
-
 	/**
 	 * Generates a chord progression using statistics
 	 * @param tona tonality to use for chords
@@ -27,11 +27,8 @@ public class HarmonIA {
 	 * @return a list of <code>Chord</code> objects representing the progression
 	 */
 	public static LinkedList<Chord> generateProgression(int tona, int[] scale, int length, int carrure) {
-
-		if (VERBOSE) {
-			System.out.println("--Generating chord progression--");
-			System.out.println("-carrure : " + carrure);
-			System.out.println("-length : " + length);
+		if (Main.DEBUG) {
+			System.out.println("\t\t\t- Generating chord progression");
 		}
 
 		HarmonIA.carrure = carrure;
@@ -46,27 +43,26 @@ public class HarmonIA {
 		// initialisation de la tonalité
 		tonality = new Chord(tona, typ);
 		progression.add(tonality);
-		System.out.println(progression.getLast());
+		if (Main.DEBUG) {
+			System.out.println("\t\t\t\tadded " + tonality.name);
+		}
 		progression.getLast().length = carrure;
 		matrix = initProbaMatrix();
 
 		for (int mes = 1; mes < length; mes++) {
-			System.out.println(progression);
 			final Chord c = computeNext();
 			if(c != null) {
 				progression.add(c);
-				if(VERBOSE)System.out.println("added "+c.name);
+				if(Main.DEBUG) System.out.println("\t\t\t\tadded "+c.name);
 			} else {
-				if(VERBOSE)System.out.println("err.");
+				if(Main.DEBUG) System.out.println("\t\t\t\trecomputing one chord");
 				mes--;
 			}
 
 		}
 
-		if (VERBOSE) {
-			for (Chord c : progression) {
-				System.out.print(c.name + " " + c.length + ", ");
-			}
+		if(Main.DEBUG) {
+			System.out.println("\t\t\t- Chord progression generated.");
 		}
 		return progression;
 	}
@@ -77,11 +73,8 @@ public class HarmonIA {
 	 */
 	public static Chord computeNext() {
 		LinkedHashMap<Chord, Integer> potentialChords = null;
-
-		System.out.println(progression.getLast());
 		
 		for(Entry<Chord, Map<Chord, Integer>> entry : matrix.entrySet()) {
-			System.out.println("computing " + entry.getKey());
 			if(entry.getKey().notes[0].equals(progression.getLast().notes[0])) { // TODO at least check if they are major/minor
 				potentialChords = new LinkedHashMap<>(entry.getValue());
 			}
@@ -123,8 +116,6 @@ public class HarmonIA {
 			final Map<Chord, Integer> inner = new HashMap<>();
 			for (Entry<String, Integer> entry2 : entry1.getValue().entrySet()) {
 				inner.put(Chord.fromRoman(entry2.getKey(), tona, scale), entry2.getValue());
-				
-				System.out.println(entry1.getKey()+"->"+entry2.getKey() +":"+entry2.getValue());
 			}
 			toReturn.put(Chord.fromRoman(entry1.getKey(), tona, scale), inner);
 		}
