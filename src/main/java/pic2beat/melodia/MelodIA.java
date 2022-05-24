@@ -101,9 +101,9 @@ public class MelodIA implements JMC, pic2beat.utils.Scales {
 		final double prob = Math.random();
 		final double[] probas = new double[7];
 		for (int i = 0; i < scale.length; i++) {
-			// ajouter l'integral à la somme
-			// sachant que l'intégrale se fait à partir d'une fonction composée de n lois
-			// normales centrées sur chaque note de l'accord, et que sigma augmente au cours
+			// ajouter l'integral ï¿½ la somme
+			// sachant que l'intï¿½grale se fait ï¿½ partir d'une fonction composï¿½e de n lois
+			// normales centrï¿½es sur chaque note de l'accord, et que sigma augmente au cours
 			// du remplissement de phr
 			// if prob < currentRepartition return note
 			probas[i] = calculateProba(phr, currentChord, scale[i], chordLength);
@@ -112,7 +112,7 @@ public class MelodIA implements JMC, pic2beat.utils.Scales {
 				Note toAdd = new Note(scale[i] + tonality + C3, 0.25);
 
 				if(Main.DEBUG) {
-					System.out.println("\t\t\t\t\t" + toAdd.getName() + " added");
+					System.out.println("\t\t\t\t\t" + toAdd.getNote() + " added");
 				}
 
 				return toAdd;

@@ -8,6 +8,5 @@ Pic2Beat.iml
 .settings/
 /target/
 .gradle/
-pom.xml
 gson-2.9.0.jar
 src/META-INF/
